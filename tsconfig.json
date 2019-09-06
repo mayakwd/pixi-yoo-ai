@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es5",
+    "declaration": true,
+    "sourceMap": true,
+    "outDir": "lib",
+    "downlevelIteration": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "noEmitHelpers": true,
+    "importHelpers": true,
+    "lib": [
+      "dom",
+      "es2015"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ]
+}
