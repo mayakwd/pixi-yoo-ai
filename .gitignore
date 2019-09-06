@@ -8,6 +8,9 @@ yarn-error.log*
 # Lock files
 yarn.lock
 
+# IDE
+.idea
+
 # Runtime data
 pids
 *.pid
