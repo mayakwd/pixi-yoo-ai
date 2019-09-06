@@ -1,0 +1,40 @@
+{
+  "name": "pixi-yoo-ai",
+  "version": "0.0.1",
+  "description": "Yoo Ai. Extensive UI library for PixiJS v5",
+  "author": "Ilya Malanin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mayakwd/pixi-yoo-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mayakwd/pixi-yoo-ai/issues"
+  },
+  "homepage": "https://github.com/mayakwd/pixi-yoo-ai#readme",
+  "keywords": [
+    "pixi",
+    "ui",
+    "gui"
+  ],
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "moduleResolution": "node",
+  "scripts": {
+    "setup": "yarn install",
+    "lint": "yarn tslint --fix -c ./tslint.json 'src/**/*.ts'",
+    "build": "tsc"
+  },
+  "files": [
+    "lib",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "pixi.js": "^5.0.0"
+  },
+  "devDependencies": {
+    "tslint": "^5.19.0",
+    "typescript": "^3.6.2"
+  }
+}
