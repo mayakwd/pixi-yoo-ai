@@ -23,7 +23,8 @@
   "scripts": {
     "setup": "yarn install",
     "lint": "yarn tslint --fix -c ./tslint.json 'src/**/*.ts'",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "exit 0"
   },
   "files": [
     "lib",
