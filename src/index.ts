@@ -4,6 +4,7 @@ export * from "./yooai/core/Component";
 
 export * from "./yooai/theme/Theme";
 
+export * from "./yooai/layout/Direction";
 export * from "./yooai/layout/Placement";
 export * from "./yooai/layout/VerticalAlign";
 export * from "./yooai/layout/HorizontalAlign";
@@ -20,5 +21,6 @@ export * from "./yooai/controls/InteractiveState";
 export * from "./yooai/controls/InteractiveComponent";
 export * from "./yooai/controls/Label";
 export * from "./yooai/controls/Button";
+export * from "./yooai/controls/ProgressBar";
 
 export * from "./yooai/data/ItemRenderer";

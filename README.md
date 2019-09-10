@@ -20,3 +20,4 @@ Currently available components:
 - VBox - Box with vertical layout
 - Button
 - Label
+- ProgressBar

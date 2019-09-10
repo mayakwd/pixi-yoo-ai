@@ -7,6 +7,7 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 ### Added
 - Added `Component.updateSkin` method, to reduce boilerplate for replacing skins
+- Added `ProgressBar` component
 
 ### Fixed
 - Parameter `parent` for `Label` constructor is optional now, as expected 
