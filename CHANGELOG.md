@@ -6,7 +6,10 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 ### Added
-- Added `Component.updateSkin` method, to reduce boilerplate for replacing skins 
+- Added `Component.updateSkin` method, to reduce boilerplate for replacing skins
+
+### Fixed
+- Parameter `parent` for `Label` constructor is optional now, as expected 
 
 ## [0.0.1] - 2019-09-06
 ### Added

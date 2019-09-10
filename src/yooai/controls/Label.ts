@@ -106,6 +106,7 @@ export class Label extends Component {
   public get contentHeight(): number {
     return this._textField.height;
   }
+
   protected _textField!: Text;
   protected _textStyle: TextStyle = theme.defaultTextStyle;
   protected _disabledTextStyle?: TextStyle = theme.defaultTextStyle;
@@ -116,7 +117,7 @@ export class Label extends Component {
 
   protected _text: string = "";
 
-  public constructor(parent: Container, x: number = 0, y: number = 0, text: string = "") {
+  public constructor(parent?: Container, x: number = 0, y: number = 0, text: string = "") {
     super(parent, x, y);
 
     this.text = text;
