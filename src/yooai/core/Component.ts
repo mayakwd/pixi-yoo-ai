@@ -5,7 +5,6 @@ import DisplayObject = PIXI.DisplayObject;
 import Rectangle = PIXI.Rectangle;
 
 export class Component extends Container implements IDestroyable {
-
   public get isDestroyed(): boolean {
     return this._isDestroyed;
   }
@@ -76,6 +75,7 @@ export class Component extends Container implements IDestroyable {
     this._enabled = enabled;
     this.invalidate("state");
   }
+
   protected static readonly INITIAL_HEIGHT = 100;
   protected static readonly INITIAL_WIDTH = 100;
 
@@ -180,6 +180,24 @@ export class Component extends Container implements IDestroyable {
 
   protected validate(): void {
     this._invalidationSet.clear();
+  }
+
+  protected updateSkin(currentValue?: Container, newValue?: Container, childIndex?: number): Container | undefined {
+    if (currentValue !== newValue) {
+      if (currentValue !== undefined && currentValue.parent === this) {
+        this.removeChild(currentValue);
+      }
+      if (newValue !== undefined) {
+        if (childIndex !== undefined) {
+          this.addChildAt(newValue, childIndex);
+        } else {
+          this.addChild(newValue);
+        }
+      }
+      return newValue;
+    } else {
+      return currentValue;
+    }
   }
 
   protected updateHitArea() {

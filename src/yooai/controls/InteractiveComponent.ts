@@ -205,15 +205,7 @@ export class InteractiveComponent extends Pane {
   }
 
   protected drawBackground() {
-    if (this._background) {
-      this.removeChild(this._background);
-    }
-
-    this._background = this.getSkinForCurrentState();
-
-    if (this._background) {
-      this.addChildAt(this._background, 0);
-    }
+    this._background = this.updateSkin(this._background, this.getSkinForCurrentState(), 0);
   }
 
   protected getSkinForCurrentState() {

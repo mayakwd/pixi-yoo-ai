@@ -14,6 +14,7 @@ export class Pane extends Component {
     this._skin = value;
     this.invalidate("skin");
   }
+
   protected _skin?: Container;
   protected _background?: Container;
 
@@ -36,13 +37,7 @@ export class Pane extends Component {
   }
 
   protected drawBackground() {
-    if (this._background !== undefined && this._background.parent === this) {
-      this.removeChild(this._background);
-    }
-    this._background = this._skin;
-    if (this._background) {
-      this.addChildAt(this._background, 0);
-    }
+    this._background = this.updateSkin(this._background, this._skin, 0);
   }
 
   protected drawLayout() {
