@@ -1,6 +1,5 @@
 import {TextStyle} from "pixi.js";
-import {HorizontalAlign, Label, VerticalAlign} from "../..";
-import {InteractiveComponent} from "../controls/InteractiveComponent";
+import {HorizontalAlign, InteractiveComponent, Label, VerticalAlign} from "../..";
 
 export class ItemRenderer<T extends IItemRendererData> extends InteractiveComponent {
   public index: number = -1;
