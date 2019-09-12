@@ -1,5 +1,5 @@
 import {Container} from "pixi.js";
-import {Component} from "../..";
+import {Component, invalidate} from "../..";
 
 export class Pane extends Component {
 
@@ -7,12 +7,9 @@ export class Pane extends Component {
     return this._skin;
   }
 
+  @invalidate("skin")
   public set skin(value: Container | undefined) {
-    if (this._skin === value) {
-      return;
-    }
     this._skin = value;
-    this.invalidate("skin");
   }
 
   protected _skin?: Container;

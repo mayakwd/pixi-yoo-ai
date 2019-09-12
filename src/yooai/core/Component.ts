@@ -1,8 +1,6 @@
-import {Container} from "pixi.js";
+import {Container, DisplayObject, Rectangle} from "pixi.js";
 import {IDestroyable} from "./IDestroyable";
 import {InvalidationType} from "./InvalidationType";
-import DisplayObject = PIXI.DisplayObject;
-import Rectangle = PIXI.Rectangle;
 
 export class Component extends Container implements IDestroyable {
   public get isDestroyed(): boolean {
@@ -13,18 +11,18 @@ export class Component extends Container implements IDestroyable {
     return this._width;
   }
 
+  @invalidate("size")
   public set width(width: number) {
     this._width = width;
-    this.invalidate("size");
   }
 
   public get height(): number {
     return this._height;
   }
 
+  @invalidate("size")
   public set height(height: number) {
     this._height = height;
-    this.invalidate("size");
   }
 
   public get centerX(): number {
@@ -71,9 +69,9 @@ export class Component extends Container implements IDestroyable {
     return this._enabled;
   }
 
+  @invalidate("state")
   public set enabled(enabled: boolean) {
     this._enabled = enabled;
-    this.invalidate("state");
   }
 
   protected static readonly INITIAL_HEIGHT = 100;
@@ -204,4 +202,22 @@ export class Component extends Container implements IDestroyable {
     this._hitArea.width = this._width;
     this._hitArea.height = this._height;
   }
+}
+
+// tslint:disable
+export function invalidate(invalidationType: InvalidationType) {
+  return function <T>(target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<T>) {
+    const set = descriptor.set;
+    if (set !== undefined) {
+      descriptor.set = function(value: T) {
+        // @ts-ignore
+        if (this[propertyKey] === value) {
+          return;
+        }
+        set.call(this, value);
+        // @ts-ignore
+        this.invalidate(invalidationType);
+      };
+    }
+  };
 }

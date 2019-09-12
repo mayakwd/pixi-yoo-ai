@@ -70,6 +70,7 @@ export abstract class AbstractBox extends Pane {
   public abstract get contentHeight(): number;
 
   public abstract get contentWidth(): number;
+
   protected constructor(
     private readonly layoutBehavior: LayoutBehavior,
     parent?: Container,

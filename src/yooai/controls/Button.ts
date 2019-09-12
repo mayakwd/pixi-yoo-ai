@@ -1,6 +1,5 @@
 import {Container, TextStyle} from "pixi.js";
-import {HorizontalAlign, VerticalAlign} from "../..";
-import {Placement} from "../layout/Placement";
+import {HorizontalAlign, invalidate, Placement, VerticalAlign} from "../..";
 import {InteractiveComponent} from "./InteractiveComponent";
 import {Label} from "./Label";
 import Rectangle = PIXI.Rectangle;
@@ -11,9 +10,9 @@ export class Button extends InteractiveComponent {
     return this._label.text;
   }
 
+  @invalidate("text")
   public set text(value: string) {
     this._label.text = value;
-    this.invalidate("text");
   }
 
   public get icon(): Container | undefined {
@@ -26,7 +25,7 @@ export class Button extends InteractiveComponent {
     }
     this._icon = value;
     if (this._enabled || this._disabledIcon === undefined) {
-      this.invalidate("text");
+      this.invalidate("icon");
     }
   }
 
@@ -40,7 +39,7 @@ export class Button extends InteractiveComponent {
     }
     this._disabledIcon = value;
     if (!this._enabled) {
-      this.invalidate("text");
+      this.invalidate("icon");
     }
   }
 
@@ -54,7 +53,7 @@ export class Button extends InteractiveComponent {
     }
     this._selectedIcon = value;
     if (this._enabled && this._selected) {
-      this.invalidate("text");
+      this.invalidate("icon");
     }
   }
 
@@ -71,54 +70,54 @@ export class Button extends InteractiveComponent {
     return this._margins.left;
   }
 
+  @invalidate("size")
   public set contentMarginLeft(value: number) {
     this._margins.left = value;
-    this.invalidate("text");
   }
 
   public get contentMarginRight(): number {
     return this._margins.right;
   }
 
+  @invalidate("size")
   public set contentMarginRight(value: number) {
     this._margins.right = value;
-    this.invalidate("text");
   }
 
   public get contentMarginTop(): number {
     return this._margins.top;
   }
 
+  @invalidate("size")
   public set contentMarginTop(value: number) {
     this._margins.top = value;
-    this.invalidate("text");
   }
 
   public get contentMarginBottom(): number {
     return this._margins.bottom;
   }
 
+  @invalidate("size")
   public set contentMarginBottom(value: number) {
     this._margins.bottom = value;
-    this.invalidate("text");
   }
 
   public get vAlign(): VerticalAlign {
     return this._vAlign;
   }
 
+  @invalidate("size")
   public set vAlign(value: VerticalAlign) {
     this._vAlign = value;
-    this.invalidate("text");
   }
 
   public get hAlign(): HorizontalAlign {
     return this._hAlign;
   }
 
+  @invalidate("size")
   public set hAlign(value: HorizontalAlign) {
     this._hAlign = value;
-    this.invalidate("text");
   }
 
   protected _label!: Label;
@@ -144,24 +143,19 @@ export class Button extends InteractiveComponent {
   }
 
   protected draw(): void {
+    if (this.isInvalid("icon")) {
+      this.drawIcon();
+      this.invalidate("size");
+    }
     if (this.isInvalid("text")) {
       this.drawLabel();
+      this.invalidate("size");
     }
     super.draw();
   }
 
-  protected drawLabel() {
-    if (this._currentIcon !== undefined && this._currentIcon.parent === this) {
-      this.removeChild(this._currentIcon);
-    }
-
-    this._label.resize(this._label.contentWidth, this._label.contentHeight);
-    this._label.drawNow();
-
-    this._currentIcon = this.getIconForCurrentState();
-    if (this._currentIcon !== undefined) {
-      this.addChild(this._currentIcon);
-    }
+  protected drawLayout() {
+    super.drawLayout();
 
     const {contentWidth, contentHeight} = this.calculateContentSize();
     let {xOffset, yOffset} = this.calculateContentOffset(contentWidth, contentHeight);
@@ -195,6 +189,21 @@ export class Button extends InteractiveComponent {
 
     this._label.x = xOffset;
     this._label.y = yOffset;
+  }
+
+  protected drawIcon() {
+    if (this._currentIcon !== undefined && this._currentIcon.parent === this) {
+      this.removeChild(this._currentIcon);
+    }
+    this._currentIcon = this.getIconForCurrentState();
+    if (this._currentIcon !== undefined) {
+      this.addChild(this._currentIcon);
+    }
+  }
+
+  protected drawLabel() {
+    this._label.resize(this._label.contentWidth, this._label.contentHeight);
+    this._label.drawNow();
   }
 
   protected getIconForCurrentState() {

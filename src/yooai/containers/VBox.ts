@@ -11,6 +11,7 @@ export class VBox extends AbstractBox {
   public get contentHeight(): number {
     return this._contentHeight;
   }
+
   private _contentWidth: number = 0;
   private _contentHeight: number = 0;
 

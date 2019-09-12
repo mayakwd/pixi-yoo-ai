@@ -1,5 +1,5 @@
 import {Container, Rectangle, Text, TextStyle} from "pixi.js";
-import {Component, HorizontalAlign, theme, VerticalAlign} from "../..";
+import {Component, HorizontalAlign, invalidate, theme, VerticalAlign} from "../..";
 
 export class Label extends Component {
 
@@ -7,96 +7,72 @@ export class Label extends Component {
     return this._text;
   }
 
+  @invalidate("state")
   public set text(value: string) {
-    if (this._text === value) {
-      return;
-    }
     this._text = value;
-    this.invalidate("text");
   }
 
   public get textStyle(): TextStyle {
     return this._textStyle;
   }
 
+  @invalidate("state")
   public set textStyle(value: TextStyle) {
-    if (this._textStyle === value) {
-      return;
-    }
     this._textStyle = value;
-    this.invalidate("state");
   }
 
   public get marginLeft(): number {
     return this._margins.left;
   }
 
+  @invalidate("size")
   public set marginLeft(value: number) {
-    if (this._margins.left === value) {
-      return;
-    }
     this._margins.left = value;
-    this.invalidate("size");
   }
 
   public get marginRight(): number {
     return this._margins.right;
   }
 
+  @invalidate("size")
   public set marginRight(value: number) {
-    if (this._margins.right === value) {
-      return;
-    }
     this._margins.right = value;
-    this.invalidate("size");
   }
 
   public get marginTop(): number {
     return this._margins.top;
   }
 
+  @invalidate("size")
   public set marginTop(value: number) {
-    if (this._margins.top === value) {
-      return;
-    }
     this._margins.top = value;
-    this.invalidate("size");
   }
 
   public get marginBottom(): number {
     return this._margins.bottom;
   }
 
+  @invalidate("size")
   public set marginBottom(value: number) {
-    if (this._margins.bottom === value) {
-      return;
-    }
     this._margins.bottom = value;
-    this.invalidate("size");
   }
 
   public get vAlign(): VerticalAlign {
     return this._vAlign;
   }
 
+  @invalidate("size")
   public set vAlign(value: VerticalAlign) {
-    if (this._vAlign === value) {
-      return;
-    }
     this._vAlign = value;
-    this.invalidate("size");
   }
 
   public get hAlign(): HorizontalAlign {
     return this._hAlign;
   }
 
+  @invalidate("size")
   public set hAlign(value: HorizontalAlign) {
-    if (this._hAlign === value) {
-      return;
-    }
     this._hAlign = value;
-    this.invalidate("size");
   }
 
   public get contentWidth(): number {
