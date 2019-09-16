@@ -1,8 +1,8 @@
-import {Container, TextStyle} from "pixi.js";
+import {Point, Container, TextStyle} from "pixi.js";
 import {HorizontalAlign, invalidate, Placement, VerticalAlign} from "../..";
+import {alignChild} from "../layout/alignChild";
 import {InteractiveComponent} from "./InteractiveComponent";
 import {Label} from "./Label";
-import Rectangle = PIXI.Rectangle;
 
 export class Button extends InteractiveComponent {
 
@@ -66,40 +66,22 @@ export class Button extends InteractiveComponent {
     this.invalidate("text");
   }
 
-  public get contentMarginLeft(): number {
-    return this._margins.left;
+  public get contentOffsetX(): number {
+    return this._contentOffset.x;
   }
 
   @invalidate("size")
-  public set contentMarginLeft(value: number) {
-    this._margins.left = value;
+  public set contentOffsetX(value: number) {
+    this._contentOffset.x = value;
   }
 
-  public get contentMarginRight(): number {
-    return this._margins.right;
-  }
-
-  @invalidate("size")
-  public set contentMarginRight(value: number) {
-    this._margins.right = value;
-  }
-
-  public get contentMarginTop(): number {
-    return this._margins.top;
+  public get contentOffsetY(): number {
+    return this._contentOffset.y;
   }
 
   @invalidate("size")
-  public set contentMarginTop(value: number) {
-    this._margins.top = value;
-  }
-
-  public get contentMarginBottom(): number {
-    return this._margins.bottom;
-  }
-
-  @invalidate("size")
-  public set contentMarginBottom(value: number) {
-    this._margins.bottom = value;
+  public set contentOffsetY(value: number) {
+    this._contentOffset.y = value;
   }
 
   public get vAlign(): VerticalAlign {
@@ -127,7 +109,7 @@ export class Button extends InteractiveComponent {
   protected _disabledIcon?: Container;
   protected _currentIcon?: Container;
 
-  protected _margins: Rectangle = new Rectangle();
+  protected _contentOffset: Point = new Point();
   protected _vAlign: VerticalAlign = "center";
   protected _hAlign: HorizontalAlign = "center";
   protected _iconPlacement: Placement = "left";
@@ -158,7 +140,10 @@ export class Button extends InteractiveComponent {
     super.drawLayout();
 
     const {contentWidth, contentHeight} = this.calculateContentSize();
-    let {xOffset, yOffset} = this.calculateContentOffset(contentWidth, contentHeight);
+    let {x: xOffset, y: yOffset} = alignChild({
+      width: contentWidth,
+      height: contentHeight,
+    }, this, this._vAlign, this._hAlign);
 
     if (this._currentIcon !== undefined) {
       const verticalGap = this._label.contentHeight > 0 ? this._iconGap : 0;
@@ -217,36 +202,6 @@ export class Button extends InteractiveComponent {
       return this._selectedIcon;
     }
     return this._icon;
-  }
-
-  protected calculateContentOffset(contentWidth: number, contentHeight: number): { xOffset: number, yOffset: number } {
-    let xOffset: number = 0;
-    let yOffset: number = 0;
-
-    switch (this._vAlign) {
-      case "top":
-        yOffset = 0;
-        break;
-      case "center":
-        yOffset = (this._height - contentHeight) * 0.5;
-        break;
-      case "bottom":
-        yOffset = this._height - contentHeight;
-        break;
-    }
-
-    switch (this._hAlign) {
-      case "left":
-        xOffset = 0;
-        break;
-      case "center":
-        xOffset = (this._width - contentWidth) * 0.5;
-        break;
-      case "right":
-        xOffset = this._width - contentWidth;
-        break;
-    }
-    return {xOffset, yOffset};
   }
 
   protected calculateContentSize(): { contentWidth: number, contentHeight: number } {
