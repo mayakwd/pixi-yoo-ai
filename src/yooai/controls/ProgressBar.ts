@@ -1,5 +1,6 @@
 import {Container, TextStyle} from "pixi.js";
-import {Component, Direction, HorizontalAlign, Label, VerticalAlign} from "../..";
+import {Component, Direction, HorizontalAlign, VerticalAlign} from "../..";
+import {Label} from "./Label";
 
 export class ProgressBar extends Component {
   public get textStyle(): TextStyle {
@@ -10,36 +11,20 @@ export class ProgressBar extends Component {
     this._label.textStyle = value;
   }
 
-  public get labelMarginLeft(): number {
-    return this._label.marginLeft;
+  public get labelOffsetX(): number {
+    return this._label.offsetX;
   }
 
-  public set labelMarginLeft(value: number) {
-    this._label.marginLeft = value;
+  public set labelOffsetX(value: number) {
+    this._label.offsetX = value;
   }
 
-  public get labelMarginRight(): number {
-    return this._label.marginRight;
+  public get labelOffsetY(): number {
+    return this._label.offsetY;
   }
 
-  public set labelMarginRight(value: number) {
-    this._label.marginRight = value;
-  }
-
-  public get labelMarginTop(): number {
-    return this._label.marginTop;
-  }
-
-  public set labelMarginTop(value: number) {
-    this._label.marginTop = value;
-  }
-
-  public get labelMarginBottom(): number {
-    return this._label.marginBottom;
-  }
-
-  public set labelMarginBottom(value: number) {
-    this._label.marginBottom = value;
+  public set labelOffsetY(value: number) {
+    this._label.offsetY = value;
   }
 
   public get labelVAlign(): VerticalAlign {
