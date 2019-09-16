@@ -8,7 +8,8 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Added `Component.updateSkin` method, to reduce boilerplate for replacing skins
 - Added `ProgressBar` component
-- Added decorator for invalidation properties to decrease boilerplate  
+- Added decorator for invalidation properties to decrease boilerplate
+- Added tests configuration
 
 ### Fixed
 - Parameter `parent` for `Label` constructor is optional now, as expected

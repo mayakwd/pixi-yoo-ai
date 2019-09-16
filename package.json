@@ -18,13 +18,13 @@
     "gui"
   ],
   "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
+  "types": "lib/index.d.ts",
   "moduleResolution": "node",
   "scripts": {
     "setup": "yarn install",
     "lint": "yarn tslint --fix -c ./tslint.json 'src/**/*.ts'",
     "build": "tsc",
-    "test": "exit 0"
+    "test": "jest"
   },
   "files": [
     "lib",
@@ -35,7 +35,28 @@
     "pixi.js": "^5.0.0"
   },
   "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
     "tslint": "^5.19.0",
     "typescript": "^3.6.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "testMatch": [
+      "**/tests/unit/**/*.spec.(js|ts)|**/__tests__/*.(js|ts)"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/"
+    ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/src/$1"
+    }
   }
 }
