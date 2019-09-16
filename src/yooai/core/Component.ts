@@ -135,7 +135,7 @@ export class Component extends Container implements IDestroyable {
     if (invalidationType === "all") {
       return this._invalidationSet.size > 0;
     }
-    return this._invalidationSet.has(invalidationType);
+    return this._invalidationSet.has("all") || this._invalidationSet.has(invalidationType);
   }
 
   public destroy(): void {
