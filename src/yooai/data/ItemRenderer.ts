@@ -36,51 +36,35 @@ export class ItemRenderer<T extends IItemRendererData> extends InteractiveCompon
     this._label.textStyle = value;
   }
 
-  public get marginLeft(): number {
-    return this._label.marginLeft;
+  public get labelOffsetX(): number {
+    return this._label.offsetX;
   }
 
-  public set marginLeft(value: number) {
-    this._label.marginLeft = value;
+  public set labelOffsetX(value: number) {
+    this._label.offsetX = value;
   }
 
-  public get marginRight(): number {
-    return this._label.marginRight;
+  public get labelOffsetY(): number {
+    return this._label.offsetY;
   }
 
-  public set marginRight(value: number) {
-    this._label.marginRight = value;
+  public set labelOffsetY(value: number) {
+    this._label.offsetY = value;
   }
 
-  public get marginTop(): number {
-    return this._label.marginTop;
-  }
-
-  public set marginTop(value: number) {
-    this._label.marginTop = value;
-  }
-
-  public get marginBottom(): number {
-    return this._label.marginBottom;
-  }
-
-  public set marginBottom(value: number) {
-    this._label.marginBottom = value;
-  }
-
-  public get vAlign(): VerticalAlign {
+  public get labelVAlign(): VerticalAlign {
     return this._label.vAlign;
   }
 
-  public set vAlign(value: VerticalAlign) {
+  public set labelVAlign(value: VerticalAlign) {
     this._label.vAlign = value;
   }
 
-  public get hAlign(): HorizontalAlign {
+  public get labelHAlign(): HorizontalAlign {
     return this._label.hAlign;
   }
 
-  public set hAlign(value: HorizontalAlign) {
+  public set labelHAlign(value: HorizontalAlign) {
     this._label.hAlign = value;
   }
 
