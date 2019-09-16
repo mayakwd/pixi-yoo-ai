@@ -1,4 +1,4 @@
-import {Container, Rectangle, Text, TextStyle} from "pixi.js";
+import {Point, Container, Text, TextStyle} from "pixi.js";
 import {Component, HorizontalAlign, invalidate, theme, VerticalAlign} from "../..";
 
 export class Label extends Component {
@@ -21,40 +21,22 @@ export class Label extends Component {
     this._textStyle = value;
   }
 
-  public get marginLeft(): number {
-    return this._margins.left;
+  public get offsetX(): number {
+    return this._offset.x;
   }
 
   @invalidate("size")
-  public set marginLeft(value: number) {
-    this._margins.left = value;
+  public set offsetX(value: number) {
+    this._offset.x = value;
   }
 
-  public get marginRight(): number {
-    return this._margins.right;
-  }
-
-  @invalidate("size")
-  public set marginRight(value: number) {
-    this._margins.right = value;
-  }
-
-  public get marginTop(): number {
-    return this._margins.top;
+  public get offsetY(): number {
+    return this._offset.y;
   }
 
   @invalidate("size")
-  public set marginTop(value: number) {
-    this._margins.top = value;
-  }
-
-  public get marginBottom(): number {
-    return this._margins.bottom;
-  }
-
-  @invalidate("size")
-  public set marginBottom(value: number) {
-    this._margins.bottom = value;
+  public set offsetY(value: number) {
+    this._offset.y = value;
   }
 
   public get vAlign(): VerticalAlign {
@@ -89,7 +71,7 @@ export class Label extends Component {
 
   protected _hAlign: HorizontalAlign = "left";
   protected _vAlign: VerticalAlign = "center";
-  protected _margins: Rectangle = new Rectangle();
+  protected _offset: Point = new Point();
 
   protected _text: string = "";
 
@@ -124,31 +106,6 @@ export class Label extends Component {
   }
 
   protected drawLayout() {
-    const textWidth = this._textField.width;
-    const textHeight = this._textField.height;
-
-    switch (this._vAlign) {
-      case "top":
-        this._textField.y = this.marginTop;
-        break;
-      case "center":
-        this._textField.y = (this._height - textHeight) * 0.5;
-        break;
-      case "bottom":
-        this._textField.y = this._height - textHeight - this.marginBottom;
-        break;
-    }
-
-    switch (this._hAlign) {
-      case "left":
-        this._textField.x = this.marginLeft;
-        break;
-      case "center":
-        this._textField.x = (this._width - this._textField.width) * 0.5;
-        break;
-      case "right":
-        this._textField.x = this._width - textWidth - this.marginRight;
-        break;
-    }
+    this.alignChild(this._textField, this._vAlign, this._hAlign, this._offset);
   }
 }
