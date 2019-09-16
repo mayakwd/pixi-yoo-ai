@@ -1,4 +1,6 @@
 import {Container, DisplayObject, Rectangle} from "pixi.js";
+import {HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
+import {alignChild} from "../layout/alignChild";
 import {IDestroyable} from "./IDestroyable";
 import {invalidate} from "./invalidate";
 import {InvalidationType} from "./InvalidationType";
@@ -197,6 +199,10 @@ export class Component extends Container implements IDestroyable {
     } else {
       return currentValue;
     }
+  }
+
+  protected alignChild(child: IHasDimensions, vAlign: VerticalAlign, hAlign: HorizontalAlign, offset?: IPoint) {
+    alignChild(child, this, vAlign, hAlign, offset, child as IPoint);
   }
 
   protected updateHitArea() {
