@@ -1,5 +1,5 @@
 import {Container} from "pixi.js";
-import {Component} from "../core/Component";
+import {Component} from "../..";
 import {LayoutBehavior} from "./LayoutBehavior";
 import DisplayObject = PIXI.DisplayObject;
 

@@ -1,5 +1,6 @@
 import {Container} from "pixi.js";
-import {HorizontalAlign, LayoutBehavior, Pane, VerticalAlign} from "../..";
+import {HorizontalAlign, LayoutBehavior, VerticalAlign} from "../..";
+import {Pane} from "./Pane";
 
 export abstract class AbstractBox extends Pane {
 
