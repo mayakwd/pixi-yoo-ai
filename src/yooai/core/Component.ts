@@ -183,7 +183,7 @@ export class Component extends Container implements IDestroyable {
     this._invalidationSet.clear();
   }
 
-  protected updateSkin(currentValue?: Container, newValue?: Container, childIndex?: number): Container | undefined {
+  protected updateSkin<T extends DisplayObject>(currentValue?: T, newValue?: T, childIndex?: number): T | undefined {
     if (currentValue !== newValue) {
       if (currentValue !== undefined && currentValue.parent === this) {
         this.removeChild(currentValue);
