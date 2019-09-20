@@ -1,7 +1,7 @@
 # Yoo Ai
 > Extensive UI library for PixiJS v5 
 
-[![Build Status](https://travis-ci.org/mayakwd/pixi-yoo-ai.svg?branch=master)](https://travis-ci.org/mayakwd/pixi-yoo-ai)
+<!--[![Build Status](https://travis-ci.org/mayakwd/pixi-yoo-ai.svg?branch=master)](https://travis-ci.org/mayakwd/pixi-yoo-ai)-->
 
 ## Installing
 
@@ -21,3 +21,4 @@ Currently available components:
 - Button
 - Label
 - ProgressBar
+- ImageView
