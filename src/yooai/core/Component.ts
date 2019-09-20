@@ -1,11 +1,11 @@
-import {Container} from "pixi.js";
+import {Container, DisplayObject, Rectangle} from "pixi.js";
+import {HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
+import {alignChild} from "../layout/alignChild";
 import {IDestroyable} from "./IDestroyable";
+import {invalidate} from "./invalidate";
 import {InvalidationType} from "./InvalidationType";
-import DisplayObject = PIXI.DisplayObject;
-import Rectangle = PIXI.Rectangle;
 
 export class Component extends Container implements IDestroyable {
-
   public get isDestroyed(): boolean {
     return this._isDestroyed;
   }
@@ -14,18 +14,18 @@ export class Component extends Container implements IDestroyable {
     return this._width;
   }
 
+  @invalidate("size")
   public set width(width: number) {
     this._width = width;
-    this.invalidate("size");
   }
 
   public get height(): number {
     return this._height;
   }
 
+  @invalidate("size")
   public set height(height: number) {
     this._height = height;
-    this.invalidate("size");
   }
 
   public get centerX(): number {
@@ -72,10 +72,11 @@ export class Component extends Container implements IDestroyable {
     return this._enabled;
   }
 
+  @invalidate("state")
   public set enabled(enabled: boolean) {
     this._enabled = enabled;
-    this.invalidate("state");
   }
+
   protected static readonly INITIAL_HEIGHT = 100;
   protected static readonly INITIAL_WIDTH = 100;
 
@@ -134,7 +135,7 @@ export class Component extends Container implements IDestroyable {
     if (invalidationType === "all") {
       return this._invalidationSet.size > 0;
     }
-    return this._invalidationSet.has(invalidationType);
+    return this._invalidationSet.has("all") || this._invalidationSet.has(invalidationType);
   }
 
   public destroy(): void {
@@ -180,6 +181,36 @@ export class Component extends Container implements IDestroyable {
 
   protected validate(): void {
     this._invalidationSet.clear();
+  }
+
+  protected updateSkin<T extends DisplayObject>(currentValue?: T, newValue?: T, childIndex?: number): T | undefined {
+    if (currentValue !== newValue) {
+      if (currentValue !== undefined && currentValue.parent === this) {
+        this.removeChild(currentValue);
+      }
+      if (newValue !== undefined) {
+        if (childIndex !== undefined) {
+          this.addChildAt(newValue, childIndex);
+        } else {
+          this.addChild(newValue);
+        }
+      }
+      return newValue;
+    } else {
+      return currentValue;
+    }
+  }
+
+  protected vAlignChild(child: IHasDimensions, vAlign: VerticalAlign, offset?: IPoint) {
+    alignChild(child, this, vAlign, undefined, offset, child as IPoint);
+  }
+
+  protected hAlignChild(child: IHasDimensions, hAlign: HorizontalAlign, offset?: IPoint) {
+    alignChild(child, this, undefined, hAlign, offset, child as IPoint);
+  }
+
+  protected alignChild(child: IHasDimensions, vAlign?: VerticalAlign, hAlign?: HorizontalAlign, offset?: IPoint) {
+    alignChild(child, this, vAlign, hAlign, offset, child as IPoint);
   }
 
   protected updateHitArea() {

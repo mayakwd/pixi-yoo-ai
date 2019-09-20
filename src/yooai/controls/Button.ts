@@ -1,9 +1,8 @@
-import {Container, TextStyle} from "pixi.js";
-import {HorizontalAlign, VerticalAlign} from "../..";
-import {Placement} from "../layout/Placement";
+import {Container, Point, TextStyle} from "pixi.js";
+import {HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
+import {alignChild} from "../layout/alignChild";
 import {InteractiveComponent} from "./InteractiveComponent";
 import {Label} from "./Label";
-import Rectangle = PIXI.Rectangle;
 
 export class Button extends InteractiveComponent {
 
@@ -11,9 +10,9 @@ export class Button extends InteractiveComponent {
     return this._label.text;
   }
 
+  @invalidate("text")
   public set text(value: string) {
     this._label.text = value;
-    this.invalidate("text");
   }
 
   public get icon(): Container | undefined {
@@ -26,7 +25,7 @@ export class Button extends InteractiveComponent {
     }
     this._icon = value;
     if (this._enabled || this._disabledIcon === undefined) {
-      this.invalidate("text");
+      this.invalidate("icon");
     }
   }
 
@@ -40,7 +39,7 @@ export class Button extends InteractiveComponent {
     }
     this._disabledIcon = value;
     if (!this._enabled) {
-      this.invalidate("text");
+      this.invalidate("icon");
     }
   }
 
@@ -54,7 +53,7 @@ export class Button extends InteractiveComponent {
     }
     this._selectedIcon = value;
     if (this._enabled && this._selected) {
-      this.invalidate("text");
+      this.invalidate("icon");
     }
   }
 
@@ -67,58 +66,54 @@ export class Button extends InteractiveComponent {
     this.invalidate("text");
   }
 
-  public get contentMarginLeft(): number {
-    return this._margins.left;
+  public get contentOffsetX(): number {
+    return this._contentOffset.x;
   }
 
-  public set contentMarginLeft(value: number) {
-    this._margins.left = value;
-    this.invalidate("text");
+  @invalidate("size")
+  public set contentOffsetX(value: number) {
+    this._contentOffset.x = value;
   }
 
-  public get contentMarginRight(): number {
-    return this._margins.right;
+  public get contentOffsetY(): number {
+    return this._contentOffset.y;
   }
 
-  public set contentMarginRight(value: number) {
-    this._margins.right = value;
-    this.invalidate("text");
+  @invalidate("size")
+  public set contentOffsetY(value: number) {
+    this._contentOffset.y = value;
   }
 
-  public get contentMarginTop(): number {
-    return this._margins.top;
+  public setContentOffset(x: number | IPoint, y?: number): void {
+    if (typeof x === "object") {
+      const point = x as IPoint;
+      if (point.x !== undefined && point.y !== undefined) {
+        this._contentOffset.set(point.x, point.y);
+      }
+    } else if (y !== undefined) {
+      this._contentOffset.x = x;
+      this._contentOffset.y = y;
+    }
+    this.invalidate("size");
   }
 
-  public set contentMarginTop(value: number) {
-    this._margins.top = value;
-    this.invalidate("text");
-  }
-
-  public get contentMarginBottom(): number {
-    return this._margins.bottom;
-  }
-
-  public set contentMarginBottom(value: number) {
-    this._margins.bottom = value;
-    this.invalidate("text");
-  }
 
   public get vAlign(): VerticalAlign {
     return this._vAlign;
   }
 
+  @invalidate("size")
   public set vAlign(value: VerticalAlign) {
     this._vAlign = value;
-    this.invalidate("text");
   }
 
   public get hAlign(): HorizontalAlign {
     return this._hAlign;
   }
 
+  @invalidate("size")
   public set hAlign(value: HorizontalAlign) {
     this._hAlign = value;
-    this.invalidate("text");
   }
 
   protected _label!: Label;
@@ -128,7 +123,7 @@ export class Button extends InteractiveComponent {
   protected _disabledIcon?: Container;
   protected _currentIcon?: Container;
 
-  protected _margins: Rectangle = new Rectangle();
+  protected _contentOffset: Point = new Point();
   protected _vAlign: VerticalAlign = "center";
   protected _hAlign: HorizontalAlign = "center";
   protected _iconPlacement: Placement = "left";
@@ -144,27 +139,25 @@ export class Button extends InteractiveComponent {
   }
 
   protected draw(): void {
+    if (this.isInvalid("icon")) {
+      this.drawIcon();
+      this.invalidate("size");
+    }
     if (this.isInvalid("text")) {
       this.drawLabel();
+      this.invalidate("size");
     }
     super.draw();
   }
 
-  protected drawLabel() {
-    if (this._currentIcon !== undefined && this._currentIcon.parent === this) {
-      this.removeChild(this._currentIcon);
-    }
-
-    this._label.resize(this._label.contentWidth, this._label.contentHeight);
-    this._label.drawNow();
-
-    this._currentIcon = this.getIconForCurrentState();
-    if (this._currentIcon !== undefined) {
-      this.addChild(this._currentIcon);
-    }
+  protected drawLayout() {
+    super.drawLayout();
 
     const {contentWidth, contentHeight} = this.calculateContentSize();
-    let {xOffset, yOffset} = this.calculateContentOffset(contentWidth, contentHeight);
+    let {x: xOffset, y: yOffset} = alignChild({
+      width: contentWidth,
+      height: contentHeight,
+    }, this, this._vAlign, this._hAlign);
 
     if (this._currentIcon !== undefined) {
       const verticalGap = this._label.contentHeight > 0 ? this._iconGap : 0;
@@ -197,6 +190,21 @@ export class Button extends InteractiveComponent {
     this._label.y = yOffset;
   }
 
+  protected drawIcon() {
+    if (this._currentIcon !== undefined && this._currentIcon.parent === this) {
+      this.removeChild(this._currentIcon);
+    }
+    this._currentIcon = this.getIconForCurrentState();
+    if (this._currentIcon !== undefined) {
+      this.addChild(this._currentIcon);
+    }
+  }
+
+  protected drawLabel() {
+    this._label.resize(this._label.contentWidth, this._label.contentHeight);
+    this._label.drawNow();
+  }
+
   protected getIconForCurrentState() {
     if (!this._enabled) {
       if (this._disabledIcon !== undefined) {
@@ -208,36 +216,6 @@ export class Button extends InteractiveComponent {
       return this._selectedIcon;
     }
     return this._icon;
-  }
-
-  protected calculateContentOffset(contentWidth: number, contentHeight: number): { xOffset: number, yOffset: number } {
-    let xOffset: number = 0;
-    let yOffset: number = 0;
-
-    switch (this._vAlign) {
-      case "top":
-        yOffset = 0;
-        break;
-      case "center":
-        yOffset = (this._height - contentHeight) * 0.5;
-        break;
-      case "bottom":
-        yOffset = this._height - contentHeight;
-        break;
-    }
-
-    switch (this._hAlign) {
-      case "left":
-        xOffset = 0;
-        break;
-      case "center":
-        xOffset = (this._width - contentWidth) * 0.5;
-        break;
-      case "right":
-        xOffset = this._width - contentWidth;
-        break;
-    }
-    return {xOffset, yOffset};
   }
 
   protected calculateContentSize(): { contentWidth: number, contentHeight: number } {

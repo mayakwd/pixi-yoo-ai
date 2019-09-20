@@ -1,5 +1,5 @@
-import {Container, Rectangle, Text, TextStyle} from "pixi.js";
-import {Component, HorizontalAlign, theme, VerticalAlign} from "../..";
+import {Container, Point, Text, TextStyle} from "pixi.js";
+import {Component, HorizontalAlign, invalidate, IPoint, theme, VerticalAlign} from "../..";
 
 export class Label extends Component {
 
@@ -7,96 +7,54 @@ export class Label extends Component {
     return this._text;
   }
 
+  @invalidate("state")
   public set text(value: string) {
-    if (this._text === value) {
-      return;
-    }
     this._text = value;
-    this.invalidate("text");
   }
 
   public get textStyle(): TextStyle {
     return this._textStyle;
   }
 
+  @invalidate("state")
   public set textStyle(value: TextStyle) {
-    if (this._textStyle === value) {
-      return;
-    }
     this._textStyle = value;
-    this.invalidate("state");
   }
 
-  public get marginLeft(): number {
-    return this._margins.left;
+  public get offsetX(): number {
+    return this._offset.x;
   }
 
-  public set marginLeft(value: number) {
-    if (this._margins.left === value) {
-      return;
-    }
-    this._margins.left = value;
-    this.invalidate("size");
+  @invalidate("size")
+  public set offsetX(value: number) {
+    this._offset.x = value;
   }
 
-  public get marginRight(): number {
-    return this._margins.right;
+  public get offsetY(): number {
+    return this._offset.y;
   }
 
-  public set marginRight(value: number) {
-    if (this._margins.right === value) {
-      return;
-    }
-    this._margins.right = value;
-    this.invalidate("size");
-  }
-
-  public get marginTop(): number {
-    return this._margins.top;
-  }
-
-  public set marginTop(value: number) {
-    if (this._margins.top === value) {
-      return;
-    }
-    this._margins.top = value;
-    this.invalidate("size");
-  }
-
-  public get marginBottom(): number {
-    return this._margins.bottom;
-  }
-
-  public set marginBottom(value: number) {
-    if (this._margins.bottom === value) {
-      return;
-    }
-    this._margins.bottom = value;
-    this.invalidate("size");
+  @invalidate("size")
+  public set offsetY(value: number) {
+    this._offset.y = value;
   }
 
   public get vAlign(): VerticalAlign {
     return this._vAlign;
   }
 
+  @invalidate("size")
   public set vAlign(value: VerticalAlign) {
-    if (this._vAlign === value) {
-      return;
-    }
     this._vAlign = value;
-    this.invalidate("size");
   }
 
   public get hAlign(): HorizontalAlign {
     return this._hAlign;
   }
 
+  @invalidate("size")
   public set hAlign(value: HorizontalAlign) {
-    if (this._hAlign === value) {
-      return;
-    }
     this._hAlign = value;
-    this.invalidate("size");
   }
 
   public get contentWidth(): number {
@@ -106,23 +64,37 @@ export class Label extends Component {
   public get contentHeight(): number {
     return this._textField.height;
   }
+
   protected _textField!: Text;
   protected _textStyle: TextStyle = theme.defaultTextStyle;
   protected _disabledTextStyle?: TextStyle = theme.defaultTextStyle;
 
   protected _hAlign: HorizontalAlign = "left";
   protected _vAlign: VerticalAlign = "center";
-  protected _margins: Rectangle = new Rectangle();
+  protected _offset: Point = new Point();
 
   protected _text: string = "";
 
-  public constructor(parent: Container, x: number = 0, y: number = 0, text: string = "") {
+  public constructor(parent?: Container, x: number = 0, y: number = 0, text: string = "") {
     super(parent, x, y);
 
     this.text = text;
 
     this._width = 100;
     this._height = 24;
+  }
+
+  public setOffset(x: number | IPoint, y?: number): void {
+    if (typeof x === "object") {
+      const point = x as IPoint;
+      if (point.x !== undefined && point.y !== undefined) {
+        this._offset.set(point.x, point.y);
+      }
+    } else if (y !== undefined) {
+      this._offset.x = x;
+      this._offset.y = y;
+    }
+    this.invalidate("size");
   }
 
   protected configure() {
@@ -147,31 +119,6 @@ export class Label extends Component {
   }
 
   protected drawLayout() {
-    const textWidth = this._textField.width;
-    const textHeight = this._textField.height;
-
-    switch (this._vAlign) {
-      case "top":
-        this._textField.y = this.marginTop;
-        break;
-      case "center":
-        this._textField.y = (this._height - textHeight) * 0.5;
-        break;
-      case "bottom":
-        this._textField.y = this._height - textHeight - this.marginBottom;
-        break;
-    }
-
-    switch (this._hAlign) {
-      case "left":
-        this._textField.x = this.marginLeft;
-        break;
-      case "center":
-        this._textField.x = (this._width - this._textField.width) * 0.5;
-        break;
-      case "right":
-        this._textField.x = this._width - textWidth - this.marginRight;
-        break;
-    }
+    this.alignChild(this._textField, this._vAlign, this._hAlign, this._offset);
   }
 }

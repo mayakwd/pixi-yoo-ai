@@ -1,5 +1,6 @@
 import {Container} from "pixi.js";
-import {HorizontalAlign, LayoutBehavior, Pane, VerticalAlign} from "../..";
+import {HorizontalAlign, LayoutBehavior, VerticalAlign} from "../..";
+import {Pane} from "./Pane";
 
 export abstract class AbstractBox extends Pane {
 
@@ -70,6 +71,7 @@ export abstract class AbstractBox extends Pane {
   public abstract get contentHeight(): number;
 
   public abstract get contentWidth(): number;
+
   protected constructor(
     private readonly layoutBehavior: LayoutBehavior,
     parent?: Container,

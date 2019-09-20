@@ -6,6 +6,8 @@
     "declaration": true,
     "sourceMap": true,
     "outDir": "lib",
+    "declarationMap": true,
+    "declarationDir": "lib",
     "downlevelIteration": true,
     "strict": true,
     "noImplicitAny": true,
@@ -28,6 +30,10 @@
     ]
   },
   "include": [
-    "src/**/*"
+    "./src/**/*"
+  ],
+  "exclude": [
+    "lib",
+    "node_modules"
   ]
 }

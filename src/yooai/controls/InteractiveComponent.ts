@@ -1,5 +1,5 @@
 import {Container} from "pixi.js";
-import {Pane} from "../..";
+import {invalidate, Pane} from "../..";
 import {InteractiveState} from "./InteractiveState";
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 import Point = PIXI.Point;
@@ -116,24 +116,18 @@ export class InteractiveComponent extends Pane {
     return this._state;
   }
 
+  @invalidate("state")
   protected set state(value: InteractiveState) {
-    if (this._state === value) {
-      return;
-    }
     this._state = value;
-    this.invalidate("state");
   }
 
   public get selected(): boolean {
     return this._selected;
   }
 
+  @invalidate("state")
   public set selected(value: boolean) {
-    if (this._selected === value) {
-      return;
-    }
     this._selected = value;
-    this.invalidate("state");
   }
 
   protected _state: InteractiveState = "up";
@@ -205,15 +199,7 @@ export class InteractiveComponent extends Pane {
   }
 
   protected drawBackground() {
-    if (this._background) {
-      this.removeChild(this._background);
-    }
-
-    this._background = this.getSkinForCurrentState();
-
-    if (this._background) {
-      this.addChildAt(this._background, 0);
-    }
+    this._background = this.updateSkin(this._background, this.getSkinForCurrentState(), 0);
   }
 
   protected getSkinForCurrentState() {
