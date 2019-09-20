@@ -201,7 +201,15 @@ export class Component extends Container implements IDestroyable {
     }
   }
 
-  protected alignChild(child: IHasDimensions, vAlign: VerticalAlign, hAlign: HorizontalAlign, offset?: IPoint) {
+  protected vAlignChild(child: IHasDimensions, vAlign: VerticalAlign, offset?: IPoint) {
+    alignChild(child, this, vAlign, undefined, offset, child as IPoint);
+  }
+
+  protected hAlignChild(child: IHasDimensions, hAlign: HorizontalAlign, offset?: IPoint) {
+    alignChild(child, this, undefined, hAlign, offset, child as IPoint);
+  }
+
+  protected alignChild(child: IHasDimensions, vAlign?: VerticalAlign, hAlign?: HorizontalAlign, offset?: IPoint) {
     alignChild(child, this, vAlign, hAlign, offset, child as IPoint);
   }
 
