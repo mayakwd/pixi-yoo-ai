@@ -1,5 +1,5 @@
-import {Point, Container, TextStyle} from "pixi.js";
-import {HorizontalAlign, invalidate, Placement, VerticalAlign} from "../..";
+import {Container, Point, TextStyle} from "pixi.js";
+import {HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
 import {alignChild} from "../layout/alignChild";
 import {InteractiveComponent} from "./InteractiveComponent";
 import {Label} from "./Label";
@@ -83,6 +83,20 @@ export class Button extends InteractiveComponent {
   public set contentOffsetY(value: number) {
     this._contentOffset.y = value;
   }
+
+  public setContentOffset(x: number | IPoint, y?: number): void {
+    if (typeof x === "object") {
+      const point = x as IPoint;
+      if (point.x !== undefined && point.y !== undefined) {
+        this._contentOffset.set(point.x, point.y);
+      }
+    } else if (y !== undefined) {
+      this._contentOffset.x = x;
+      this._contentOffset.y = y;
+    }
+    this.invalidate("size");
+  }
+
 
   public get vAlign(): VerticalAlign {
     return this._vAlign;

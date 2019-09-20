@@ -1,5 +1,5 @@
-import {Point, Container, Text, TextStyle} from "pixi.js";
-import {Component, HorizontalAlign, invalidate, theme, VerticalAlign} from "../..";
+import {Container, Point, Text, TextStyle} from "pixi.js";
+import {Component, HorizontalAlign, invalidate, IPoint, theme, VerticalAlign} from "../..";
 
 export class Label extends Component {
 
@@ -82,6 +82,19 @@ export class Label extends Component {
 
     this._width = 100;
     this._height = 24;
+  }
+
+  public setOffset(x: number | IPoint, y?: number): void {
+    if (typeof x === "object") {
+      const point = x as IPoint;
+      if (point.x !== undefined && point.y !== undefined) {
+        this._offset.set(point.x, point.y);
+      }
+    } else if (y !== undefined) {
+      this._offset.x = x;
+      this._offset.y = y;
+    }
+    this.invalidate("size");
   }
 
   protected configure() {
