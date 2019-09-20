@@ -13,6 +13,7 @@ export * from "./yooai/controls/Label";
 export * from "./yooai/controls/Button";
 export * from "./yooai/controls/ProgressBar";
 export * from "./yooai/data/ItemRenderer";
+export * from "./yooai/layout/alignChild";
 export * from "./yooai/layout/Direction";
 export * from "./yooai/layout/HorizontalAlign";
 export * from "./yooai/layout/HorizontalLayoutBehavior";
