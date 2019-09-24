@@ -6,6 +6,13 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+[0.0.4] - 2019.09-24
+### Added
+- Added `Component.moveTo` method
+
+### Fixed
+- Fixed direction of `ProgressBar` 
+
 [0.0.3] - 2019-09-20
 ### Added
 - Added `Component.updateSkin` method, to reduce boilerplate for replacing skins
