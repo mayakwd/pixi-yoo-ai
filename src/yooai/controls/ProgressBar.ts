@@ -232,8 +232,8 @@ export class ProgressBar extends Component {
       const horizontalMultiplier = toLeft || toRight ? this.percentComplete : 1;
       const verticalMultiplier = toUp || toDown ? this.percentComplete : 1;
 
-      this._track.width = (this._width - this._barPadding * 2) * verticalMultiplier;
-      this._track.height = (this._height - this._barPadding * 2) * horizontalMultiplier;
+      this._track.width = (this._width - this._barPadding * 2) * horizontalMultiplier;
+      this._track.height = (this._height - this._barPadding * 2) * verticalMultiplier;
 
       switch (this._direction) {
         case "right":
