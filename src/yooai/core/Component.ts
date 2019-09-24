@@ -127,6 +127,11 @@ export class Component extends Container implements IDestroyable {
     this.emit("resize");
   }
 
+  public moveTo(x: number, y: number): void {
+    this.x = x;
+    this.y = y;
+  }
+
   public invalidate(invalidationType: InvalidationType = "all"): void {
     this._invalidationSet.add(invalidationType);
   }
