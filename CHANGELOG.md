@@ -6,7 +6,21 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-[0.0.4] - 2019.09-24
+[0.0.5] - 2019-09-28
+### Added
+- Added `anime.js` as default tweener for UI
+- Added abstraction `DisplayObjectWithSize`
+- Added `PopupManager`
+- Added `ProgressBar.setValues` method 
+
+### Fixed
+- Fixed `ProgressBar.percentComplete` result, now it bounded to min..max range
+- `ImageView` renamed to `Image`
+- Fixed `Label.contentWidth` and `Label.contentHeight` results. Now they returning `0` when text is empty
+- Fixed `Button.contentOffsetX` and `Button.contentOffsetY` usage (previously it was ignored)
+- Fixed usage of `Label.contentWidth` and `Label.contentHeight` for positioning content (previously it was `Label.width` and `Label.height`)
+
+[0.0.4] - 2019-09-24
 ### Added
 - Added `Component.moveTo` method
 
