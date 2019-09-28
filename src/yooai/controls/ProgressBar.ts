@@ -1,5 +1,5 @@
 import {Container, TextStyle} from "pixi.js";
-import {Component, Direction, HorizontalAlign, VerticalAlign} from "../..";
+import {Component, Direction, HorizontalAlign, invalidate, VerticalAlign} from "../..";
 import {Label} from "./Label";
 
 export class ProgressBar extends Component {
@@ -55,114 +55,90 @@ export class ProgressBar extends Component {
     return this._value;
   }
 
+  @invalidate("state")
   public set value(value: number) {
-    if (this._value === value) {
-      return;
-    }
     this._value = value;
-    this.invalidate("state");
   }
 
   public get maximum(): number {
     return this._maximum;
   }
 
+  @invalidate("state")
   public set maximum(value: number) {
-    if (this._maximum === value) {
-      return;
-    }
     this._maximum = value;
-    this.invalidate("state");
   }
 
   public get minimum(): number {
     return this._minimum;
   }
 
+  @invalidate("state")
   public set minimum(value: number) {
-    if (this._minimum === value) {
-      return;
-    }
     this._minimum = value;
-    this.invalidate("state");
   }
 
   public get direction(): Direction {
     return this._direction;
   }
 
+  @invalidate("state")
   public set direction(value: Direction) {
-    if (this._direction === value) {
-      return;
-    }
     this._direction = value;
-    this.invalidate("state");
   }
 
   public get barPadding(): number {
     return this._barPadding;
   }
 
+  @invalidate("state")
   public set barPadding(value: number) {
-    if (this._barPadding === value) {
-      return;
-    }
     this._barPadding = value;
-    this.invalidate("state");
   }
 
   public get trackSkin(): Container | undefined {
     return this._trackSkin;
   }
 
+  @invalidate("skin")
   public set trackSkin(value: Container | undefined) {
-    if (this._trackSkin === value) {
-      return;
-    }
     this._trackSkin = value;
-    this.invalidate("skin");
   }
 
   public get barSkin(): Container | undefined {
     return this._barSkin;
   }
 
+  @invalidate("skin")
   public set barSkin(value: Container | undefined) {
-    if (this._barSkin === value) {
-      return;
-    }
     this._barSkin = value;
-    this.invalidate("skin");
   }
 
   public get displayText(): boolean {
     return this._displayText;
   }
 
+  @invalidate("state")
   public set displayText(value: boolean) {
     this._displayText = value;
-    this.invalidate("state");
   }
 
   public get text(): string | undefined {
     return this._text;
   }
 
+  @invalidate("text")
   public set text(value: string | undefined) {
     this._text = value;
-    this.invalidate("text");
   }
 
   public get displayTextEmitter(): ProgressTextEmitter | undefined {
     return this._displayTextEmitter;
   }
 
+  @invalidate("text")
   public set displayTextEmitter(value: ProgressTextEmitter | undefined) {
-    if (this._displayTextEmitter === value) {
-      return;
-    }
     this._displayTextEmitter = value;
-    this.invalidate("text");
   }
 
   private static DEFAULT_TEXT_EMITTER(minimum: number, maximum: number, value: number) {
