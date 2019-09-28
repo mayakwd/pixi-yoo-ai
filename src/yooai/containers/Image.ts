@@ -3,7 +3,7 @@ import {HorizontalAlign, IHasDimensions, invalidate, IPoint, RatioUtil, ScaleMod
 import {Pane} from "./Pane";
 import LOAD_TYPE = LoaderResource.LOAD_TYPE;
 
-export class ImageView extends Pane {
+export class Image extends Pane {
   public get imageOffset(): IPoint | undefined {
     return this._imageOffset;
   }
