@@ -58,10 +58,12 @@ export class Label extends Component {
   }
 
   public get contentWidth(): number {
+    if (!this._textField.text) { return 0; }
     return this._textField.width;
   }
 
   public get contentHeight(): number {
+    if (!this._textField.text) { return 0; }
     return this._textField.height;
   }
 
