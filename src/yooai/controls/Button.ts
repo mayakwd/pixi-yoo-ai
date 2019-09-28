@@ -158,6 +158,9 @@ export class Button extends InteractiveComponent {
       height: contentHeight,
     }, this, this._vAlign, this._hAlign);
 
+    xOffset += this.contentOffsetX;
+    yOffset += this.contentOffsetY;
+
     if (this._currentIcon !== undefined) {
       const verticalGap = this._label.contentHeight > 0 ? this._iconGap : 0;
       const horizontalGap = this._label.contentWidth > 0 ? this._iconGap : 0;
@@ -218,8 +221,8 @@ export class Button extends InteractiveComponent {
   }
 
   protected calculateContentSize(): { contentWidth: number, contentHeight: number } {
-    let contentWidth = this._label.width;
-    let contentHeight = this._label.height;
+    let contentWidth = this._label.contentWidth;
+    let contentHeight = this._label.contentHeight;
     if (this._currentIcon !== undefined) {
       switch (this._iconPlacement) {
         case "left":
