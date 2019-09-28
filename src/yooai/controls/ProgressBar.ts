@@ -44,7 +44,11 @@ export class ProgressBar extends Component {
   }
 
   public get percentComplete(): number {
-    return 1 / (this._maximum - this._minimum) * this._value;
+    if (this._maximum <= this._minimum) { return 0; }
+    let value = this._value;
+    if (value > this._maximum) { value = this._maximum; }
+    if (value < this._minimum) { value = this._minimum; }
+    return 1 / (this._maximum - this._minimum) * value;
   }
 
   public get value(): number {
@@ -182,6 +186,12 @@ export class ProgressBar extends Component {
 
   protected _bar?: Container;
   protected _track?: Container;
+
+  public setValues(minimum: number, maximum: number, value: number): void {
+    this.minimum = minimum;
+    this.maximum = maximum;
+    this.value = value;
+  }
 
   protected configure() {
     this._label = new Label(this);
