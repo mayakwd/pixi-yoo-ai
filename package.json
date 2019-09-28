@@ -32,9 +32,11 @@
     "README.md"
   ],
   "dependencies": {
+    "animejs": "^3.1.0",
     "pixi.js": "^5.0.0"
   },
   "devDependencies": {
+    "@types/animejs": "^3.1.0",
     "@types/jest": "^24.0.18",
     "jest": "^24.9.0",
     "ts-jest": "^24.1.0",
