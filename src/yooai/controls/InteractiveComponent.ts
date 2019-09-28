@@ -1,8 +1,7 @@
-import {Container} from "pixi.js";
+import {Container, interaction, Point} from "pixi.js";
 import {invalidate, Pane} from "../..";
 import {InteractiveState} from "./InteractiveState";
-import InteractionEvent = PIXI.interaction.InteractionEvent;
-import Point = PIXI.Point;
+import InteractionEvent = interaction.InteractionEvent;
 
 export class InteractiveComponent extends Pane {
 
