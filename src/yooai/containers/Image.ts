@@ -117,6 +117,7 @@ export class Image extends Pane {
   }
 
   protected static SCALE_HELPER = new Rectangle();
+
   protected _scaleMode: ScaleMode = ScaleMode.FILL;
   protected _vAlign: VerticalAlign = "center";
   protected _hAlign: HorizontalAlign = "center";

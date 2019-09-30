@@ -181,7 +181,7 @@ export class InteractiveComponent extends Pane {
         break;
       case "pointerup":
         const local = event.data.getLocalPosition(this, HELPER_POINT, event.data.global);
-        if (this.hitArea.contains(local.x, local.y)) {
+        if (this._hitArea.contains(local.x, local.y)) {
           this.state = "over";
         } else {
           this.state = "up";
