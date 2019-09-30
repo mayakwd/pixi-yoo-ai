@@ -6,6 +6,10 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+[0.0.6] - 2019-10-01
+### Fixed
+- Fixed interaction events, removed hitArea setup for components
+
 [0.0.5] - 2019-09-28
 ### Added
 - Added `anime.js` as default tweener for UI
