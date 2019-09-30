@@ -90,8 +90,6 @@ export class Component extends Container implements IDestroyable {
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
     super();
 
-    this.hitArea = this._hitArea;
-
     this.x = x;
     this.y = y;
 
