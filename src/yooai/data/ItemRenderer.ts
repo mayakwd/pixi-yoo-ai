@@ -8,7 +8,7 @@ export class ItemRenderer<T extends IItemRendererData> extends InteractiveCompon
   protected _labelEmitter?: (data?: T) => string;
   protected _data?: T;
 
-  protected constructor() {
+  public constructor() {
     super();
   }
 
