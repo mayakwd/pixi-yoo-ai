@@ -1,5 +1,5 @@
 import {Container, TextStyle} from "pixi.js";
-import {Component, Direction, HorizontalAlign, invalidate, VerticalAlign} from "../..";
+import {Component, ForwardDirection, HorizontalAlign, invalidate, VerticalAlign} from "../..";
 import {Label} from "./Label";
 
 export class ProgressBar extends Component {
@@ -78,12 +78,12 @@ export class ProgressBar extends Component {
     this._minimum = value;
   }
 
-  public get direction(): Direction {
+  public get direction(): ForwardDirection {
     return this._direction;
   }
 
   @invalidate("state")
-  public set direction(value: Direction) {
+  public set direction(value: ForwardDirection) {
     this._direction = value;
   }
 
@@ -151,7 +151,7 @@ export class ProgressBar extends Component {
   protected _trackSkin?: Container;
 
   protected _barPadding: number = 0;
-  protected _direction: Direction = "right";
+  protected _direction: ForwardDirection = "right";
 
   protected _minimum: number = 0;
   protected _maximum: number = 1;

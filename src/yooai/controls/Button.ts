@@ -135,6 +135,7 @@ export class Button extends InteractiveComponent {
   protected configure() {
     super.configure();
     this._label = new Label(this);
+    this.buttonMode = true;
   }
 
   protected draw(): void {

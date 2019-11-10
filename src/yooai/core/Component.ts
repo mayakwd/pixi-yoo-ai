@@ -1,6 +1,6 @@
 import {Container, DisplayObject, Rectangle} from "pixi.js";
 import {HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
-import {alignChild} from "../layout/alignChild";
+import {alignChild} from "../..";
 import {IDestroyable} from "./IDestroyable";
 import {invalidate} from "./invalidate";
 import {InvalidationType} from "./InvalidationType";

@@ -165,7 +165,7 @@ export class InteractiveComponent extends Pane {
     this.on("pointerout", this.pointerHandler, this);
     this.on("pointerdown", this.pointerHandler, this);
     this.on("pointerup", this.pointerHandler, this);
-    this.on("tap", this.onTap, this);
+    this.on("pointertap", this.onTap, this);
   }
 
   protected pointerHandler(event: InteractionEvent) {
@@ -249,7 +249,7 @@ export class InteractiveComponent extends Pane {
     return result;
   }
 
-  protected onTap(event: InteractionEvent) {
+  protected onTap() {
     if (!this._selectable) {
       return;
     }
