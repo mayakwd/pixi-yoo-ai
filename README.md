@@ -21,4 +21,6 @@ Currently available components:
 - Button
 - Label
 - ProgressBar
-- ImageView
+- Image
+- List
+- TileList
