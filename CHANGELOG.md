@@ -6,6 +6,18 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+[0.0.7-rc1] - 2019-11-10
+### Added 
+- Added `List`, `TileList`
+- Added button mode to `Button`
+- Upgraded TypeScript to version 3.7.2
+- Added `Direction` with values `'horizontal'` and `'vertical'`
+ 
+### Fixed
+- Fixed selection toggling for interactive components
+- `Direction` renamed to `ForwardDirection`
+
+
 [0.0.6] - 2019-10-01
 ### Fixed
 - Fixed interaction events, removed hitArea setup for components
