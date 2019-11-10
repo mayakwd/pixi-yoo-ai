@@ -7,7 +7,7 @@ export class Label extends Component {
     return this._text;
   }
 
-  @invalidate("state")
+  @invalidate("text")
   public set text(value: string) {
     this._text = value;
   }
