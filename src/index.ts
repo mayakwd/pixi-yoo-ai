@@ -1,3 +1,4 @@
+export * from "./yooai/events/ListEvent";
 export * from "./yooai/core/Component";
 export * from "./yooai/core/IDestroyable";
 export * from "./yooai/core/invalidate";
