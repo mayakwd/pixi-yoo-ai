@@ -36,7 +36,7 @@ export abstract class BaseScrollPane extends Pane {
 
   @invalidate("scroll")
   public set verticalScrollPosition(value: number) {
-    this._verticalScrollPosition = value;
+    this._verticalScrollPosition = Math.min(Math.max(0, value), this.maxVerticalScrollPosition);
     this.validateNow();
   }
 
@@ -56,7 +56,7 @@ export abstract class BaseScrollPane extends Pane {
 
   @invalidate("scroll")
   public set maxHorizontalScrollPosition(value: number) {
-    this._maxHorizontalScrollPosition = value;
+    this._maxHorizontalScrollPosition = Math.min(Math.max(0, value), this.maxHorizontalScrollPosition);
     this.validateNow();
   }
 
@@ -89,7 +89,7 @@ export abstract class BaseScrollPane extends Pane {
     this._contentScrollRect = new Rectangle(0, 0, 100, 100);
   }
 
-  public setContentSize(width: number, height: number): void {
+  protected setContentSize(width: number, height: number): void {
     if (width === this._contentWidth && height === this._contentHeight) {
       return;
     }

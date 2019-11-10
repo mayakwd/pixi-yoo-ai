@@ -1,10 +1,12 @@
 import {utils} from "pixi.js";
+import {ChangeEvent} from "./ChangeEvent";
+import {ChangeType} from "./ChangeType";
 import EventEmitter = utils.EventEmitter;
 
 export class DataProvider<T> extends EventEmitter {
-  private _data: Array<T>;
+  private _data: T[];
 
-  public constructor(data?: Array<T>) {
+  public constructor(data?: T[]) {
     super();
     this._data = data || [];
   }
@@ -44,13 +46,13 @@ export class DataProvider<T> extends EventEmitter {
     this.dispatchChange(ChangeType.ADD, [item], index, index);
   }
 
-  public addItemsAt(items: T[], index: number): void {
+  public addItemsAt(items: ReadonlyArray<T>, index: number): void {
     this.validateIndex(index);
     this._data.splice(index, 0, ...items);
     this.dispatchChange(ChangeType.ADD, items, index, index + items.length - 1);
   }
 
-  public addItems(items: T[]): void {
+  public addItems(items: ReadonlyArray<T>): void {
     this.addItemsAt(items, this._data.length);
   }
 
@@ -94,7 +96,7 @@ export class DataProvider<T> extends EventEmitter {
 
   public replaceItem(newItem: T, oldItem: T): T | undefined {
     const index = this.getItemIndex(oldItem);
-    if (index != -1) {
+    if (index !== -1) {
       return this.replaceItemAt(newItem, index);
     }
     return undefined;
@@ -105,34 +107,13 @@ export class DataProvider<T> extends EventEmitter {
     this.dispatchChange(ChangeType.SORT, [...this._data], 0, this._data.length - 1);
   }
 
-  private dispatchChange(type: ChangeType, items: T[], startIndex: number, endIndex: number) {
+  private dispatchChange(type: ChangeType, items: ReadonlyArray<T>, startIndex: number, endIndex: number) {
     this.emit(ChangeEvent.DATA_CHANGE, new ChangeEvent(type, items, startIndex, endIndex));
   }
 
   private validateIndex(index: number) {
-    if (index < 0 || index >= this.length) {
+    if (index < 0 || index > this.length) {
       throw new Error(`Index ${index} out of range [0..${this.length}]`);
     }
   }
-}
-
-export class ChangeEvent<T> {
-  public static readonly DATA_CHANGE: string = "dataChange";
-
-  constructor(
-    public readonly changeType: ChangeType,
-    public readonly items: Array<T>,
-    public readonly startIndex: number,
-    public readonly endIndex: number) {
-  }
-}
-
-export enum ChangeType {
-  INVALIDATE,
-  INVALIDATE_ALL,
-  ADD,
-  REMOVE,
-  REMOVE_ALL,
-  REPLACE,
-  SORT,
 }

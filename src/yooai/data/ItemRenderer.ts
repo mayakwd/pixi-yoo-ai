@@ -1,7 +1,7 @@
 import {TextStyle} from "pixi.js";
-import {HorizontalAlign, InteractiveComponent, Label, VerticalAlign} from "../..";
+import {HorizontalAlign, InteractiveComponent, invalidate, Label, VerticalAlign} from "../..";
 
-export class ItemRenderer<T extends IItemRendererData> extends InteractiveComponent {
+export class ItemRenderer<T> extends InteractiveComponent {
   public index: number = -1;
 
   protected _label!: Label;
@@ -16,6 +16,7 @@ export class ItemRenderer<T extends IItemRendererData> extends InteractiveCompon
     return this._data;
   }
 
+  @invalidate("data")
   public set data(value: T | undefined) {
     this._data = value;
   }
@@ -24,6 +25,7 @@ export class ItemRenderer<T extends IItemRendererData> extends InteractiveCompon
     return this._labelEmitter;
   }
 
+  @invalidate("data")
   public set labelEmitter(value: ((data?: T) => string) | undefined) {
     this._labelEmitter = value;
   }
@@ -81,9 +83,10 @@ export class ItemRenderer<T extends IItemRendererData> extends InteractiveCompon
     if (this._labelEmitter !== undefined) {
       labelText = this._labelEmitter(this._data);
     } else {
-      labelText = this._data ? this._data.toString() : "";
+      labelText = this._data ? String(this._data) : "";
     }
     this._label.text = labelText;
+    this._label.drawNow();
   }
 
   protected draw(): void {
@@ -102,5 +105,3 @@ export class ItemRenderer<T extends IItemRendererData> extends InteractiveCompon
     super.drawLayout();
   }
 }
-
-export interface IItemRendererData { disabled?: boolean; }

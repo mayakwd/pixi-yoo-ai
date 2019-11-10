@@ -1,7 +1,6 @@
-import {Container} from "pixi.js";
+import {Container, DisplayObject} from "pixi.js";
 import {Component} from "../..";
 import {LayoutBehavior} from "./LayoutBehavior";
-import DisplayObject = PIXI.DisplayObject;
 
 export class VerticalLayoutBehavior extends LayoutBehavior {
   public apply(target: Container, width: number, height: number): void {

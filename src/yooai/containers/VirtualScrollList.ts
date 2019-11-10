@@ -1,17 +1,24 @@
-import {Container} from "pixi.js";
-import {invalidate, ItemRenderer} from "../..";
-import {ChangeEvent, ChangeType, DataProvider} from "../data/DataProvider";
+import anime from "animejs";
+import {Container, Graphics} from "pixi.js";
+import {ChangeEvent, ChangeType, DataProvider, invalidate, ItemRenderer} from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
-import Graphics = PIXI.Graphics;
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
-  public get rowSpacing(): number {
-    return this._rowSpacing;
+  public get pageScrollDuration(): number {
+    return this._pageScrollDuration;
+  }
+
+  public set pageScrollDuration(value: number) {
+    this._pageScrollDuration = value;
+  }
+
+  public get verticalGap(): number {
+    return this._verticalGap;
   }
 
   @invalidate("size")
-  public set rowSpacing(value: number) {
-    this._rowSpacing = value;
+  public set verticalGap(value: number) {
+    this._verticalGap = value;
   }
 
   public get selectable(): boolean {
@@ -41,12 +48,26 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     this._rowHeight = value;
   }
 
-  public get rendererClass(): { new(): ItemRenderer<T> } {
+  public set pageSize(value: number) {
+    this._pageSize = Math.max(1, value);
+  }
+
+  public get pageSize(): number {
+    return this._pageSize;
+  }
+
+  public get pagesCount(): number {
+    return Math.ceil(this.availableRowsCount / this.pageSize);
+  }
+
+  public abstract get availableRowsCount(): number;
+
+  public get rendererClass(): new() => ItemRenderer<T> {
     return this._rendererClass;
   }
 
   @invalidate("renderer")
-  public set rendererClass(value: { new(): ItemRenderer<T> }) {
+  public set rendererClass(value: new() => ItemRenderer<T>) {
     this._rendererClass = value;
   }
 
@@ -63,7 +84,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   }
 
   public get selectedItem(): T | undefined {
-    return this._selectedIndices.length > 0 && this._dataProvider !== undefined ? this._dataProvider.getItemAt(0) : undefined;
+    if (this._selectedIndices.length > 0) {
+      return this._dataProvider?.getItemAt(this._selectedIndices[0]);
+    }
+    return undefined;
   }
 
   public set selectedItem(value: T | undefined) {
@@ -78,7 +102,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   }
 
   public set selectedIndex(value: number) {
-    this.selectedIndices = (value == -1) ? [] : [value];
+    this.selectedIndices = (value === -1) ? [] : [value];
   }
 
   public get selectedItems(): ReadonlyArray<T> {
@@ -93,7 +117,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     if (items !== undefined && items.length === 0 && this._dataProvider !== undefined) {
       for (const item of items) {
         const index = this._dataProvider.getItemIndex(item);
-        if (index != -1) {
+        if (index !== -1) {
           indices.push(index);
         }
       }
@@ -108,8 +132,54 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return this._dataProvider;
   }
 
+  protected get pageHeight(): number {
+    return this.pageSize * (this.rowHeight + this.verticalGap);
+  }
+
+  protected get pageWidth(): number {
+    return this._contentWidth;
+  }
+
+  protected _holder: Container;
+  protected _list: Container;
+  protected _activeRenderers: Array<ItemRenderer<T>> = [];
+  protected _availableRenderers: Array<ItemRenderer<T>> = [];
+  protected _renderedItems: Set<T> = new Set<T>();
+  protected _invalidItems: Set<T> = new Set<T>();
+  protected _allowMultipleSelection: boolean = false;
+  protected _selectable: boolean = false;
+  protected _selectedIndices: number[] = [];
+  protected _dataProvider?: DataProvider<T>;
+  protected _rectMask: Graphics;
+  protected _rendererClass: new() => ItemRenderer<T> = ItemRenderer;
+
+  protected _rowHeight: number = 32;
+  protected _verticalGap: number = 0;
+  protected _pageSize: number = 1;
+  protected _pageScrollDuration: number = 500;
+
+  protected constructor(
+    parent?: Container,
+    dataProvider?: DataProvider<T>,
+    x?: number, y?: number, width?: number, height?: number,
+  ) {
+    super(parent, x, y, width, height);
+
+    this.interactiveChildren = true;
+    this._dataProvider = dataProvider !== undefined ? dataProvider : new DataProvider<T>();
+    this._holder = this.addChild(new Container());
+    this._holder.interactiveChildren = true;
+    this._holder.mask = this._rectMask = new Graphics();
+    this.addChild(this._rectMask);
+
+    this._list = this._holder.addChild(new Container());
+    this._list.interactiveChildren = true;
+  }
+
   public setDataProvider(value: DataProvider<T> | undefined) {
-    if (this._dataProvider === value) return;
+    if (this._dataProvider === value) {
+      return;
+    }
 
     if (this._dataProvider !== undefined) {
       this._dataProvider.off(ChangeEvent.DATA_CHANGE, this.onDataChange, this);
@@ -122,42 +192,23 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     this.clearAllRenderers();
   }
 
-  protected _holder: Container;
-  protected _list: Container;
-  protected _activeRenderers: ItemRenderer<T>[] = [];
-  protected _availableRenderers: ItemRenderer<T>[] = [];
-  protected _renderedItems: Set<T> = new Set<T>();
-  protected _invalidItems: Set<T> = new Set<T>();
-  protected _allowMultipleSelection: boolean = false;
-  protected _selectable: boolean = false;
-  protected _selectedIndices: number[] = [];
-  protected _dataProvider?: DataProvider<T>;
-  protected _rectMask: Graphics;
-  protected _rendererClass: { new(): ItemRenderer<T> } = ItemRenderer;
-
-  protected _rowHeight: number = 32;
-  protected _rowSpacing: number = 0;
-
-  protected constructor(parent?: Container, dataProvider?: DataProvider<T>, x?: number, y?: number, width?: number, height?: number) {
-    super(parent, x, y, width, height);
-
-    this._dataProvider = dataProvider !== undefined ? dataProvider : new DataProvider<T>();
-    this._holder = this.addChild(new Container());
-    this._holder.mask = this._rectMask = new Graphics();
-    this._list = this._holder.addChild(new Container());
-  }
-
   public clearSelection(): void {
     this.selectedIndex = -1;
   }
 
   public getItemRenderer(item: T): ItemRenderer<T> | undefined {
-    return this._activeRenderers.find(value => value.data === item);
+    return this._activeRenderers.find((value) => value.data === item);
   }
 
   public addItem(item: T) {
     this.checkDataProviderAvailability();
     this._dataProvider!.addItem(item);
+    this.clearAllRenderers();
+  }
+
+  public addItems(items: ReadonlyArray<T>) {
+    this.checkDataProviderAvailability();
+    this._dataProvider!.addItems(items);
     this.clearAllRenderers();
   }
 
@@ -198,6 +249,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     this._dataProvider.replaceItemAt(item, index);
   }
 
+  public get length(): number {
+    return this.dataProvider.length;
+  }
+
   public clearAllRenderers() {
     this._availableRenderers = [];
     while (this._activeRenderers.length > 0) {
@@ -234,11 +289,80 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return index !== -1 && this._selectedIndices.indexOf(index) !== -1;
   }
 
-  public scrollToSelected(): void {
-    this.scrollToIndex(this.selectedIndex);
+  public scrollToSelected(animated: boolean = true): void {
+    this.scrollToIndex(this.selectedIndex, animated);
   }
 
-  public abstract scrollToIndex(index: number): void;
+  public abstract scrollToIndex(index: number, animated: boolean): void;
+
+  public abstract scrollToPage(index: number, animated: boolean): void;
+
+  public scrollPageUp(animated: boolean = true): void {
+    this.scrollTo(
+      this.verticalScrollPosition - this.pageHeight,
+      this.horizontalScrollPosition,
+      animated,
+    );
+  }
+
+  public scrollPageDown(animated: boolean = true): void {
+    this.scrollTo(
+      this.verticalScrollPosition + this.pageHeight,
+      this.horizontalScrollPosition,
+      animated,
+    );
+  }
+
+  public scrollRowUp(animated: boolean = true): void {
+    this.scrollTo(
+      this.verticalScrollPosition - this.rowHeight - this.verticalGap,
+      this.horizontalScrollPosition,
+      animated,
+    );
+  }
+
+  public scrollRowDown(animated: boolean = true): void {
+    this.scrollTo(
+      this.verticalScrollPosition + this.rowHeight + this.verticalGap,
+      this.horizontalScrollPosition,
+      animated,
+    );
+  }
+
+  public scrollTo(verticalPosition: number, horizontalPosition: number, animated: boolean = true) {
+    verticalPosition = Math.min(Math.max(0, verticalPosition), this.maxVerticalScrollPosition);
+    horizontalPosition = Math.min(Math.max(0, horizontalPosition), this.maxHorizontalScrollPosition);
+
+    if (verticalPosition === this.verticalScrollPosition && horizontalPosition === this.horizontalScrollPosition) {
+      return;
+    }
+
+    if (animated) {
+      const distance = Math.sqrt(
+        Math.pow(this.verticalScrollPosition - verticalPosition, 2) +
+        Math.pow(this.horizontalScrollPosition - horizontalPosition, 2),
+      );
+      const duration = this._pageScrollDuration / this.pageHeight * distance;
+      anime({
+        targets: this,
+        duration,
+        verticalScrollPosition: verticalPosition,
+        horizontalScrollPosition: horizontalPosition,
+        easing: "easeOutQuad",
+      });
+    } else {
+      this.verticalScrollPosition = verticalPosition;
+      this.horizontalScrollPosition = horizontalPosition;
+    }
+  }
+
+  protected calculateAvailableHeight() {
+    return this._height - this._contentPadding * 2;
+  }
+
+  protected calculateAvailableWidth() {
+    return this._width - this._contentPadding * 2;
+  }
 
   protected checkDataProviderAvailability() {
     if (!this._dataProvider) {
@@ -251,7 +375,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       this.clearAllRenderers();
       this.invalidate("data");
     }
-    if (this.isInvalid("data")) {
+    if (this.isInvalid("scroll") || this.isInvalid("data") || this.isInvalid("size")) {
       this.drawList();
     }
     super.draw();
@@ -264,6 +388,9 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
 
   protected drawRectMask() {
     const rect = this._contentScrollRect;
+    rect.width = this._width;
+    rect.height = this._height;
+
     this._rectMask.clear();
     this._rectMask.beginFill(0xFF0000, 1);
     this._rectMask.drawRect(rect.x || 0, rect.y || 0, rect.width, rect.height);
