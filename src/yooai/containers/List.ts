@@ -150,6 +150,12 @@ export class List<T> extends VirtualScrollList<T> {
   protected handleItemClick(event: InteractionEvent) {
     if (event.target instanceof ItemRenderer) {
       this.emit(ListEvent.ITEM_CLICK, new ListEvent(event.target.data, event.target.index));
+      if (!this._selectable) { return; }
+
+      if (this.selectedIndex !== event.target.index) {
+        this.selectedIndex = event.target.index;
+        this.emit(ListEvent.SELECTION_CHANGE);
+      }
     }
   }
 

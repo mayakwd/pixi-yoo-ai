@@ -75,6 +75,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return [...this._selectedIndices];
   }
 
+  @invalidate("data")
   public set selectedIndices(value: ReadonlyArray<number>) {
     if (!this._selectable) {
       return;
