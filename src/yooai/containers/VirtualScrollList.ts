@@ -1,7 +1,7 @@
 import anime from "animejs";
 import {Container, Graphics} from "pixi.js";
 import {ChangeEvent, ChangeType, DataProvider, invalidate, ItemRenderer} from "../..";
-import {EventProxy} from "../data/EventProxy";
+import {EventProxy} from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
