@@ -6,6 +6,14 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+[0.0.8] - 2019-11-23
+### Added
+Added `ListEvent.SELECTION_CHANGE` for lists
+Added `rendererEvents` for lists. Now it's possible to listen custom events for `ItemRenderer`.
+
+### Fixed
+Fixed `selectable` behavior for lists 
+
 [0.0.7-rc1] - 2019-11-10
 ### Added 
 - Added `List`, `TileList`
