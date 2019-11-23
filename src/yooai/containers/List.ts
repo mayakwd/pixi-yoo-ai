@@ -144,6 +144,7 @@ export class List<T> extends VirtualScrollList<T> {
   }
 
   protected addRendererListeners(renderer: ItemRenderer<T>) {
+    this._rendererEvents.addTarget(renderer);
     renderer.on("pointertap", this.handleItemClick, this);
   }
 
