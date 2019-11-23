@@ -6,6 +6,7 @@ export * from "./yooai/core/InvalidationType";
 export * from "./yooai/data/DataProvider";
 export * from "./yooai/data/ChangeEvent";
 export * from "./yooai/data/ChangeType";
+export * from "./yooai/data/EventProxy";
 export * from "./yooai/containers/Pane";
 export * from "./yooai/containers/AbstractBox";
 export * from "./yooai/containers/HBox";

@@ -1,9 +1,14 @@
 import anime from "animejs";
 import {Container, Graphics} from "pixi.js";
 import {ChangeEvent, ChangeType, DataProvider, invalidate, ItemRenderer} from "../..";
+import {EventProxy} from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
+  public get rendererEvents(): EventProxy<T> {
+    return this._rendererEvents;
+  }
+
   public get pageScrollDuration(): number {
     return this._pageScrollDuration;
   }
@@ -75,6 +80,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return [...this._selectedIndices];
   }
 
+  @invalidate("data")
   public set selectedIndices(value: ReadonlyArray<number>) {
     if (!this._selectable) {
       return;
@@ -152,6 +158,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   protected _dataProvider?: DataProvider<T>;
   protected _rectMask: Graphics;
   protected _rendererClass: new() => ItemRenderer<T> = ItemRenderer;
+  protected _rendererEvents: EventProxy<T> = new EventProxy<T>();
 
   protected _rowHeight: number = 32;
   protected _verticalGap: number = 0;
