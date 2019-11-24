@@ -1,7 +1,6 @@
-import anime from "animejs";
+import Fatina, {EasingType} from "fatina";
 import {Container, Graphics} from "pixi.js";
-import {ChangeEvent, ChangeType, DataProvider, invalidate, ItemRenderer} from "../..";
-import {EventProxy} from "../..";
+import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRenderer} from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
@@ -350,13 +349,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
         Math.pow(this.horizontalScrollPosition - horizontalPosition, 2),
       );
       const duration = this._pageScrollDuration / this.pageHeight * distance;
-      anime({
-        targets: this,
-        duration,
-        verticalScrollPosition: verticalPosition,
-        horizontalScrollPosition: horizontalPosition,
-        easing: "easeOutQuad",
-      });
+      Fatina.tween(this)
+            .to({verticalScrollPosition: verticalPosition, horizontalScrollPosition: horizontalPosition}, duration)
+            .setEasing(EasingType.OutQuad)
+            .start();
     } else {
       this.verticalScrollPosition = verticalPosition;
       this.horizontalScrollPosition = horizontalPosition;

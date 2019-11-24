@@ -6,6 +6,11 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+[0.0.10] - 2019-11-24
+### Fixed
+Tweener `anime.js` replaced with `fatina`
+Fixed TileList content size calculations after data change.
+
 [0.0.9] - 2019-11-24
 ### Added
 Added capability to set filters for disabled state of `Component`.
@@ -31,7 +36,6 @@ Fixed `selectable` behavior for lists
 ### Fixed
 - Fixed selection toggling for interactive components
 - `Direction` renamed to `ForwardDirection`
-
 
 [0.0.6] - 2019-10-01
 ### Fixed

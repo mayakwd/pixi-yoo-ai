@@ -141,7 +141,7 @@ export class TileList<T> extends List<T> {
   }
 
   protected draw(): void {
-    if (this.isInvalid("size")) {
+    if (this.isInvalid("size") || this.isInvalid("data")) {
       const columnsCount = this.columnsCount;
       const itemsCount = this.dataProvider?.length ?? 0;
       this._contentWidth =
