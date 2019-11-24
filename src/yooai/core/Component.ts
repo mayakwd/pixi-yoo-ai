@@ -1,6 +1,5 @@
-import {Container, DisplayObject, Rectangle} from "pixi.js";
-import {HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
-import {alignChild} from "../..";
+import {Container, DisplayObject, Filter, Rectangle} from "pixi.js";
+import {alignChild, HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
 import {IDestroyable} from "./IDestroyable";
 import {invalidate} from "./invalidate";
 import {InvalidationType} from "./InvalidationType";
@@ -8,6 +7,17 @@ import {InvalidationType} from "./InvalidationType";
 export class Component extends Container implements IDestroyable {
   public get isDestroyed(): boolean {
     return this._isDestroyed;
+  }
+
+  public get disabledFilters(): Filter[] | undefined {
+    return this._disabledFilters;
+  }
+
+  @invalidate("state")
+  public set disabledFilters(value: Filter[] | undefined) {
+    if (this._disabledFilters !== value) { this.removeDisabledFilters(); }
+    this._disabledFilters = value;
+    this.applyDisabledFilters();
   }
 
   public get width(): number {
@@ -75,6 +85,11 @@ export class Component extends Container implements IDestroyable {
   @invalidate("state")
   public set enabled(enabled: boolean) {
     this._enabled = enabled;
+    if (this._enabled) {
+      this.removeDisabledFilters();
+    } else {
+      this.applyDisabledFilters();
+    }
   }
 
   protected static readonly INITIAL_HEIGHT = 100;
@@ -86,6 +101,7 @@ export class Component extends Container implements IDestroyable {
   protected _enabled: boolean = true;
   protected _invalidationSet: Set<InvalidationType> = new Set();
   protected _hitArea: Rectangle = new Rectangle(0, 0, this._width, this._height);
+  protected _disabledFilters?: Filter[];
 
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
     super();
@@ -175,11 +191,11 @@ export class Component extends Container implements IDestroyable {
   }
 
   protected configure() {
-    // Block is intended to be empty
+    // Block intended to be empty
   }
 
   protected draw(): void {
-    // Block is intended to be empty
+    // Block intended to be empty
   }
 
   protected validate(): void {
@@ -219,5 +235,17 @@ export class Component extends Container implements IDestroyable {
   protected updateHitArea() {
     this._hitArea.width = this._width;
     this._hitArea.height = this._height;
+  }
+
+  protected removeDisabledFilters() {
+    if (this._disabledFilters !== undefined && this._enabled) {
+      this.filters = this.filters?.filter((filter) => this._disabledFilters!.indexOf(filter) === -1);
+    }
+  }
+
+  protected applyDisabledFilters() {
+    if (!this._enabled && this._disabledFilters !== undefined) {
+      this.filters = this._disabledFilters.concat(this.filters ?? []);
+    }
   }
 }

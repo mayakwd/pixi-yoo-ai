@@ -1,6 +1,6 @@
 import {Container} from "pixi.js";
 import {DataProvider, invalidate, ItemRenderer} from "../..";
-import {ListEvent} from "../events/ListEvent";
+import {ListEvent} from "../..";
 import {VirtualScrollList} from "./VirtualScrollList";
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 
@@ -149,6 +149,7 @@ export class List<T> extends VirtualScrollList<T> {
   }
 
   protected handleItemClick(event: InteractionEvent) {
+    if (!this._enabled) { return; }
     if (event.target instanceof ItemRenderer) {
       this.emit(ListEvent.ITEM_CLICK, new ListEvent(event.target.data, event.target.index));
       if (!this._selectable) { return; }
