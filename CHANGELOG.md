@@ -6,6 +6,13 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+[0.0.9] - 2019-11-24
+### Added
+Added capability to set filters for disabled state of `Component`.
+
+### Fixed
+Now `ListEvent.ITEM_CLICK` will not be fired if `List` disabled 
+
 [0.0.8] - 2019-11-23
 ### Added
 Added `ListEvent.SELECTION_CHANGE` for lists
