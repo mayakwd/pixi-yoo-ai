@@ -6,6 +6,7 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+[0.0.10] - 2019-11-24
 ### Fixed
 Tweener `anime.js` replaced with `fatina`
 Fixed TileList content size calculations after data change.
