@@ -1,4 +1,4 @@
-import anime from "animejs";
+import Fatina, {EasingType} from "fatina";
 import {Application, Container, Graphics, interaction} from "pixi.js";
 import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import InteractionEvent = interaction.InteractionEvent;
@@ -44,7 +44,10 @@ export class PopupManager {
       overlay.height = this.stageHeight;
       this.root.addChild(overlay);
 
-      anime({targets: overlay, direction: "reverse", alpha: 0, duration: 100});
+      Fatina.tween(overlay)
+            .from({alpha: 0})
+            .to({alpha: 1}, 100)
+            .start();
     }
 
     this.root.addChild(popup);
@@ -55,7 +58,12 @@ export class PopupManager {
     }
 
     popup.on("removed", this.onPopupRemoved, this);
-    anime({targets: popup, alpha: 0, y: popup.y + 20, easing: "easeInQuad", direction: "reverse", duration: 250});
+
+    Fatina.tween(popup)
+          .from({alpha: 0, y: popup.y + 20})
+          .to({alpha: 1, y: popup.y}, 250)
+          .setEasing(EasingType.InQuad)
+          .start();
 
     this._popups.set(popup, overlay);
   }
