@@ -36,7 +36,7 @@ export class HBox extends AbstractBox {
     let index = childrenCount - 1;
     let contentWidthIsSet = false;
 
-    while (index > 0) {
+    while (index >= 0) {
       const child = this.children[index];
       if (child instanceof Container) {
         if (!contentWidthIsSet) {

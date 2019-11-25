@@ -36,7 +36,7 @@ export class VBox extends AbstractBox {
     let index = childrenCount - 1;
     let isContentHeightSet = false;
 
-    while (index > 0) {
+    while (index >= 0) {
       const child = this.children[index];
       if (child instanceof Container) {
         if (!isContentHeightSet) {
