@@ -1,6 +1,5 @@
 import {Container} from "pixi.js";
-import {DataProvider, invalidate, ItemRenderer} from "../..";
-import {ListEvent} from "../..";
+import {DataProvider, invalidate, ItemRenderer, ListEvent} from "../..";
 import {VirtualScrollList} from "./VirtualScrollList";
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 
@@ -42,7 +41,6 @@ export class List<T> extends VirtualScrollList<T> {
     this.scrollTo(
       index * (this.rowHeight + this.verticalGap),
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
@@ -50,7 +48,6 @@ export class List<T> extends VirtualScrollList<T> {
     this.scrollTo(
       this.pageHeight * index,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
@@ -83,6 +80,9 @@ export class List<T> extends VirtualScrollList<T> {
   }
 
   protected drawScroll() {
+    this._horizontalScrollPosition = Math.min(this._horizontalScrollPosition, this.maxHorizontalScrollPosition);
+    this._verticalScrollPosition = Math.min(this._verticalScrollPosition, this.maxVerticalScrollPosition);
+
     this._list.x = this._contentPadding - this._horizontalScrollPosition;
     this._list.y = this._contentPadding - this._verticalScrollPosition % (this.rowHeight + this.verticalGap);
   }
@@ -151,13 +151,26 @@ export class List<T> extends VirtualScrollList<T> {
   protected handleItemClick(event: InteractionEvent) {
     if (!this._enabled) { return; }
     if (event.target instanceof ItemRenderer) {
-      this.emit(ListEvent.ITEM_CLICK, new ListEvent(event.target.data, event.target.index));
+      const dataItemIndex = event.target.index;
+      this.emit(ListEvent.ITEM_CLICK, new ListEvent(event.target.data, dataItemIndex));
       if (!this._selectable) { return; }
 
-      if (this.selectedIndex !== event.target.index) {
-        this.selectedIndex = event.target.index;
-        this.emit(ListEvent.SELECTION_CHANGE);
+      const index = this._selectedIndices.indexOf(dataItemIndex);
+      if (index !== -1) {
+        if (this._allowMultipleSelection) {
+          this._selectedIndices.splice(index, 1);
+        } else {
+          this._selectedIndices.length = 0;
+        }
+      } else {
+        if (this._allowMultipleSelection && (this._maxSelectedItemsCount <= 0 || (this._selectedIndices.length < this._maxSelectedItemsCount))) {
+          this._selectedIndices[this._selectedIndices.length] = dataItemIndex;
+        } else {
+          this._selectedIndices[0] = dataItemIndex;
+        }
+        this.invalidate("selected");
       }
+      this.emit(ListEvent.SELECTION_CHANGE);
     }
   }
 

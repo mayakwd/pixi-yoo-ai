@@ -74,7 +74,7 @@ export class TileList<T> extends List<T> {
     return Math.ceil(this.length / this.rowsCount);
   }
 
-  public scrollToIndex(index: number, animated: boolean = true): void {
+  public scrollToIndex(index: number): void {
     let verticalPosition: number = this.verticalScrollPosition;
     let horizontalPosition: number = this.horizontalScrollPosition;
     switch (this._direction) {
@@ -85,7 +85,7 @@ export class TileList<T> extends List<T> {
         horizontalPosition = Math.floor(index / this.rowsCount) * (this.columnWidth + this.horizontalGap);
         break;
     }
-    this.scrollTo(verticalPosition, horizontalPosition, animated);
+    this.scrollTo(verticalPosition, horizontalPosition);
   }
 
   public scrollToPage(index: number, animated: boolean = true): void {
@@ -99,7 +99,7 @@ export class TileList<T> extends List<T> {
         horizontalPosition = this.pageWidth * index;
         break;
     }
-    this.scrollTo(verticalPosition, horizontalPosition, animated);
+    this.scrollTo(verticalPosition, horizontalPosition);
   }
 
   public scrollPageUp(animated: boolean = true): void {
@@ -137,7 +137,7 @@ export class TileList<T> extends List<T> {
   protected scrollBy(verticalOffset: number, horizontalOffset: number, animated: boolean) {
     const verticalPosition: number = this.verticalScrollPosition + verticalOffset;
     const horizontalPosition: number = this.horizontalScrollPosition + horizontalOffset;
-    this.scrollTo(verticalPosition, horizontalPosition, animated);
+    this.scrollTo(verticalPosition, horizontalPosition);
   }
 
   protected draw(): void {

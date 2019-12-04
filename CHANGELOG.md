@@ -4,24 +4,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+[0.0.12] - 2019-12-04
+
+### Added
+- Added support of maximum selected items for lists via `List.maxSelectedItemsCount`
+- Parameter `animated` was removed from all scroll methods, and moved as a property to `List` class.
+
+### Fixed
+- Tweener `fatina` replaced with `gsap`
+- Fixed [item deselection bug](https://github.com/mayakwd/pixi-yoo-ai/issues/3) for `List`
+- Fixed [multiple selection implementation](https://github.com/mayakwd/pixi-yoo-ai/issues/2) for `List`
+- Fixed [scroll position bug](https://github.com/mayakwd/pixi-yoo-ai/issues/8). After removing an item, scroll position could become invalid if it was near the max scroll position.
 
 [0.0.11] - 2019-11-25
 ### Fixed
-Fixed layout for VBox, HBox
-`pixi.js` moved to peerDependencies
+- Fixed layout for VBox, HBox
+- `pixi.js` moved to peerDependencies
 
 [0.0.10] - 2019-11-24
 ### Fixed
-Tweener `anime.js` replaced with `fatina`
-Fixed TileList content size calculations after data change.
+- Tweener `anime.js` replaced with `fatina`
+- Fixed TileList content size calculations after data change.
 
 [0.0.9] - 2019-11-24
 ### Added
-Added capability to set filters for disabled state of `Component`.
+- Added capability to set filters for disabled state of `Component`.
 
 ### Fixed
-Now `ListEvent.ITEM_CLICK` will not be fired if `List` disabled 
+- Now `ListEvent.ITEM_CLICK` will not be fired if `List` disabled 
 
 [0.0.8] - 2019-11-23
 ### Added
@@ -29,7 +39,7 @@ Added `ListEvent.SELECTION_CHANGE` for lists
 Added `rendererEvents` for lists. Now it's possible to listen custom events for `ItemRenderer`
 
 ### Fixed
-Fixed `selectable` behavior for lists 
+- Fixed `selectable` behavior for lists 
 
 [0.0.7-rc1] - 2019-11-10
 ### Added 

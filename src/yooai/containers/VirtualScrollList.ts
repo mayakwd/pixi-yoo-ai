@@ -1,9 +1,30 @@
-import Fatina, {EasingType} from "fatina";
+import {gsap} from "gsap";
 import {Container, Graphics} from "pixi.js";
-import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRenderer} from "../..";
+import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRenderer, ListEvent} from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
+  public get animated(): boolean {
+    return this._animated;
+  }
+
+  public set animated(value: boolean) {
+    this._animated = value;
+  }
+
+  public get maxSelectedItemsCount(): number {
+    return this._maxSelectedItemsCount;
+  }
+
+  @invalidate("selection")
+  public set maxSelectedItemsCount(value: number) {
+    this._maxSelectedItemsCount = value;
+    if (this._maxSelectedItemsCount > 0 && this._selectedIndices.length > this._maxSelectedItemsCount) {
+      this._selectedIndices.length = this._maxSelectedItemsCount;
+      this.emit(ListEvent.SELECTION_CHANGE);
+    }
+  }
+
   public get rendererEvents(): EventProxy<T> {
     return this._rendererEvents;
   }
@@ -41,6 +62,11 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   @invalidate("selected")
   public set allowMultipleSelection(value: boolean) {
     this._allowMultipleSelection = value;
+
+    if (!this._allowMultipleSelection && this._selectedIndices.length > 1) {
+      this._selectedIndices.length = 1;
+      this.emit(ListEvent.SELECTION_CHANGE);
+    }
   }
 
   public get rowHeight(): number {
@@ -145,6 +171,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return this._contentWidth;
   }
 
+  public get length(): number {
+    return this.dataProvider.length;
+  }
+
   protected _holder: Container;
   protected _list: Container;
   protected _activeRenderers: Array<ItemRenderer<T>> = [];
@@ -152,6 +182,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   protected _renderedItems: Set<T> = new Set<T>();
   protected _invalidItems: Set<T> = new Set<T>();
   protected _allowMultipleSelection: boolean = false;
+  protected _maxSelectedItemsCount: number = 0;
   protected _selectable: boolean = false;
   protected _selectedIndices: number[] = [];
   protected _dataProvider?: DataProvider<T>;
@@ -162,7 +193,8 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   protected _rowHeight: number = 32;
   protected _verticalGap: number = 0;
   protected _pageSize: number = 1;
-  protected _pageScrollDuration: number = 500;
+  protected _pageScrollDuration: number = 0.175;
+  protected _animated: boolean = true;
 
   protected constructor(
     parent?: Container,
@@ -255,10 +287,6 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     this._dataProvider.replaceItemAt(item, index);
   }
 
-  public get length(): number {
-    return this.dataProvider.length;
-  }
-
   public clearAllRenderers() {
     this._availableRenderers = [];
     while (this._activeRenderers.length > 0) {
@@ -295,47 +323,43 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return index !== -1 && this._selectedIndices.indexOf(index) !== -1;
   }
 
-  public scrollToSelected(animated: boolean = true): void {
-    this.scrollToIndex(this.selectedIndex, animated);
+  public scrollToSelected(): void {
+    this.scrollToIndex(this.selectedIndex);
   }
 
-  public abstract scrollToIndex(index: number, animated: boolean): void;
+  public abstract scrollToIndex(index: number): void;
 
-  public abstract scrollToPage(index: number, animated: boolean): void;
+  public abstract scrollToPage(index: number): void;
 
-  public scrollPageUp(animated: boolean = true): void {
+  public scrollPageUp(): void {
     this.scrollTo(
       this.verticalScrollPosition - this.pageHeight,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollPageDown(animated: boolean = true): void {
+  public scrollPageDown(): void {
     this.scrollTo(
       this.verticalScrollPosition + this.pageHeight,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollRowUp(animated: boolean = true): void {
+  public scrollRowUp(): void {
     this.scrollTo(
       this.verticalScrollPosition - this.rowHeight - this.verticalGap,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollRowDown(animated: boolean = true): void {
+  public scrollRowDown(): void {
     this.scrollTo(
       this.verticalScrollPosition + this.rowHeight + this.verticalGap,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollTo(verticalPosition: number, horizontalPosition: number, animated: boolean = true) {
+  public scrollTo(verticalPosition: number, horizontalPosition: number) {
     verticalPosition = Math.min(Math.max(0, verticalPosition), this.maxVerticalScrollPosition);
     horizontalPosition = Math.min(Math.max(0, horizontalPosition), this.maxHorizontalScrollPosition);
 
@@ -343,20 +367,28 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       return;
     }
 
-    if (animated) {
+    if (this._animated) {
       const distance = Math.sqrt(
         Math.pow(this.verticalScrollPosition - verticalPosition, 2) +
         Math.pow(this.horizontalScrollPosition - horizontalPosition, 2),
       );
       const duration = this._pageScrollDuration / this.pageHeight * distance;
-      Fatina.tween(this)
-            .to({verticalScrollPosition: verticalPosition, horizontalScrollPosition: horizontalPosition}, duration)
-            .setEasing(EasingType.OutQuad)
-            .start();
+      gsap.to(this,
+        {
+          verticalScrollPosition: verticalPosition,
+          horizontalScrollPosition: horizontalPosition,
+          duration,
+          ease: "power2.out",
+        });
     } else {
       this.verticalScrollPosition = verticalPosition;
       this.horizontalScrollPosition = horizontalPosition;
     }
+  }
+
+  public destroy(): void {
+    gsap.killTweensOf(this);
+    super.destroy();
   }
 
   protected calculateAvailableHeight() {

@@ -48,7 +48,7 @@ export class ProgressBar extends Component {
     let value = this._value;
     if (value > this._maximum) { value = this._maximum; }
     if (value < this._minimum) { value = this._minimum; }
-    return 1 / (this._maximum - this._minimum) * value;
+    return 1 / (this._maximum - this._minimum) * (value - this._minimum);
   }
 
   public get value(): number {
