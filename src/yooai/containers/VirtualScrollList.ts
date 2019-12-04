@@ -4,6 +4,19 @@ import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRende
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
+  public get maxSelectedItemsCount(): number {
+    return this._maxSelectedItemsCount;
+  }
+
+  @invalidate("selection")
+  public set maxSelectedItemsCount(value: number) {
+    this._maxSelectedItemsCount = value;
+    if (this._maxSelectedItemsCount > 0 && this._selectedIndices.length > this._maxSelectedItemsCount) {
+      this._selectedIndices.length = this._maxSelectedItemsCount;
+      this.emit(ListEvent.SELECTION_CHANGE);
+    }
+  }
+
   public get rendererEvents(): EventProxy<T> {
     return this._rendererEvents;
   }
@@ -41,6 +54,11 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   @invalidate("selected")
   public set allowMultipleSelection(value: boolean) {
     this._allowMultipleSelection = value;
+
+    if (!this._allowMultipleSelection && this._selectedIndices.length > 1) {
+      this._selectedIndices.length = 1;
+      this.emit(ListEvent.SELECTION_CHANGE);
+    }
   }
 
   public get rowHeight(): number {
@@ -145,6 +163,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return this._contentWidth;
   }
 
+  public get length(): number {
+    return this.dataProvider.length;
+  }
+
   protected _holder: Container;
   protected _list: Container;
   protected _activeRenderers: Array<ItemRenderer<T>> = [];
@@ -152,6 +174,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   protected _renderedItems: Set<T> = new Set<T>();
   protected _invalidItems: Set<T> = new Set<T>();
   protected _allowMultipleSelection: boolean = false;
+  protected _maxSelectedItemsCount: number = 0;
   protected _selectable: boolean = false;
   protected _selectedIndices: number[] = [];
   protected _dataProvider?: DataProvider<T>;
@@ -253,10 +276,6 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       return;
     }
     this._dataProvider.replaceItemAt(item, index);
-  }
-
-  public get length(): number {
-    return this.dataProvider.length;
   }
 
   public clearAllRenderers() {
