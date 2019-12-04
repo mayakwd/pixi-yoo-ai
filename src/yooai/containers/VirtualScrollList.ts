@@ -1,6 +1,6 @@
-import Fatina, {EasingType} from "fatina";
+import {gsap} from "gsap";
 import {Container, Graphics} from "pixi.js";
-import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRenderer} from "../..";
+import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRenderer, ListEvent} from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
@@ -162,7 +162,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   protected _rowHeight: number = 32;
   protected _verticalGap: number = 0;
   protected _pageSize: number = 1;
-  protected _pageScrollDuration: number = 500;
+  protected _pageScrollDuration: number = 0.175;
 
   protected constructor(
     parent?: Container,
@@ -349,14 +349,22 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
         Math.pow(this.horizontalScrollPosition - horizontalPosition, 2),
       );
       const duration = this._pageScrollDuration / this.pageHeight * distance;
-      Fatina.tween(this)
-            .to({verticalScrollPosition: verticalPosition, horizontalScrollPosition: horizontalPosition}, duration)
-            .setEasing(EasingType.OutQuad)
-            .start();
+      gsap.to(this,
+        {
+          verticalScrollPosition: verticalPosition,
+          horizontalScrollPosition: horizontalPosition,
+          duration,
+          ease: "power2.out",
+        });
     } else {
       this.verticalScrollPosition = verticalPosition;
       this.horizontalScrollPosition = horizontalPosition;
     }
+  }
+
+  public destroy(): void {
+    gsap.killTweensOf(this);
+    super.destroy();
   }
 
   protected calculateAvailableHeight() {

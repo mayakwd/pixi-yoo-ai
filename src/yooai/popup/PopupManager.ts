@@ -1,4 +1,4 @@
-import Fatina, {EasingType} from "fatina";
+import {gsap} from "gsap";
 import {Application, Container, Graphics, interaction} from "pixi.js";
 import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import InteractionEvent = interaction.InteractionEvent;
@@ -35,7 +35,7 @@ export class PopupManager {
   }
 
   public show(popup: DisplayObjectWithSize, params: IShowParams = {}) {
-    const {isModal = true, isCentered = true, offsetX = 0, offsetY = 0} = params;
+    const {isModal = true, isCentered = true, offsetX = 0, offsetY = 0, onComplete} = params;
     let overlay: DisplayObjectWithSize | undefined;
     if (isModal) {
       const factory = this.overlayFactory || PopupManager.defaultOverlayFactory;
@@ -44,10 +44,8 @@ export class PopupManager {
       overlay.height = this.stageHeight;
       this.root.addChild(overlay);
 
-      Fatina.tween(overlay)
-            .from({alpha: 0})
-            .to({alpha: 1}, 100)
-            .start();
+      overlay.alpha = 0;
+      gsap.fromTo(overlay, 0.1, {alpha: 0}, {alpha: 1}).play();
     }
 
     this.root.addChild(popup);
@@ -59,11 +57,14 @@ export class PopupManager {
 
     popup.on("removed", this.onPopupRemoved, this);
 
-    Fatina.tween(popup)
-          .from({alpha: 0, y: popup.y + 20})
-          .to({alpha: 1, y: popup.y}, 250)
-          .setEasing(EasingType.InQuad)
-          .start();
+    popup.alpha = 0;
+    gsap.fromTo(
+      popup, 0.175,
+      {alpha: 0, y: popup.y + 20},
+      {alpha: 1, y: popup.y, ease: "power2.inOut",
+        onComplete
+      },
+    ).play();
 
     this._popups.set(popup, overlay);
   }
@@ -84,8 +85,10 @@ export class PopupManager {
       if (destroy) {
         popup.destroy();
       }
-
       this._popups.delete(popup);
+      if (onComplete !== undefined) {
+        onComplete();
+      }
     }
   }
 

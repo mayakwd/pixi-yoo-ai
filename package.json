@@ -31,9 +31,6 @@
     "LICENSE",
     "README.md"
   ],
-  "dependencies": {
-    "fatina": "^3.0.2"
-  },
   "devDependencies": {
     "@types/jest": "^24.0.22",
     "jest": "^24.9.0",
@@ -43,7 +40,8 @@
     "typescript": "^3.7.2"
   },
   "peerDependencies": {
-    "pixi.js": "^5.2.0"
+    "pixi.js": "^5.2.0",
+    "gsap": "^3.0.1"
   },
   "jest": {
     "transform": {
