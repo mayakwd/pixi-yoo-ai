@@ -8,11 +8,13 @@ and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Added support of maximum selected items for lists via `List.maxSelectedItemsCount`
+- Parameter `animated` was removed from all scroll methods, and moved as a property to `List` class.
 
 ### Fixed
 - Tweener `fatina` replaced with `gsap`
 - Fixed [item deselection bug](https://github.com/mayakwd/pixi-yoo-ai/issues/3) for `List`
 - Fixed [multiple selection implementation](https://github.com/mayakwd/pixi-yoo-ai/issues/2) for `List`
+- Fixed [scroll position bug](https://github.com/mayakwd/pixi-yoo-ai/issues/8). After removing an item, scroll position could become invalid if it was near the max scroll position.
 
 [0.0.11] - 2019-11-25
 ### Fixed
