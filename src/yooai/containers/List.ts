@@ -82,6 +82,9 @@ export class List<T> extends VirtualScrollList<T> {
   }
 
   protected drawScroll() {
+    this._horizontalScrollPosition = Math.min(this._horizontalScrollPosition, this.maxHorizontalScrollPosition);
+    this._verticalScrollPosition = Math.min(this._verticalScrollPosition, this.maxVerticalScrollPosition);
+
     this._list.x = this._contentPadding - this._horizontalScrollPosition;
     this._list.y = this._contentPadding - this._verticalScrollPosition % (this.rowHeight + this.verticalGap);
   }
