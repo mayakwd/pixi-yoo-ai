@@ -4,6 +4,14 @@ import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRende
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
+  public get animated(): boolean {
+    return this._animated;
+  }
+
+  public set animated(value: boolean) {
+    this._animated = value;
+  }
+
   public get maxSelectedItemsCount(): number {
     return this._maxSelectedItemsCount;
   }
@@ -186,6 +194,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   protected _verticalGap: number = 0;
   protected _pageSize: number = 1;
   protected _pageScrollDuration: number = 0.175;
+  protected _animated: boolean = true;
 
   protected constructor(
     parent?: Container,
@@ -314,47 +323,43 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return index !== -1 && this._selectedIndices.indexOf(index) !== -1;
   }
 
-  public scrollToSelected(animated: boolean = true): void {
-    this.scrollToIndex(this.selectedIndex, animated);
+  public scrollToSelected(): void {
+    this.scrollToIndex(this.selectedIndex);
   }
 
-  public abstract scrollToIndex(index: number, animated: boolean): void;
+  public abstract scrollToIndex(index: number): void;
 
-  public abstract scrollToPage(index: number, animated: boolean): void;
+  public abstract scrollToPage(index: number): void;
 
-  public scrollPageUp(animated: boolean = true): void {
+  public scrollPageUp(): void {
     this.scrollTo(
       this.verticalScrollPosition - this.pageHeight,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollPageDown(animated: boolean = true): void {
+  public scrollPageDown(): void {
     this.scrollTo(
       this.verticalScrollPosition + this.pageHeight,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollRowUp(animated: boolean = true): void {
+  public scrollRowUp(): void {
     this.scrollTo(
       this.verticalScrollPosition - this.rowHeight - this.verticalGap,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollRowDown(animated: boolean = true): void {
+  public scrollRowDown(): void {
     this.scrollTo(
       this.verticalScrollPosition + this.rowHeight + this.verticalGap,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
-  public scrollTo(verticalPosition: number, horizontalPosition: number, animated: boolean = true) {
+  public scrollTo(verticalPosition: number, horizontalPosition: number) {
     verticalPosition = Math.min(Math.max(0, verticalPosition), this.maxVerticalScrollPosition);
     horizontalPosition = Math.min(Math.max(0, horizontalPosition), this.maxHorizontalScrollPosition);
 
@@ -362,7 +367,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       return;
     }
 
-    if (animated) {
+    if (this._animated) {
       const distance = Math.sqrt(
         Math.pow(this.verticalScrollPosition - verticalPosition, 2) +
         Math.pow(this.horizontalScrollPosition - horizontalPosition, 2),

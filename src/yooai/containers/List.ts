@@ -41,7 +41,6 @@ export class List<T> extends VirtualScrollList<T> {
     this.scrollTo(
       index * (this.rowHeight + this.verticalGap),
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
@@ -49,7 +48,6 @@ export class List<T> extends VirtualScrollList<T> {
     this.scrollTo(
       this.pageHeight * index,
       this.horizontalScrollPosition,
-      animated,
     );
   }
 
