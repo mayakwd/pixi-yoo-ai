@@ -182,6 +182,8 @@ export class Component extends Container implements IDestroyable {
   }
 
   public updateTransform(): void {
+    // FIXME: A stupid workaround, need to find better solution to fix issues with getBounds during draw phase.
+    super.updateTransform();
     this.validateNow();
     super.updateTransform();
   }
