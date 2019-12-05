@@ -4,12 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[Unreleased]
+### Fixed
+- Fixed list re-rendering after "selected index" change.
+
 [0.0.13] - 2019-12-05
+### Fixed
 - Added entries stack inside PopupManager. Now active popups will be hidden if new popup is opened, and reopened after the last one will be closed.
 - Now events `PopupEvent.FOCUS_IN` and `PopupEvent.FOCUS` will be dispatched by every popup, which will be shown via PopupManager.
 
 [0.0.12] - 2019-12-04
-
 ### Added
 - Added support of maximum selected items for lists via `List.maxSelectedItemsCount`
 - Parameter `animated` was removed from all scroll methods, and moved as a property to `List` class.
