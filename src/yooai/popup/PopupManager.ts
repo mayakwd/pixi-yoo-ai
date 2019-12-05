@@ -1,7 +1,7 @@
 import {gsap} from "gsap";
 import {Application, Container, Graphics, interaction} from "pixi.js";
-import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import {PopupEvent} from "../..";
+import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import InteractionEvent = interaction.InteractionEvent;
 
 export class PopupManager {

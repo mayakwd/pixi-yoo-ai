@@ -168,8 +168,8 @@ export class List<T> extends VirtualScrollList<T> {
         } else {
           this._selectedIndices[0] = dataItemIndex;
         }
-        this.invalidate("selected");
       }
+      this.invalidate("data");
       this.emit(ListEvent.SELECTION_CHANGE);
     }
   }

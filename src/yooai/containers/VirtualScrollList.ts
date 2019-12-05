@@ -50,16 +50,19 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return this._selectable;
   }
 
-  @invalidate("selected")
+  @invalidate("data")
   public set selectable(value: boolean) {
     this._selectable = value;
+    if (!this._selectable && this._selectedIndices.length > 0) {
+      this._selectedIndices = [];
+    }
   }
 
   public get allowMultipleSelection(): boolean {
     return this._allowMultipleSelection;
   }
 
-  @invalidate("selected")
+  @invalidate("data")
   public set allowMultipleSelection(value: boolean) {
     this._allowMultipleSelection = value;
 
@@ -105,13 +108,12 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return [...this._selectedIndices];
   }
 
-  @invalidate("data")
   public set selectedIndices(value: ReadonlyArray<number>) {
     if (!this._selectable) {
       return;
     }
     this._selectedIndices = value.concat();
-    this.invalidate("selected");
+    this.invalidate("data");
   }
 
   public get selectedItem(): T | undefined {
