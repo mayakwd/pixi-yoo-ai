@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[Unreleased]
+### Fixed
+- Fixed manual selection for not selectable lists. 
+
 [0.0.15] - 2019-12-06
 ### Fixed
 - Fixed (via dirty hack) `getBounds` issue during draw phase. 
