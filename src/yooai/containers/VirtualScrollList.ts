@@ -53,9 +53,6 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   @invalidate("data")
   public set selectable(value: boolean) {
     this._selectable = value;
-    if (!this._selectable && this._selectedIndices.length > 0) {
-      this._selectedIndices = [];
-    }
   }
 
   public get allowMultipleSelection(): boolean {
@@ -109,9 +106,6 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   }
 
   public set selectedIndices(value: ReadonlyArray<number>) {
-    if (!this._selectable) {
-      return;
-    }
     this._selectedIndices = value.concat();
     this.invalidate("data");
   }
