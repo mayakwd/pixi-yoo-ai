@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.17] - 2020-01-08
+### Added
+- Support of word-wrap for `Label`
+
+### Fixed
+- Added handling of releasing pointer outside for `InteractiveComponent`
+
 [0.0.16] - 2019-12-18
 ### Fixed
 - Fixed manual selection for not selectable lists. 

@@ -165,6 +165,7 @@ export class InteractiveComponent extends Pane {
     this.on("pointerout", this.pointerHandler, this);
     this.on("pointerdown", this.pointerHandler, this);
     this.on("pointerup", this.pointerHandler, this);
+    this.on("pointerupoutside", this.pointerHandler, this);
     this.on("pointertap", this.onTap, this);
   }
 
@@ -173,7 +174,7 @@ export class InteractiveComponent extends Pane {
       case "pointerover":
         this.state = "over";
         break;
-      case "pointerout":
+      case "pointerout" || "pointerupoutside":
         this.state = "up";
         break;
       case "pointerdown":
