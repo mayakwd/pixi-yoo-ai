@@ -2,6 +2,14 @@ import {Container, Point, Text, TextStyle} from "pixi.js";
 import {Component, HorizontalAlign, invalidate, IPoint, theme, VerticalAlign} from "../..";
 
 export class Label extends Component {
+  public get wordWrap(): boolean {
+    return this._wordWrap;
+  }
+
+  @invalidate("text")
+  public set wordWrap(value: boolean) {
+    this._wordWrap = value;
+  }
 
   public get text(): string {
     return this._text;
@@ -76,6 +84,7 @@ export class Label extends Component {
   protected _offset: Point = new Point();
 
   protected _text: string = "";
+  protected _wordWrap: boolean = false;
 
   public constructor(parent?: Container, x: number = 0, y: number = 0, text: string = "") {
     super(parent, x, y);
@@ -117,7 +126,11 @@ export class Label extends Component {
 
   protected drawText() {
     this._textField.text = this._text;
-    this._textField.style = !this._enabled && this._disabledTextStyle ? this._disabledTextStyle : this._textStyle;
+    const textStyle = !this._enabled && this._disabledTextStyle ? this._disabledTextStyle : this._textStyle;
+    this._textField.style = Object.assign(this._wordWrap ? {
+      wordWrap: true,
+      wordWrapWidth: this._width,
+    } : {}, textStyle);
   }
 
   protected drawLayout() {
