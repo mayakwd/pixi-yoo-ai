@@ -125,12 +125,12 @@ export class Label extends Component {
   }
 
   protected drawText() {
-    this._textField.text = this._text;
     const textStyle = !this._enabled && this._disabledTextStyle ? this._disabledTextStyle : this._textStyle;
-    this._textField.style = Object.assign(this._wordWrap ? {
+    this._textField.style = Object.assign({}, textStyle, this._wordWrap ? {
       wordWrap: true,
       wordWrapWidth: this._width,
-    } : {}, textStyle);
+    } : undefined);
+    this._textField.text = this._text;
   }
 
   protected drawLayout() {
