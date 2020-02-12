@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.19] - 2020-02-12
+### Added
+- Tweaked animations smoothness for popups.
+
+### Fixed
+- Now image loaded via `Image.imageUrl` will be removed from cache right after loading complete.
+- Workaround for calculating bounds of progress bar. Original issue appears when `NineSlicePane` `width` or `height` equals zero.
+
 [0.0.18] - 2020-01-27
 ### Fixed
 - Fixed word-wrapping layout style applying
