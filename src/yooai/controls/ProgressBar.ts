@@ -215,11 +215,17 @@ export class ProgressBar extends Component {
       const toUp = this._direction === "up";
       const toDown = this._direction === "down";
 
-      const horizontalMultiplier = toLeft || toRight ? this.percentComplete : 1;
-      const verticalMultiplier = toUp || toDown ? this.percentComplete : 1;
+      let horizontalMultiplier = toLeft || toRight ? this.percentComplete : 1;
+      let verticalMultiplier = toUp || toDown ? this.percentComplete : 1;
 
-      this._track.width = (this._width - this._barPadding * 2) * horizontalMultiplier;
-      this._track.height = (this._height - this._barPadding * 2) * verticalMultiplier;
+      const isTrackNotVisible = horizontalMultiplier <= 0 || verticalMultiplier <= 0;
+      if (isTrackNotVisible) {
+        horizontalMultiplier = 1;
+        verticalMultiplier = 1;
+      }
+      this._track.visible = !isTrackNotVisible;
+      this._track.width = Math.max(1, (this._width - this._barPadding * 2) * horizontalMultiplier);
+      this._track.height = Math.max(1, (this._height - this._barPadding * 2) * verticalMultiplier);
 
       switch (this._direction) {
         case "right":
