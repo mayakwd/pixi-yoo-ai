@@ -2,6 +2,7 @@ import {Container, Graphics, Loader, LoaderResource, Rectangle, Sprite} from "pi
 import {HorizontalAlign, IHasDimensions, invalidate, IPoint, RatioUtil, ScaleMode, VerticalAlign} from "../..";
 import {Pane} from "./Pane";
 import LOAD_TYPE = LoaderResource.LOAD_TYPE;
+import Texture = PIXI.Texture;
 
 export class Image extends Pane {
   public get imageOffset(): IPoint | undefined {
@@ -257,6 +258,7 @@ export class Image extends Pane {
   protected onImageLoaded(loader: Loader, resources: Partial<Record<string, LoaderResource>>) {
     if (resources.image !== undefined && resources.image.texture !== undefined) {
       const texture = resources.image.texture;
+      Texture.removeFromCache(texture);
       this._loadedImage = new Sprite(texture);
       this.emit("imageLoaded", this._loadedImage);
       this.invalidate("data");
