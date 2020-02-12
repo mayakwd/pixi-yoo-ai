@@ -51,7 +51,7 @@ export class PopupManager {
       this._root.addChild(overlay);
 
       overlay.alpha = 0;
-      gsap.fromTo(overlay, 0.1, {alpha: 0}, {alpha: 1}).play();
+      gsap.to(overlay, {duration: 0.15, alpha: 1}).play();
     }
 
     popup.emit(PopupEvent.FOCUS_IN);
@@ -69,7 +69,7 @@ export class PopupManager {
       popup, 0.175,
       {alpha: 0, y: popup.y + 20},
       {
-        alpha: 1, y: popup.y, ease: "power2.inOut",
+        alpha: 1, y: popup.y, ease: "power2.out",
         onComplete,
       },
     ).play();
@@ -85,16 +85,22 @@ export class PopupManager {
 
       const overlay = this._popups.get(popup);
       if (overlay !== undefined) {
-        this._root.removeChild(overlay);
-        overlay.destroy();
+        gsap.to(overlay, {
+          duration: 0.15,
+          alpha: 0,
+          onComplete: () => {
+            this._root.removeChild(overlay);
+            overlay.destroy();
+          }
+        });
       }
 
       if (popup.parent === this._root) {
         gsap.to(popup, {
           alpha: 0,
           y: popup.y + 20,
-          ease: "power2.in",
-          duration: 0.1,
+          ease: "power2.out",
+          duration: 0.15,
           onComplete: () => {
             this._root.removeChild(popup);
             if (destroy) {

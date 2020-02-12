@@ -1,6 +1,6 @@
 {
   "name": "pixi-yoo-ai",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "Yoo Ai. Extensive UI library for PixiJS v5",
   "author": "Ilya Malanin",
   "license": "MIT",
@@ -37,7 +37,7 @@
     "pixi.js": "^5.2.0",
     "ts-jest": "^24.1.0",
     "tslint": "^5.20.1",
-    "typescript": "^3.7.2",
+    "typescript": "^3.7.5",
     "gsap": "^3.0.1"
   },
   "peerDependencies": {
