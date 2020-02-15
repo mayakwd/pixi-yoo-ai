@@ -102,6 +102,7 @@ export class PopupManager {
           ease: "power2.out",
           duration: 0.15,
           onComplete: () => {
+            gsap.killTweensOf(popup);
             this._root.removeChild(popup);
             if (destroy) {
               popup.destroy();
@@ -109,6 +110,10 @@ export class PopupManager {
             onComplete?.();
           },
         }).play();
+      } else {
+        gsap.killTweensOf(popup);
+        popup.destroy();
+        onComplete?.();
       }
       this._popups.delete(popup);
     }
