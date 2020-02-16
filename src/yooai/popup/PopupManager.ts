@@ -26,7 +26,7 @@ export class PopupManager {
 
   private readonly _root: Container;
   private readonly _popups: Map<DisplayObjectWithSize, DisplayObjectWithSize | undefined> = new Map();
-  private readonly _stack: Stack<DisplayObjectWithSize> = new Stack();
+  private readonly _stack: DisplayObjectWithSize[] = [];
 
   private _activePopup?: DisplayObjectWithSize;
 
@@ -38,10 +38,10 @@ export class PopupManager {
   }
 
   public show(popup: DisplayObjectWithSize, params: IShowParams = {}) {
-    if (this._activePopup !== undefined) {
+    const {isModal = true, isCentered = true, offsetX = 0, offsetY = 0, onComplete} = params;
+    if (isModal && this._activePopup !== undefined) {
       this.pushInStack(this._activePopup);
     }
-    const {isModal = true, isCentered = true, offsetX = 0, offsetY = 0, onComplete} = params;
     let overlay: DisplayObjectWithSize | undefined;
     if (isModal) {
       const factory = this.overlayFactory || PopupManager.defaultOverlayFactory;
@@ -75,7 +75,9 @@ export class PopupManager {
     ).play();
 
     this._popups.set(popup, overlay);
-    this._activePopup = popup;
+    if (isModal) {
+      this._activePopup = popup;
+    }
   }
 
   public hide(popup: DisplayObjectWithSize, destroy: boolean = false, onComplete?: () => void): void {
@@ -86,12 +88,12 @@ export class PopupManager {
       const overlay = this._popups.get(popup);
       if (overlay !== undefined) {
         gsap.to(overlay, {
-          duration: 0.15,
+          duration: 0.25,
           alpha: 0,
           onComplete: () => {
             this._root.removeChild(overlay);
             overlay.destroy();
-          }
+          },
         });
       }
 
@@ -100,7 +102,7 @@ export class PopupManager {
           alpha: 0,
           y: popup.y + 20,
           ease: "power2.out",
-          duration: 0.15,
+          duration: 0.25,
           onComplete: () => {
             gsap.killTweensOf(popup);
             this._root.removeChild(popup);
@@ -117,8 +119,16 @@ export class PopupManager {
       }
       this._popups.delete(popup);
     }
-    this._activePopup = undefined;
-    this.popFromStack();
+
+    if (this._activePopup === popup) {
+      this._activePopup = undefined;
+      this.popFromStack();
+    } else {
+      const index = this._stack.indexOf(popup);
+      if (index !== -1) {
+        this._stack.splice(index, 1);
+      }
+    }
   }
 
   private onPopupRemoved(event: InteractionEvent) {
@@ -132,7 +142,7 @@ export class PopupManager {
   }
 
   private popFromStack() {
-    if (!this._stack.isEmpty) {
+    if (this._stack.length > 0) {
       const popup = this._stack.pop();
       if (popup !== undefined) {
         this.popPopup(popup);
@@ -153,7 +163,7 @@ export class PopupManager {
         popup.emit(PopupEvent.FOCUS_OUT);
         gsap.to(targets, {
           alpha: 0,
-          duration: 0.1,
+          duration: 0.25,
           ease: "power2.in",
           onComplete: () => {
             for (const target of targets) {
@@ -181,7 +191,7 @@ export class PopupManager {
       }
       gsap.to(targets, {
         alpha: 1,
-        duration: 0.1,
+        duration: 0.25,
         ease: "power2.inOut",
       });
     }
@@ -194,22 +204,4 @@ interface IShowParams {
   offsetX?: number;
   offsetY?: number;
   onComplete?: () => void;
-}
-
-class Stack<T> {
-  private _store: T[] = [];
-
-  public push(val: T) {
-    this._store.push(val);
-  }
-
-  public pop(): T | undefined {
-    if (this.isEmpty) { return undefined; }
-
-    return this._store.pop();
-  }
-
-  public get isEmpty() {
-    return this._store.length === 0;
-  }
 }
