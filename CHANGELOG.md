@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.20] - 2020-02-16
+- Modal popups aren't pushing out active popup now.
+
 [0.0.20] - 2020-02-15
 - Fixed destroying on `hide` for `PopupManager` for case when Popup haven't been added to PopupManager root yet.
 
