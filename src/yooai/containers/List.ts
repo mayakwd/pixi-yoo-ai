@@ -4,6 +4,15 @@ import {VirtualScrollList} from "./VirtualScrollList";
 import InteractionEvent = PIXI.interaction.InteractionEvent;
 
 export class List<T> extends VirtualScrollList<T> {
+  @invalidate("data")
+  public set enabledPredicate(value: ((data?: T) => boolean) | undefined) {
+    this._enabledPredicate = value;
+  }
+
+  public get enabledPredicate(): ((data?: T) => boolean) | undefined {
+    return this._enabledPredicate;
+  }
+
   public get labelEmitter(): ((data?: T) => string) | undefined {
     return this._labelEmitter;
   }
@@ -27,6 +36,7 @@ export class List<T> extends VirtualScrollList<T> {
 
   protected _rowsCount: number = 0;
   protected _labelEmitter?: ((data?: T) => string);
+  protected _enabledPredicate?: ((data?: T) => boolean);
 
   public constructor(
     parent?: Container,
@@ -74,7 +84,7 @@ export class List<T> extends VirtualScrollList<T> {
 
         renderer.labelEmitter = this.labelEmitter;
         renderer.selected = (this._selectedIndices.indexOf(i) !== -1);
-        renderer.drawNow();
+        renderer.enabled = this._enabledPredicate !== undefined ? this._enabledPredicate(renderer.data) : true;
       }
     }
   }
@@ -151,6 +161,7 @@ export class List<T> extends VirtualScrollList<T> {
   protected handleItemClick(event: InteractionEvent) {
     if (!this._enabled) { return; }
     if (event.target instanceof ItemRenderer) {
+      if (!event.target.enabled) { return; }
       const dataItemIndex = event.target.index;
       this.emit(ListEvent.ITEM_CLICK, new ListEvent(event.target.data, dataItemIndex));
       if (!this._selectable) { return; }

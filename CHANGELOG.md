@@ -4,7 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-[0.0.20] - 2020-02-16
+[0.0.22] - 2020-02-16
+- Interactivity for `InteractiveComponent` and derived classes is controlled by `enabled` property now.
+- Added `enabledPredicate` property for Lists, which helps to define whether renderer should be enabled.
+
+[0.0.21] - 2020-02-16
 - Modal popups aren't pushing out active popup now.
 
 [0.0.20] - 2020-02-15
