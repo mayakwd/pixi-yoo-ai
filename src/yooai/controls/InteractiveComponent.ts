@@ -194,6 +194,7 @@ export class InteractiveComponent extends Pane {
   protected draw(): void {
     if (this.isInvalid("state")) {
       this.invalidate("skin");
+      this.interactive = this._enabled;
     }
     super.draw();
   }
