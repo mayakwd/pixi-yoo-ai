@@ -245,9 +245,6 @@ export class InteractiveComponent extends Pane {
           break;
       }
     }
-    if (result === undefined) {
-      result = this.upSkin || this.skin;
-    }
     return result;
   }
 
