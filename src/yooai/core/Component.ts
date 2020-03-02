@@ -188,10 +188,6 @@ export class Component extends Container implements IDestroyable {
     super.updateTransform();
   }
 
-  public render(renderer: PIXI.Renderer): void {
-    super.render(renderer);
-  }
-
   protected configure() {
     // Block intended to be empty
   }

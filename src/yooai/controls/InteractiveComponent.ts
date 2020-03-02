@@ -206,7 +206,7 @@ export class InteractiveComponent extends Pane {
   protected getSkinForCurrentState() {
     const skin = this.getCurrentStateSkin();
     if (!skin) {
-      if (this._enabled && this._selected && this._selectedUpSkin) {
+      if (this._selected && this._selectedUpSkin) {
         return this._selectedUpSkin;
       }
       if (this._upSkin) {
