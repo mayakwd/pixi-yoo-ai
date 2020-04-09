@@ -4,20 +4,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.25] - 2020-04-09
+### Added
+- Added modal wrapper color and alpha properties for `PopupManager#show` params.
+
 [0.0.24] - 2020-03-02
+### Fixed
 - Fixed evaluation of skins for current state
 
 [0.0.23] - 2020-03-02
+### Fixed
 - Removed unnecessary condition for displaying selected skin in case if component is enabled.
 
 [0.0.22] - 2020-02-16
-- Interactivity for `InteractiveComponent` and derived classes is controlled by `enabled` property now.
+### Added
 - Added `enabledPredicate` property for Lists, which helps to define whether renderer should be enabled.
 
+### Changed
+- Interactivity for `InteractiveComponent` and derived classes is controlled by `enabled` property now.
+
 [0.0.21] - 2020-02-16
+### Fixed
 - Modal popups aren't pushing out active popup now.
 
 [0.0.20] - 2020-02-15
+### Fixed
 - Fixed destroying on `hide` for `PopupManager` for case when Popup haven't been added to PopupManager root yet.
 
 [0.0.19] - 2020-02-12

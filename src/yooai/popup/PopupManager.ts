@@ -13,16 +13,14 @@ export class PopupManager {
     return this.application.screen.height;
   }
 
-  private static defaultOverlayFactory(): DisplayObjectWithSize {
+  private static createWrapper(color: number, alpha: number): DisplayObjectWithSize {
     const quad = new Graphics();
-    quad.beginFill(0x113322, 0.25);
+    quad.beginFill(color, alpha);
     quad.drawRect(0, 0, 100, 100);
     quad.endFill();
     quad.interactive = true;
     return quad;
   }
-
-  public overlayFactory?: () => DisplayObjectWithSize;
 
   private readonly _root: Container;
   private readonly _popups: Map<DisplayObjectWithSize, DisplayObjectWithSize | undefined> = new Map();
@@ -42,16 +40,15 @@ export class PopupManager {
     if (isModal && this._activePopup !== undefined) {
       this.pushInStack(this._activePopup);
     }
-    let overlay: DisplayObjectWithSize | undefined;
+    let wrapper: DisplayObjectWithSize | undefined;
     if (isModal) {
-      const factory = this.overlayFactory || PopupManager.defaultOverlayFactory;
-      overlay = factory();
-      overlay.width = this.stageWidth;
-      overlay.height = this.stageHeight;
-      this._root.addChild(overlay);
+      wrapper = PopupManager.createWrapper(params.wrapperColor ?? 0x113322, params.wrapperAlpha ?? 0.25);
+      wrapper.width = this.stageWidth;
+      wrapper.height = this.stageHeight;
+      this._root.addChild(wrapper);
 
-      overlay.alpha = 0;
-      gsap.to(overlay, {duration: 0.15, alpha: 1}).play();
+      wrapper.alpha = 0;
+      gsap.to(wrapper, {duration: 0.15, alpha: 1}).play();
     }
 
     popup.emit(PopupEvent.FOCUS_IN);
@@ -74,7 +71,7 @@ export class PopupManager {
       },
     ).play();
 
-    this._popups.set(popup, overlay);
+    this._popups.set(popup, wrapper);
     if (isModal) {
       this._activePopup = popup;
     }
@@ -85,14 +82,14 @@ export class PopupManager {
       popup.emit(PopupEvent.FOCUS_OUT);
       popup.off("removed", this.onPopupRemoved, this);
 
-      const overlay = this._popups.get(popup);
-      if (overlay !== undefined) {
-        gsap.to(overlay, {
+      const wrapper = this._popups.get(popup);
+      if (wrapper !== undefined) {
+        gsap.to(wrapper, {
           duration: 0.25,
           alpha: 0,
           onComplete: () => {
-            this._root.removeChild(overlay);
-            overlay.destroy();
+            this._root.removeChild(wrapper);
+            wrapper.destroy();
           },
         });
       }
@@ -155,10 +152,10 @@ export class PopupManager {
     if (this._popups.has(popup)) {
       popup.off("removed", this.onPopupRemoved, this);
       if (popup.parent === this._root) {
-        const overlay = this._popups.get(popup);
+        const wrapper = this._popups.get(popup);
         const targets = [popup];
-        if (overlay !== undefined) {
-          targets.push(overlay);
+        if (wrapper !== undefined) {
+          targets.push(wrapper);
         }
         popup.emit(PopupEvent.FOCUS_OUT);
         gsap.to(targets, {
@@ -181,10 +178,10 @@ export class PopupManager {
     if (this._popups.has(popup)) {
       popup.emit(PopupEvent.FOCUS_IN);
       popup.on("removed", this.onPopupRemoved, this);
-      const overlay = this._popups.get(popup);
+      const wrapper = this._popups.get(popup);
       const targets = [popup];
-      if (overlay !== undefined) {
-        targets.push(overlay);
+      if (wrapper !== undefined) {
+        targets.push(wrapper);
       }
       for (const target of targets.reverse()) {
         this._root.addChild(target);
@@ -201,6 +198,8 @@ export class PopupManager {
 interface IShowParams {
   isModal?: boolean;
   isCentered?: boolean;
+  wrapperColor?: number;
+  wrapperAlpha?: number;
   offsetX?: number;
   offsetY?: number;
   onComplete?: () => void;
