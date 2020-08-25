@@ -276,7 +276,6 @@ export class Image extends Pane {
 
   protected destroyImageLoader() {
     if (this._loader !== undefined) {
-      this._loader.removeAllListeners();
       this._loader.destroy();
       this._loader = undefined;
     }

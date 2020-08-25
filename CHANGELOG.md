@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.26] - 2020-08-20
+### Added
+- Updated Typescript version to 4.0.2
+- Updated all relevant dependencies
+
+### Fixed
+- Added support for Pixi.JS 5.3.3
+
 [0.0.25] - 2020-04-09
 ### Added
 - Added modal wrapper color and alpha properties for `PopupManager#show` params.
