@@ -243,8 +243,8 @@ export class Image extends Pane {
   protected updateSizeRect() {
     this._sizeRect.x = 0;
     this._sizeRect.y = 0;
-    this._sizeRect.width = this._width;
-    this._sizeRect.height = this._height;
+    this._sizeRect.width = this._componentWidth;
+    this._sizeRect.height = this._componentHeight;
   }
 
   protected loadImage() {

@@ -206,8 +206,8 @@ export class ProgressBar extends Component {
 
   protected drawLayout() {
     if (this._bar !== undefined) {
-      this._bar.width = this._width;
-      this._bar.height = this._height;
+      this._bar.width = this._componentWidth;
+      this._bar.height = this._componentHeight;
     }
     if (this._track !== undefined) {
       const toRight = this._direction === "right";
@@ -224,24 +224,24 @@ export class ProgressBar extends Component {
         verticalMultiplier = 1;
       }
       this._track.visible = !isTrackNotVisible;
-      this._track.width = Math.max(1, (this._width - this._barPadding * 2) * horizontalMultiplier);
-      this._track.height = Math.max(1, (this._height - this._barPadding * 2) * verticalMultiplier);
+      this._track.width = Math.max(1, (this._componentWidth - this._barPadding * 2) * horizontalMultiplier);
+      this._track.height = Math.max(1, (this._componentHeight - this._barPadding * 2) * verticalMultiplier);
 
       switch (this._direction) {
         case "right":
         case "left":
-          this._track.x = toRight ? this._barPadding : this._width - this._track.width - this._barPadding;
+          this._track.x = toRight ? this._barPadding : this._componentWidth - this._track.width - this._barPadding;
           this._track.y = this._barPadding;
           break;
         case "up":
         case "down":
-          this._track.y = toDown ? this._barPadding : this._height - this._track.height - this._barPadding;
+          this._track.y = toDown ? this._barPadding : this._componentHeight - this._track.height - this._barPadding;
           this._track.x = this._barPadding;
           break;
       }
     }
     if (this._displayText) {
-      this._label.resize(this._width, this._height);
+      this._label.resize(this._componentWidth, this._componentHeight);
     }
   }
 

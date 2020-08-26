@@ -101,7 +101,7 @@ export class ItemRenderer<T> extends InteractiveComponent {
   }
 
   protected drawLayout() {
-    this._label.resize(this._width, this._height);
+    this._label.resize(this._componentWidth, this._componentHeight);
     super.drawLayout();
   }
 }

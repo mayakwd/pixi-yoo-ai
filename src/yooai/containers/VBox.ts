@@ -18,13 +18,13 @@ export class VBox extends AbstractBox {
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
     super(new VerticalLayoutBehavior(), parent, x, y);
 
-    this._width = VBox.INITIAL_WIDTH;
+    this._componentWidth = VBox.INITIAL_WIDTH;
   }
 
   protected drawLayout(): void {
     super.drawLayout();
     this.calculateContentSize();
-    this._height = this._contentHeight + this.marginTop + this.marginBottom;
+    this._componentHeight = this._contentHeight + this.marginTop + this.marginBottom;
   }
 
   private calculateContentSize() {

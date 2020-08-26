@@ -100,7 +100,7 @@ export abstract class AbstractBox extends Pane {
 
   protected drawLayout(): void {
     if (this.layoutBehavior) {
-      this.layoutBehavior.apply(this, this._width, this._height);
+      this.layoutBehavior.apply(this, this._componentWidth, this._componentHeight);
     }
   }
 }

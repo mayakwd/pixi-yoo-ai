@@ -3,7 +3,6 @@ import {HorizontalLayoutBehavior} from "../..";
 import {AbstractBox} from "./AbstractBox";
 
 export class HBox extends AbstractBox {
-
   public get contentWidth(): number {
     return this._contentWidth;
   }
@@ -17,14 +16,14 @@ export class HBox extends AbstractBox {
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
     super(new HorizontalLayoutBehavior(), parent, x, y);
 
-    this._height = HBox.INITIAL_HEIGHT;
+    this._componentHeight = HBox.INITIAL_HEIGHT;
   }
 
   protected drawLayout(): void {
     super.drawLayout();
     this.calculateContentSize();
 
-    this._width = this._contentWidth + this.marginLeft + this.marginRight;
+    this._componentWidth = this._contentWidth + this.marginLeft + this.marginRight;
   }
 
   private calculateContentSize() {
