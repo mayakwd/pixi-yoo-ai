@@ -1,7 +1,6 @@
-import {Container} from "pixi.js";
+import {Container, InteractionEvent} from "pixi.js";
 import {DataProvider, invalidate, ItemRenderer, ListEvent} from "../..";
 import {VirtualScrollList} from "./VirtualScrollList";
-import InteractionEvent = PIXI.interaction.InteractionEvent;
 
 export class List<T> extends VirtualScrollList<T> {
   @invalidate("data")
@@ -23,11 +22,11 @@ export class List<T> extends VirtualScrollList<T> {
   }
 
   public get maxHorizontalScrollPosition(): number {
-    return Math.max(this.contentWidth - this.width + this.contentPadding * 2, 0);
+    return Math.max(this.contentWidth - this.componentWidth + this.contentPadding * 2, 0);
   }
 
   public get maxVerticalScrollPosition(): number {
-    return Math.max(0, this.contentHeight - this.height + this.contentPadding * 2);
+    return Math.max(0, this.contentHeight - this.componentHeight + this.contentPadding * 2);
   }
 
   public get rowsCount(): number {

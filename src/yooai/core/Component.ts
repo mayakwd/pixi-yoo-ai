@@ -20,30 +20,30 @@ export class Component extends Container implements IDestroyable {
     this.applyDisabledFilters();
   }
 
-  public get width(): number {
-    return this._width;
+  public get componentWidth(): number {
+    return this._componentWidth;
   }
 
   @invalidate("size")
-  public set width(width: number) {
-    this._width = width;
+  public set componentWidth(width: number) {
+    this._componentWidth = width;
   }
 
-  public get height(): number {
-    return this._height;
+  public get componentHeight(): number {
+    return this._componentHeight;
   }
 
   @invalidate("size")
-  public set height(height: number) {
-    this._height = height;
+  public set componentHeight(height: number) {
+    this._componentHeight = height;
   }
 
   public get centerX(): number {
-    return this.x + this._width * 0.5;
+    return this.x + this._componentWidth * 0.5;
   }
 
   public get centerY(): number {
-    return this.y + this._width * 0.5;
+    return this.y + this._componentWidth * 0.5;
   }
 
   public set left(value: number) {
@@ -63,19 +63,19 @@ export class Component extends Container implements IDestroyable {
   }
 
   public set right(value: number) {
-    this.x = value - this._width;
+    this.x = value - this._componentWidth;
   }
 
   public get right(): number {
-    return this.x + this._width;
+    return this.x + this._componentWidth;
   }
 
   public set bottom(value: number) {
-    this.y = value - this._height;
+    this.y = value - this._componentHeight;
   }
 
   public get bottom(): number {
-    return this.y + this._height;
+    return this.y + this._componentHeight;
   }
 
   public get enabled(): boolean {
@@ -96,11 +96,11 @@ export class Component extends Container implements IDestroyable {
   protected static readonly INITIAL_WIDTH = 100;
 
   protected _isDestroyed: boolean = false;
-  protected _width: number = 0;
-  protected _height: number = 0;
+  protected _componentWidth: number = 0;
+  protected _componentHeight: number = 0;
   protected _enabled: boolean = true;
   protected _invalidationSet: Set<InvalidationType> = new Set();
-  protected _hitArea: Rectangle = new Rectangle(0, 0, this._width, this._height);
+  protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
   protected _disabledFilters?: Filter[];
 
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
@@ -134,8 +134,8 @@ export class Component extends Container implements IDestroyable {
   }
 
   public resize(width: number, height: number): void {
-    this._width = width;
-    this._height = height;
+    this._componentWidth = width;
+    this._componentHeight = height;
 
     this.invalidate("size");
     this.emit("resize");
@@ -231,8 +231,8 @@ export class Component extends Container implements IDestroyable {
   }
 
   protected updateHitArea() {
-    this._hitArea.width = this._width;
-    this._hitArea.height = this._height;
+    this._hitArea.width = this._componentWidth;
+    this._hitArea.height = this._componentHeight;
   }
 
   protected removeDisabledFilters() {

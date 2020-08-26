@@ -91,8 +91,8 @@ export class Label extends Component {
 
     this.text = text;
 
-    this._width = 100;
-    this._height = 24;
+    this._componentWidth = 100;
+    this._componentHeight = 24;
   }
 
   public setOffset(x: number | IPoint, y?: number): void {
@@ -128,7 +128,7 @@ export class Label extends Component {
     const textStyle = !this._enabled && this._disabledTextStyle ? this._disabledTextStyle : this._textStyle;
     this._textField.style = Object.assign({}, textStyle, this._wordWrap ? {
       wordWrap: true,
-      wordWrapWidth: this._width,
+      wordWrapWidth: this._componentWidth,
     } : undefined);
     this._textField.text = this._text;
   }

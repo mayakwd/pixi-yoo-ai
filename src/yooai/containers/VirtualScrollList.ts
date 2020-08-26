@@ -388,11 +388,11 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   }
 
   protected calculateAvailableHeight() {
-    return this._height - this._contentPadding * 2;
+    return this._componentHeight - this._contentPadding * 2;
   }
 
   protected calculateAvailableWidth() {
-    return this._width - this._contentPadding * 2;
+    return this._componentWidth - this._contentPadding * 2;
   }
 
   protected checkDataProviderAvailability() {
@@ -419,8 +419,8 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
 
   protected drawRectMask() {
     const rect = this._contentScrollRect;
-    rect.width = this._width;
-    rect.height = this._height;
+    rect.width = this._componentWidth;
+    rect.height = this._componentHeight;
 
     this._rectMask.clear();
     this._rectMask.beginFill(0xFF0000, 1);

@@ -18,8 +18,8 @@ export class Pane extends Component {
   public constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 100, height: number = 100) {
     super(parent, x, y);
 
-    this._width = width;
-    this._height = height;
+    this._componentWidth = width;
+    this._componentHeight = height;
   }
 
   protected draw(): void {
@@ -39,8 +39,8 @@ export class Pane extends Component {
 
   protected drawLayout() {
     if (this._background) {
-      this._background.width = this._width;
-      this._background.height = this._height;
+      this._background.width = this._componentWidth;
+      this._background.height = this._componentHeight;
     }
   }
 }
