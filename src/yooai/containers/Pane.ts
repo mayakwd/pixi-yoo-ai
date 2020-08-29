@@ -39,8 +39,8 @@ export class Pane extends Component {
 
   protected drawLayout() {
     if (this._background) {
-      this._background.width = this._componentWidth;
-      this._background.height = this._componentHeight;
+      this._background.width = this.componentWidth;
+      this._background.height = this.componentHeight;
     }
   }
 }

@@ -1,14 +1,16 @@
+import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import {IHasDimensions} from "./IHasDimensions";
 import {ScaleMode} from "./ScaleMode";
+import {getHeight, getWidth, isComponent} from "./utils";
 
 interface IBasicScaleOptions {
-  size: IHasDimensions;
+  size: IHasDimensions | DisplayObjectWithSize;
   snapToPixel?: boolean;
   allowEnlarge?: boolean;
 }
 
 export interface IScaleOptionsWithArea extends IBasicScaleOptions {
-  fitArea: IHasDimensions;
+  fitArea: IHasDimensions | DisplayObjectWithSize;
 }
 
 export interface IScaleOptions extends IScaleOptionsWithArea {
@@ -26,38 +28,60 @@ export class RatioUtil {
     }
   }
 
-  public static widthToHeightRatio(size: IHasDimensions): number {
-    return size.width / size.height;
+  public static widthToHeightRatio(size: IHasDimensions | DisplayObjectWithSize): number {
+    const width = getWidth(size);
+    const height = getHeight(size);
+    return width / height;
   }
 
-  public static heightToWidthRatio(size: IHasDimensions): number {
-    return size.height / size.width;
+  public static heightToWidthRatio(size: IHasDimensions | DisplayObjectWithSize): number {
+    const width = getWidth(size);
+    const height = getHeight(size);
+    return height / width;
   }
 
   public static scaleToFill(options: IScaleOptionsWithArea, result?: IHasDimensions): IHasDimensions {
     const {size, fitArea} = options;
-    const scaleRatio = Math.max(fitArea.width / size.width, fitArea.height / size.height);
+    const fitWidth = getWidth(fitArea);
+    const fitHeight = getHeight(fitArea);
+    const width = getWidth(size);
+    const height = getHeight(size);
+    const scaleRatio = Math.max(fitWidth / width, fitHeight / height);
     return this.scaleByRatio(options, scaleRatio, result);
   }
 
   public static scaleToFit(options: IScaleOptionsWithArea, result?: IHasDimensions): IHasDimensions {
     const {size, fitArea} = options;
-    const scaleRatio = Math.min(fitArea.width / size.width, fitArea.height / size.height);
+    const fitWidth = getWidth(fitArea);
+    const fitHeight = getHeight(fitArea);
+    const width = getWidth(size);
+    const height = getHeight(size);
+    const scaleRatio = Math.min(fitWidth / width, fitHeight / height);
     return this.scaleByRatio(options, scaleRatio, result);
   }
 
-  private static scaleByRatio(options: IScaleOptionsWithArea, scaleRatio: number, result?: IHasDimensions) {
+  private static scaleByRatio(options: IScaleOptionsWithArea, scaleRatio: number, result?: IHasDimensions | DisplayObjectWithSize) {
     const {size, snapToPixel = true, allowEnlarge = false} = options;
     if (result === undefined) { result = {...size}; }
     if (!allowEnlarge) { scaleRatio = Math.min(1, scaleRatio); }
-    result.width *= scaleRatio;
-    result.height *= scaleRatio;
+    if (isComponent(result)) {
+      result.componentWidth *= scaleRatio;
+      result.componentHeight *= scaleRatio;
+    } else {
+      result.width *= scaleRatio;
+      result.height *= scaleRatio;
+    }
     return snapToPixel ? RatioUtil.roundSize(result) : result;
   }
 
-  private static roundSize(size: IHasDimensions): IHasDimensions {
-    size.width = Math.round(size.width);
-    size.height = Math.round(size.height);
+  private static roundSize(size: IHasDimensions | DisplayObjectWithSize): IHasDimensions {
+    if (isComponent(size)) {
+      size.componentWidth = Math.round(size.componentWidth);
+      size.componentHeight = Math.round(size.componentHeight);
+    } else {
+      size.width = Math.round(size.width);
+      size.height = Math.round(size.height);
+    }
     return size;
   }
 }

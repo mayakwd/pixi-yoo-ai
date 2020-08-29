@@ -5,6 +5,8 @@ import {invalidate} from "./invalidate";
 import {InvalidationType} from "./InvalidationType";
 
 export class Component extends Container implements IDestroyable {
+  private inInvalidationPhase: boolean = false;
+
   public get isDestroyed(): boolean {
     return this._isDestroyed;
   }
@@ -169,7 +171,8 @@ export class Component extends Container implements IDestroyable {
   }
 
   public validateNow(): void {
-    if (this.isInvalid()) {
+    if (this.isInvalid() && !this.inInvalidationPhase) {
+      this.inInvalidationPhase = true;
       for (const child of this.children) {
         if (child instanceof Component) {
           child.validateNow();
@@ -178,6 +181,7 @@ export class Component extends Container implements IDestroyable {
       this.updateHitArea();
       this.draw();
       this.validate();
+      this.inInvalidationPhase = false;
     }
   }
 

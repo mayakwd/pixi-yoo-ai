@@ -1,6 +1,7 @@
 import {Container} from "pixi.js";
 import {Component} from "../..";
 import {LayoutBehavior} from "./LayoutBehavior";
+import {getHeight, getWidth} from "./utils";
 
 export class HorizontalLayoutBehavior extends LayoutBehavior {
   public apply(target: Container, width: number, height: number): void {
@@ -15,20 +16,22 @@ export class HorizontalLayoutBehavior extends LayoutBehavior {
       }
 
       if (child instanceof Container) {
+        const childHeight = getHeight(child);
+        const childWidth = getWidth(child);
         switch (this.vAlign) {
           case "top":
             child.y = yOffset;
             break;
           case "center":
-            child.y = yOffset + (height - this.marginTop - this.marginBottom - child.height) * 0.5;
+            child.y = yOffset + (height - this.marginTop - this.marginBottom - childHeight) * 0.5;
             break;
           case "bottom":
-            child.y = height - this.marginBottom - child.height;
+            child.y = height - this.marginBottom - childHeight;
             break;
         }
         child.x = xOffset;
 
-        xOffset += child.width + this.horizontalGap;
+        xOffset += childWidth + this.horizontalGap;
       }
     }
   }

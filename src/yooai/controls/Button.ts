@@ -1,6 +1,7 @@
 import {Container, Point, TextStyle} from "pixi.js";
 import {HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
 import {alignChild} from "../..";
+import {getHeight, getWidth} from "../layout/utils";
 import {InteractiveComponent} from "./InteractiveComponent";
 import {Label} from "./Label";
 
@@ -163,28 +164,32 @@ export class Button extends InteractiveComponent {
     yOffset += this.contentOffsetY;
 
     if (this._currentIcon !== undefined) {
-      const verticalGap = this._label.contentHeight > 0 ? this._iconGap : 0;
-      const horizontalGap = this._label.contentWidth > 0 ? this._iconGap : 0;
+      const labelWidth = getWidth(this._currentIcon);
+      const labelHeight = getHeight(this._currentIcon);
+      const iconWidth = getWidth(this._currentIcon);
+      const iconHeight = getHeight(this._currentIcon);
+      const verticalGap = labelHeight > 0 ? this._iconGap : 0;
+      const horizontalGap = labelWidth > 0 ? this._iconGap : 0;
       switch (this._iconPlacement) {
         case "up":
-          this._currentIcon.x = xOffset + (contentWidth - this._currentIcon.width) * 0.5;
+          this._currentIcon.x = xOffset + (contentWidth - iconWidth) * 0.5;
           this._currentIcon.y = yOffset;
-          yOffset += this._currentIcon.height + verticalGap;
+          yOffset += iconHeight + verticalGap;
           break;
         case "down":
-          this._currentIcon.x = xOffset + (contentWidth - this._currentIcon.width) * 0.5;
-          this._currentIcon.y = yOffset + contentHeight - this._currentIcon.height;
-          yOffset -= this._currentIcon.height + verticalGap - this._label.contentHeight;
+          this._currentIcon.x = xOffset + (contentWidth - iconWidth) * 0.5;
+          this._currentIcon.y = yOffset + contentHeight - iconHeight;
+          yOffset -= iconHeight + verticalGap - labelHeight;
           break;
         case "left":
           this._currentIcon.x = xOffset;
-          this._currentIcon.y = yOffset + (contentHeight - this._currentIcon.height) * 0.5;
-          xOffset += this._currentIcon.width + horizontalGap;
+          this._currentIcon.y = yOffset + (contentHeight - iconHeight) * 0.5;
+          xOffset += iconWidth + horizontalGap;
           break;
         case "right":
-          this._currentIcon.x = xOffset + contentWidth - this._currentIcon.width;
-          this._currentIcon.y = yOffset + (contentHeight - this._currentIcon.height) * 0.5;
-          xOffset -= this._currentIcon.width + horizontalGap - this._label.width;
+          this._currentIcon.x = xOffset + contentWidth - iconWidth;
+          this._currentIcon.y = yOffset + (contentHeight - iconHeight) * 0.5;
+          xOffset -= iconWidth + horizontalGap - labelWidth;
           break;
       }
     }
@@ -228,11 +233,11 @@ export class Button extends InteractiveComponent {
       switch (this._iconPlacement) {
         case "left":
         case "right":
-          contentWidth += this._currentIcon.width + (contentWidth > 0 ? this._iconGap : 0);
+          contentWidth += getWidth(this._currentIcon) + (contentWidth > 0 ? this._iconGap : 0);
           break;
         case "up":
         case "down":
-          contentHeight += this._currentIcon.height + (contentHeight > 0 ? this._iconGap : 0);
+          contentHeight += getHeight(this._currentIcon) + (contentHeight > 0 ? this._iconGap : 0);
           break;
       }
     }
