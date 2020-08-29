@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.28] - 2020-08-29
+### Added
+- Added global `getWidth` and `getHeight` helpers, that will help you to get dimensions of any DisplayObject,  
+for Components it will be `componentWidth` and `componentHeight` respectively. For DisplayObjects - `width` and `height`.
+
+### Fixed
+- All components are now depends on `componentWidth` and `componentHeight`
+
 [0.0.27] - 2020-08-20
 ### Breaking changes
 - width and height for components renamed to componentWidth, componentHeight accordingly
