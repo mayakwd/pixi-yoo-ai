@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.29] - 2020-08-29
+### Disappointment
+- Tests were disabled due to lack of sense and problems with CI
+
 [0.0.28] - 2020-08-29
 ### Added
 - Added global `getWidth` and `getHeight` helpers, that will help you to get dimensions of any DisplayObject,  
