@@ -131,6 +131,7 @@ export class Label extends Component {
       wordWrapWidth: this._componentWidth,
     } : undefined);
     this._textField.text = this._text;
+    this._textField.updateText(true);
   }
 
   protected drawLayout() {

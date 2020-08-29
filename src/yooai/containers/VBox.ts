@@ -1,5 +1,6 @@
 import {Container} from "pixi.js";
 import {VerticalLayoutBehavior} from "../..";
+import {getHeight, getWidth} from "../layout/utils";
 import {AbstractBox} from "./AbstractBox";
 
 export class VBox extends AbstractBox {
@@ -39,12 +40,14 @@ export class VBox extends AbstractBox {
     while (index >= 0) {
       const child = this.children[index];
       if (child instanceof Container) {
+        const childWidth = getWidth(child);
+        const childHeight = getHeight(child);
         if (!isContentHeightSet) {
-          this._contentHeight = child.y + child.height - this.marginTop;
+          this._contentHeight = child.y + childHeight - this.marginTop;
           isContentHeightSet = true;
         }
-        if (this._contentWidth < child.width) {
-          this._contentWidth = child.width;
+        if (this._contentWidth < childWidth) {
+          this._contentWidth = childWidth;
         }
       }
       index--;

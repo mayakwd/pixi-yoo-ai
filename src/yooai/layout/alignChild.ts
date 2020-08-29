@@ -1,15 +1,23 @@
+import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import {HorizontalAlign} from "./HorizontalAlign";
 import {IHasDimensions} from "./IHasDimensions";
 import {IPoint} from "./IPoint";
+import {getHeight, getWidth} from "./utils";
 import {VerticalAlign} from "./VerticalAlign";
 
 export function alignChild(
-  child: IHasDimensions, parent: IHasDimensions,
+  child: IHasDimensions | DisplayObjectWithSize, parent: IHasDimensions | DisplayObjectWithSize,
   vAlign?: VerticalAlign, hAlign?: HorizontalAlign,
   offset?: IPoint,
   result?: IPoint,
 ) {
   if (result === undefined) { result = {x: 0, y: 0}; }
+
+  const parentWidth = getWidth(parent);
+  const parentHeight = getHeight(parent);
+
+  const childWidth = getWidth(child);
+  const childHeight = getHeight(child);
 
   let x: number | undefined;
   let y: number | undefined;
@@ -20,10 +28,10 @@ export function alignChild(
         y = 0;
         break;
       case "center":
-        y = (parent.height - child.height) * 0.5;
+        y = (parentHeight - childHeight) * 0.5;
         break;
       case "bottom":
-        y = parent.height - child.height;
+        y = parentHeight - childHeight;
         break;
     }
   }
@@ -33,10 +41,10 @@ export function alignChild(
         x = 0;
         break;
       case "center":
-        x = (parent.width - child.width) * 0.5;
+        x = (parentWidth - childWidth) * 0.5;
         break;
       case "right":
-        x = parent.width - child.width;
+        x = parentWidth - childWidth;
         break;
     }
   }

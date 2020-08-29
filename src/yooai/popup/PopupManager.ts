@@ -2,6 +2,7 @@ import {gsap} from "gsap";
 import {Application, Container, Graphics, InteractionEvent} from "pixi.js";
 import {PopupEvent} from "../..";
 import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
+import {getHeight, getWidth} from "../layout/utils";
 
 export class PopupManager {
   private get stageWidth(): number {
@@ -54,8 +55,8 @@ export class PopupManager {
     this._root.addChild(popup);
 
     if (isCentered) {
-      popup.x = (this.stageWidth - popup.width) * 0.5 + offsetX;
-      popup.y = (this.stageHeight - popup.height) * 0.5 + offsetY;
+      popup.x = (this.stageWidth - getWidth(popup)) * 0.5 + offsetX;
+      popup.y = (this.stageHeight - getHeight(popup)) * 0.5 + offsetY;
     }
 
     popup.on("removed", this.onPopupRemoved, this);
@@ -84,7 +85,7 @@ export class PopupManager {
       const wrapper = this._popups.get(popup);
       if (wrapper !== undefined) {
         gsap.to(wrapper, {
-          duration: 0.25,
+          duration: 0.15,
           alpha: 0,
           onComplete: () => {
             this._root.removeChild(wrapper);
@@ -98,7 +99,7 @@ export class PopupManager {
           alpha: 0,
           y: popup.y + 20,
           ease: "power2.out",
-          duration: 0.25,
+          duration: 0.15,
           onComplete: () => {
             gsap.killTweensOf(popup);
             this._root.removeChild(popup);
@@ -159,7 +160,7 @@ export class PopupManager {
         popup.emit(PopupEvent.FOCUS_OUT);
         gsap.to(targets, {
           alpha: 0,
-          duration: 0.25,
+          duration: 0.15,
           ease: "power2.in",
           onComplete: () => {
             for (const target of targets) {
@@ -187,8 +188,8 @@ export class PopupManager {
       }
       gsap.to(targets, {
         alpha: 1,
-        duration: 0.25,
-        ease: "power2.inOut",
+        duration: 0.15,
+        ease: "power2.out",
       });
     }
   }

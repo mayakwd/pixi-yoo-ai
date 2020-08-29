@@ -36,11 +36,11 @@ export class TileList<T> extends List<T> {
   }
 
   public get maxHorizontalScrollPosition(): number {
-    return Math.max(this.contentWidth - this.width, 0);
+    return Math.max(this.contentWidth - this.componentWidth, 0);
   }
 
   public get maxVerticalScrollPosition(): number {
-    return Math.max(this.contentHeight - this.height, 0);
+    return Math.max(this.contentHeight - this.componentHeight, 0);
   }
 
   public get rowsCount(): number {

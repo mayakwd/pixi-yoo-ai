@@ -1,5 +1,6 @@
 import {Container} from "pixi.js";
 import {HorizontalLayoutBehavior} from "../..";
+import {getHeight, getWidth} from "../layout/utils";
 import {AbstractBox} from "./AbstractBox";
 
 export class HBox extends AbstractBox {
@@ -38,12 +39,14 @@ export class HBox extends AbstractBox {
     while (index >= 0) {
       const child = this.children[index];
       if (child instanceof Container) {
+        const childWidth = getWidth(child);
+        const childHeight = getHeight(child);
         if (!contentWidthIsSet) {
-          this._contentWidth = child.x + child.width - this.marginLeft;
+          this._contentWidth = child.x + childWidth - this.marginLeft;
           contentWidthIsSet = true;
         }
-        if (this._contentHeight < child.height) {
-          this._contentHeight = child.height;
+        if (this._contentHeight < childHeight) {
+          this._contentHeight = childHeight;
         }
       }
       index--;
