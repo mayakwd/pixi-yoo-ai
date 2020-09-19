@@ -164,8 +164,8 @@ export class Button extends InteractiveComponent {
     yOffset += this.contentOffsetY;
 
     if (this._currentIcon !== undefined) {
-      const labelWidth = getWidth(this._currentIcon);
-      const labelHeight = getHeight(this._currentIcon);
+      const labelWidth = getWidth(this._label);
+      const labelHeight = getHeight(this._label);
       const iconWidth = getWidth(this._currentIcon);
       const iconHeight = getHeight(this._currentIcon);
       const verticalGap = labelHeight > 0 ? this._iconGap : 0;
@@ -210,7 +210,7 @@ export class Button extends InteractiveComponent {
 
   protected drawLabel() {
     this._label.resize(this._label.contentWidth, this._label.contentHeight);
-    this._label.drawNow();
+    this._label.validateNow();
   }
 
   protected getIconForCurrentState() {

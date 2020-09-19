@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.30] - 2020-09-19
+- Reworked invalidation and rendering: replaced with requestAnimationFrame
+- onChildrenChange must not be validated if AbstractBox is destroyed
+- Components now will be validated before alignment via alignChild
+- Fixed label size measurement in the Button
+- Fixed renderers reusing in the List.
+- Added hasItem method to DataProvider
+
 [0.0.29] - 2020-08-29
 ### Disappointment
 - Tests were disabled due to lack of sense and problems with CI
