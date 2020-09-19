@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
+[0.0.31] - 2020-09-19
+- Added getter 'items' to DataProvider, which returns list of items
+
 [0.0.30] - 2020-09-19
 - Reworked invalidation and rendering: replaced with requestAnimationFrame
 - onChildrenChange must not be validated if AbstractBox is destroyed
