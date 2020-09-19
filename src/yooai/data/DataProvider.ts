@@ -69,6 +69,10 @@ export class DataProvider<T> extends EventEmitter {
     return this._data.indexOf(item) != -1;
   }
 
+  public get items(): ReadonlyArray<T> {
+    return this._data;
+  }
+
   public removeItemAt(index: number): T {
     this.validateIndex(index);
     const items = this._data.splice(index, 1);
