@@ -1,12 +1,10 @@
 import {Container, DisplayObject, Filter, Rectangle} from "pixi.js";
 import {alignChild, HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
+import {AbstractComponent} from "./AbstractComponent";
 import {IDestroyable} from "./IDestroyable";
 import {invalidate} from "./invalidate";
-import {InvalidationType} from "./InvalidationType";
 
-export class Component extends Container implements IDestroyable {
-  private inInvalidationPhase: boolean = false;
-
+export class Component extends AbstractComponent implements IDestroyable {
   public get isDestroyed(): boolean {
     return this._isDestroyed;
   }
@@ -101,7 +99,6 @@ export class Component extends Container implements IDestroyable {
   protected _componentWidth: number = 0;
   protected _componentHeight: number = 0;
   protected _enabled: boolean = true;
-  protected _invalidationSet: Set<InvalidationType> = new Set();
   protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
   protected _disabledFilters?: Filter[];
 
@@ -148,48 +145,11 @@ export class Component extends Container implements IDestroyable {
     this.y = y;
   }
 
-  public invalidate(invalidationType: InvalidationType = "all"): void {
-    this._invalidationSet.add(invalidationType);
-  }
-
-  public isInvalid(invalidationType: InvalidationType = "all"): boolean {
-    if (invalidationType === "all") {
-      return this._invalidationSet.size > 0;
-    }
-    return this._invalidationSet.has("all") || this._invalidationSet.has(invalidationType);
-  }
-
   public destroy(): void {
     if (this._isDestroyed) {
       return;
     }
     super.destroy({children: true});
-  }
-
-  public drawNow(): void {
-    this.draw();
-  }
-
-  public validateNow(): void {
-    if (this.isInvalid() && !this.inInvalidationPhase) {
-      this.inInvalidationPhase = true;
-      for (const child of this.children) {
-        if (child instanceof Component) {
-          child.validateNow();
-        }
-      }
-      this.updateHitArea();
-      this.draw();
-      this.validate();
-      this.inInvalidationPhase = false;
-    }
-  }
-
-  public updateTransform(): void {
-    // FIXME: A stupid workaround, need to find better solution to fix issues with getBounds during draw phase.
-    super.updateTransform();
-    this.validateNow();
-    super.updateTransform();
   }
 
   protected configure() {
@@ -200,8 +160,8 @@ export class Component extends Container implements IDestroyable {
     // Block intended to be empty
   }
 
-  protected validate(): void {
-    this._invalidationSet.clear();
+  protected afterDraw() {
+    this.updateHitArea();
   }
 
   protected updateSkin<T extends DisplayObject>(currentValue?: T, newValue?: T, childIndex?: number): T | undefined {
