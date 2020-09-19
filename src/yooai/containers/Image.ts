@@ -117,8 +117,6 @@ export class Image extends Pane {
     this._scaleMode = value;
   }
 
-  protected static SCALE_HELPER = new Rectangle();
-
   protected _scaleMode: ScaleMode = ScaleMode.FILL;
   protected _vAlign: VerticalAlign = "center";
   protected _hAlign: HorizontalAlign = "center";
@@ -143,7 +141,7 @@ export class Image extends Pane {
   protected _sizeRect = new Rectangle();
   protected _imageSizeRect = new Rectangle();
 
-  constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 100, height: number = 100) {
+  public constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 100, height: number = 100) {
     super(parent, x, y, width, height);
   }
 

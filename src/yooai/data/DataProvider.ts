@@ -65,6 +65,10 @@ export class DataProvider<T> extends EventEmitter {
     return this._data.indexOf(item);
   }
 
+  public hasItem(item: T): boolean {
+    return this._data.indexOf(item) != -1;
+  }
+
   public removeItemAt(index: number): T {
     this.validateIndex(index);
     const items = this._data.splice(index, 1);

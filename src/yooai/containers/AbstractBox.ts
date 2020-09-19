@@ -88,6 +88,9 @@ export abstract class AbstractBox extends Pane {
   }
 
   protected onChildrenChange(): void {
+    if (this.isDestroyed) {
+      return;
+    }
     this.invalidate("size");
   }
 

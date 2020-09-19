@@ -1,3 +1,4 @@
+import {AbstractComponent} from "../core/AbstractComponent";
 import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import {HorizontalAlign} from "./HorizontalAlign";
 import {IHasDimensions} from "./IHasDimensions";
@@ -12,6 +13,10 @@ export function alignChild(
   result?: IPoint,
 ) {
   if (result === undefined) { result = {x: 0, y: 0}; }
+
+  if (child instanceof AbstractComponent) {
+    child.validateNow();
+  }
 
   const parentWidth = getWidth(parent);
   const parentHeight = getHeight(parent);
