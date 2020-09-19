@@ -4,11 +4,11 @@ import {VirtualScrollList} from "./VirtualScrollList";
 
 export class List<T> extends VirtualScrollList<T> {
   @invalidate("data")
-  public set enabledPredicate(value: ((data?: T) => boolean) | undefined) {
+  public set enabledPredicate(value: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined) {
     this._enabledPredicate = value;
   }
 
-  public get enabledPredicate(): ((data?: T) => boolean) | undefined {
+  public get enabledPredicate(): ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined {
     return this._enabledPredicate;
   }
 
@@ -35,7 +35,7 @@ export class List<T> extends VirtualScrollList<T> {
 
   protected _rowsCount: number = 0;
   protected _labelEmitter?: ((data?: T) => string);
-  protected _enabledPredicate?: ((data?: T) => boolean);
+  protected _enabledPredicate?: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean);
 
   public constructor(
     parent?: Container,
@@ -83,7 +83,10 @@ export class List<T> extends VirtualScrollList<T> {
 
         renderer.labelEmitter = this.labelEmitter;
         renderer.selected = (this._selectedIndices.indexOf(i) !== -1);
-        renderer.enabled = this._enabledPredicate !== undefined ? this._enabledPredicate(renderer.data) : true;
+        renderer.enabled = this._enabledPredicate !== undefined ? this._enabledPredicate(renderer.data, this.dataProvider) : true;
+        renderer.validateNow();
+
+        this._list.addChild(renderer);
       }
     }
   }
@@ -111,11 +114,10 @@ export class List<T> extends VirtualScrollList<T> {
     while (this._activeRenderers.length > 0) {
       const renderer = this._activeRenderers.pop()!;
       const item = renderer.data;
-      if (item === undefined || !this._invalidItems.has(item)) {
+      if (item === undefined || this._invalidItems.has(item)) {
         this._availableRenderers.push(renderer);
       } else {
         itemToRendererMap.set(item, renderer);
-        this._invalidItems.add(item);
       }
       this._list.removeChild(renderer);
     }
@@ -138,7 +140,6 @@ export class List<T> extends VirtualScrollList<T> {
       renderer = new this._rendererClass();
       this.addRendererListeners(renderer);
     }
-    this._list.addChild(renderer);
     this._activeRenderers.push(renderer);
 
     if (!reused) {
