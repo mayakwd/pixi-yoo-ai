@@ -199,7 +199,11 @@ export class InteractiveComponent extends Pane {
   }
 
   protected drawBackground() {
+    const oldValue = this._background;
     this._background = this.updateSkin(this._background, this.getSkinForCurrentState(), 0);
+    if (oldValue !== this._background) {
+      this.invalidate("size");
+    }
   }
 
   protected getSkinForCurrentState() {

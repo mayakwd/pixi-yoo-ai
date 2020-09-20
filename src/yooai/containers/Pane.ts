@@ -25,7 +25,6 @@ export class Pane extends Component {
   protected draw(): void {
     if (this.isInvalid("skin")) {
       this.drawBackground();
-      this.invalidate("size");
     }
     if (this.isInvalid("size")) {
       this.drawLayout();
@@ -34,7 +33,11 @@ export class Pane extends Component {
   }
 
   protected drawBackground() {
+    const oldValue = this._background;
     this._background = this.updateSkin(this._background, this._skin, 0);
+    if (oldValue !== this._background) {
+      this.invalidate("size");
+    }
   }
 
   protected drawLayout() {
