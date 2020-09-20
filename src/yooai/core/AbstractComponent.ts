@@ -4,26 +4,14 @@ import {InvalidationType} from "./InvalidationType";
 export class AbstractComponent extends Container {
   private _invalidationSet: Set<InvalidationType> = new Set();
   private _inInvalidationPhase: boolean = false;
-  private _invalidationFrame: number = -1;
 
   protected constructor() {
     super();
-    this._invalidationFrame = requestAnimationFrame(() => {
-      this.initialize();
-      this._invalidationFrame = -1;
-    });
+    this.invalidate('all')
   }
 
   public invalidate(invalidationType: InvalidationType = "all"): void {
     this._invalidationSet.add(invalidationType);
-    if (this._invalidationFrame === -1 && !this._inInvalidationPhase) {
-      this._invalidationFrame = requestAnimationFrame(() => {
-        if (!this._destroyed && this.parent !== undefined) {
-          this.validateNow();
-        }
-        this._invalidationFrame = -1;
-      });
-    }
   }
 
   public isInvalid(invalidationType: InvalidationType = "all"): boolean {
@@ -40,11 +28,6 @@ export class AbstractComponent extends Container {
   public validateNow(): void {
     if (this.isInvalid() && !this._inInvalidationPhase) {
       this._inInvalidationPhase = true;
-      for (const child of this.children) {
-        if (child instanceof AbstractComponent) {
-          child.validateNow();
-        }
-      }
       this.draw();
       this.afterDraw();
       this.validate();
@@ -65,27 +48,10 @@ export class AbstractComponent extends Container {
   protected afterDraw() {
   }
 
-  private initialize(): void {
-    this._invalidationFrame = -1;
-    this.addDisplayListListeners();
-    if (this.parent !== undefined) {
-      this.invalidate();
+  public render(renderer: PIXI.Renderer) {
+    super.render(renderer);
+    if (this.isInvalid()) {
+      this.validateNow();
     }
-  }
-
-  private addDisplayListListeners() {
-    this.on("added", this.onAdded, this);
-    this.on("removed", this.onRemoved, this);
-  }
-
-  private onAdded() {
-    this.validateNow();
-  }
-
-  private onRemoved() {
-    if (this._invalidationFrame !== -1) {
-      cancelAnimationFrame(this._invalidationFrame);
-    }
-    this._invalidationFrame = -1;
   }
 }
