@@ -66,12 +66,14 @@ export class Label extends Component {
   }
 
   public get contentWidth(): number {
-    if (!this._textField.text) { return 0; }
+    if (!this._text) { return 0; }
+    this.validateNow();
     return this._textField.width;
   }
 
   public get contentHeight(): number {
-    if (!this._textField.text) { return 0; }
+    if (!this._text) { return 0; }
+    this.validateNow();
     return this._textField.height;
   }
 

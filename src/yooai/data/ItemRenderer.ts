@@ -95,7 +95,6 @@ export class ItemRenderer<T> extends InteractiveComponent {
     }
     if (this.isInvalid("state")) {
       this.drawBackground();
-      this.invalidate("size");
     }
     super.draw();
   }

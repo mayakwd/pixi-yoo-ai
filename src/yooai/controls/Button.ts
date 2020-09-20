@@ -210,7 +210,6 @@ export class Button extends InteractiveComponent {
 
   protected drawLabel() {
     this._label.resize(this._label.contentWidth, this._label.contentHeight);
-    this._label.validateNow();
   }
 
   protected getIconForCurrentState() {

@@ -1,6 +1,15 @@
 import {gsap} from "gsap";
 import {Container, Graphics} from "pixi.js";
-import {ChangeEvent, ChangeType, DataProvider, EventProxy, invalidate, ItemRenderer, ListEvent} from "../..";
+import {
+  ChangeEvent,
+  ChangeType,
+  DataProvider,
+  EventProxy,
+  invalidate,
+  InvalidationType,
+  ItemRenderer,
+  ListEvent,
+} from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
@@ -281,6 +290,18 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       return;
     }
     this._dataProvider.replaceItemAt(item, index);
+  }
+
+  public invalidateActiveItems(...type: InvalidationType[]): void {
+    this._activeRenderers.forEach((renderer) => {
+      if (type.length === 0) {
+        renderer.invalidate();
+      } else {
+        type.forEach((value) => renderer.invalidate(value));
+      }
+      renderer.validateNow();
+    });
+    this.invalidate("data");
   }
 
   public clearAllRenderers() {
