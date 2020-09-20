@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic versioning](https://semver.org/spec/v2.0.0.html).
 
-[Unreleased] - 2020-09-20
+[0.0.32] - 2020-09-20
 - Fixed: Before returning the value of contentWidth and contentHeight Label will now always be validated, in order to obtain the actual values.
 - Fixed: Removed redundant validation of the label after label resize.
 - Fixed: Size invalidation will not be triggered if skin wasn't changed.
