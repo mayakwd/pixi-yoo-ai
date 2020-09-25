@@ -89,6 +89,49 @@ export abstract class AbstractBox extends Pane {
     super(parent, x, y);
   }
 
+  public addChild<TChildren extends PIXI.DisplayObject[]>(...children: TChildren): TChildren[0] {
+    children.forEach((child) => {
+      if (isComponent(child)) {
+        child.on("resize", this.invalidateSize, this);
+      }
+    });
+    return super.addChild(...children);
+  }
+
+  public addChildAt<T extends PIXI.DisplayObject>(child: T, index: number): T {
+    if (isComponent(child)) {
+      child.on("resize", this.invalidateSize, this);
+    }
+    return super.addChildAt(child, index);
+  }
+
+  public removeChild<TChildren extends PIXI.DisplayObject[]>(...children: TChildren): TChildren[0] {
+    children.forEach((child) => {
+      if (isComponent(child)) {
+        child.off("resize", this.invalidateSize, this);
+      }
+    });
+    return super.removeChild(...children);
+  }
+
+  public removeChildAt(index: number): PIXI.DisplayObject {
+    const child = super.removeChildAt(index);
+    if (isComponent(child)) {
+      child.on("resize", this.invalidateSize, this);
+    }
+    return child;
+  }
+
+  public removeChildren(beginIndex?: number, endIndex?: number): PIXI.DisplayObject[] {
+    const children = super.removeChildren(beginIndex, endIndex);
+    children.forEach((child) => {
+      if (isComponent(child)) {
+        child.on("resize", this.invalidateSize, this);
+      }
+    });
+    return children;
+  }
+
   public swapChildrenAt(index1: number, index2: number): void {
     const child1 = this.getChildAt(index1);
     const child2 = this.getChildAt(index2);
@@ -113,5 +156,9 @@ export abstract class AbstractBox extends Pane {
     if (this.layoutBehavior) {
       this.layoutBehavior.apply(this, this._componentWidth, this._componentHeight);
     }
+  }
+
+  private invalidateSize(): void {
+    this.invalidate("size");
   }
 }
