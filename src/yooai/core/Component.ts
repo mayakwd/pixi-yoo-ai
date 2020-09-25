@@ -27,6 +27,7 @@ export class Component extends AbstractComponent implements IDestroyable {
   @invalidate("size")
   public set componentWidth(width: number) {
     this._componentWidth = width;
+    this.emit("resize");
   }
 
   public get componentHeight(): number {
@@ -36,6 +37,7 @@ export class Component extends AbstractComponent implements IDestroyable {
   @invalidate("size")
   public set componentHeight(height: number) {
     this._componentHeight = height;
+    this.emit("resize");
   }
 
   public get centerX(): number {
