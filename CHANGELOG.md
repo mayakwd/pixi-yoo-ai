@@ -1,6 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 0.0.34 - 2020-09-25
+- Fixed: Layout validation on margin/padding/alignment change for AbstractBox
+- Fixed: Invalidation decorator became more strict and now always require existing of getter and setter. Also, @invalidate now can be applied to methods, invalidation will be triggered after method completion.
+- Fixed: Changing Component`s size via componentWidth and componentHeight setter will now emit 'resize' event.
+- Fixed: Layout and content validation for List, TileList is fully reworked and now works as expected. Added columnsCount and rowsCount setters that will resize component to required dimensions.
+- Feature: Added layout validation on children resize for AbstractBox
+- Feature: HBox and VBox now will be automatically resized to fit their content
+- Feature: Added very handy LayoutBuilder
+- Feature: Added a helper that detects whether item is AbstractComponent
+
 # 0.0.33 - 2020-09-20
 - Fixed: Changing data in the ItemRenderer now validates its layout.
 
