@@ -25,6 +25,8 @@ export class VBox extends AbstractBox {
   protected drawLayout(): void {
     super.drawLayout();
     this.calculateContentSize();
+
+    this._componentWidth = this._contentWidth + this.marginLeft + this.marginRight;
     this._componentHeight = this._contentHeight + this.marginTop + this.marginBottom;
   }
 
