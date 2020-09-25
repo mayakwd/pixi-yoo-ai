@@ -96,10 +96,11 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
   }
 
   public get pagesCount(): number {
-    return Math.ceil(this.availableRowsCount / this.pageSize);
+    const paddedRowHeight = this.rowHeight + this.verticalGap;
+    return Math.ceil(this.contentHeight / paddedRowHeight / this.pageSize);
   }
 
-  public abstract get availableRowsCount(): number;
+  public abstract get rowsCount(): number;
 
   public get rendererClass(): new() => ItemRenderer<T> {
     return this._rendererClass;
@@ -408,11 +409,11 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     super.destroy();
   }
 
-  protected calculateAvailableHeight() {
+  protected get innerHeight() {
     return this._componentHeight - this._contentPadding * 2;
   }
 
-  protected calculateAvailableWidth() {
+  protected get innerWidth() {
     return this._componentWidth - this._contentPadding * 2;
   }
 

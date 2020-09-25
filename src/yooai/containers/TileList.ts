@@ -31,47 +31,22 @@ export class TileList<T> extends List<T> {
     this._columnWidth = value;
   }
 
-  public get columnsCount(): number {
-    return this._columnsCount;
-  }
-
-  public get maxHorizontalScrollPosition(): number {
-    return Math.max(this.contentWidth - this.componentWidth, 0);
-  }
-
-  public get maxVerticalScrollPosition(): number {
-    return Math.max(this.contentHeight - this.componentHeight, 0);
-  }
-
-  public get rowsCount(): number {
-    return this._rowsCount;
-  }
-
-  protected _columnWidth: number = 80;
-  protected _columnsCount: number = 0;
-  protected _horizontalGap: number = 0;
+  protected _columnWidth = 80;
+  protected _horizontalGap = 0;
   protected _direction: Direction = "vertical";
 
-  public constructor(
-    parent?: Container,
-    dataProvider?: DataProvider<T>,
-    x?: number, y?: number, width?: number, height?: number,
-  ) {
+  public constructor(parent?: Container, dataProvider?: DataProvider<T>, x?: number, y?: number, width?: number, height?: number) {
     super(parent, dataProvider, x, y, width, height);
   }
 
-  public get availableRowsCount(): number {
-    if (this.columnsCount === 0) {
-      return 0;
-    }
-    return Math.ceil(this.length / this.columnsCount);
+  public get columnsCount(): number {
+    const paddedColumnWidth = this.columnWidth + this.horizontalGap;
+    return Math.max(1, Math.ceil((this.innerWidth + this.horizontalGap) / paddedColumnWidth));
   }
 
-  public get availableColumnsCount(): number {
-    if (this.rowsCount === 0) {
-      return 0;
-    }
-    return Math.ceil(this.length / this.rowsCount);
+  public set columnsCount(value: number) {
+    value = Math.max(1, value);
+    this.componentWidth = (this.horizontalGap + this.columnWidth) * value - this.horizontalGap + this.contentPadding * 2;
   }
 
   public scrollToIndex(index: number): void {
@@ -88,7 +63,7 @@ export class TileList<T> extends List<T> {
     this.scrollTo(verticalPosition, horizontalPosition);
   }
 
-  public scrollToPage(index: number, animated: boolean = true): void {
+  public scrollToPage(index: number, animated = true): void {
     let verticalPosition: number = this.verticalScrollPosition;
     let horizontalPosition: number = this.horizontalScrollPosition;
     switch (this._direction) {
@@ -102,7 +77,7 @@ export class TileList<T> extends List<T> {
     this.scrollTo(verticalPosition, horizontalPosition);
   }
 
-  public scrollPageUp(animated: boolean = true): void {
+  public scrollPageUp(animated = true): void {
     this.scrollBy(
       this.direction === "horizontal" ? 0 : -this.pageWidth,
       this.direction === "vertical" ? 0 : -this.pageHeight,
@@ -110,7 +85,7 @@ export class TileList<T> extends List<T> {
     );
   }
 
-  public scrollPageDown(animated: boolean = true): void {
+  public scrollPageDown(animated = true): void {
     this.scrollBy(
       this.direction === "horizontal" ? 0 : this.pageWidth,
       this.direction === "vertical" ? 0 : this.pageHeight,
@@ -118,7 +93,7 @@ export class TileList<T> extends List<T> {
     );
   }
 
-  public scrollRowUp(animated: boolean = true): void {
+  public scrollRowUp(animated = true): void {
     this.scrollBy(
       this.direction === "horizontal" ? 0 : -this.columnWidth,
       this.direction === "vertical" ? 0 : -this.rowHeight,
@@ -126,7 +101,7 @@ export class TileList<T> extends List<T> {
     );
   }
 
-  public scrollRowDown(animated: boolean = true): void {
+  public scrollRowDown(animated = true): void {
     this.scrollBy(
       this.direction === "horizontal" ? 0 : this.columnWidth,
       this.direction === "vertical" ? 0 : this.rowHeight,
@@ -140,33 +115,18 @@ export class TileList<T> extends List<T> {
     this.scrollTo(verticalPosition, horizontalPosition);
   }
 
-  protected draw(): void {
-    if (this.isInvalid("size") || this.isInvalid("data")) {
-      const columnsCount = this.columnsCount;
-      const itemsCount = this.dataProvider?.length ?? 0;
-      this._contentWidth =
-        Math.max(columnsCount * (this.columnWidth + this.horizontalGap) - this.horizontalGap, 0);
-      this._contentHeight =
-        Math.max(Math.ceil(itemsCount / columnsCount) * (this.rowHeight + this.verticalGap), 0);
-    }
-
-    super.draw();
-  }
-
   protected calculateDrawListIndexes(): { startIndex: number; endIndex: number } {
     let startIndex = -1;
     let endIndex = -1;
     if (this._dataProvider !== undefined) {
       switch (this._direction) {
         case "vertical":
-          const columnsCount = this.columnsCount;
-          startIndex = Math.floor(this._verticalScrollPosition / (this.rowHeight + this.verticalGap)) * columnsCount;
-          endIndex = Math.min(this._dataProvider.length, startIndex + (this.rowsCount + 1) * columnsCount);
+          startIndex = Math.floor(this._verticalScrollPosition / (this.rowHeight + this.verticalGap)) * this.columnsCount;
+          endIndex = Math.min(this._dataProvider.length, startIndex + (this.rowsCount + 1) * this.columnsCount);
           break;
         case "horizontal":
-          const rowsCount = this.rowsCount;
-          startIndex = Math.floor(this._horizontalScrollPosition / (this.columnWidth + this.horizontalGap)) * rowsCount;
-          endIndex = Math.min(this._dataProvider.length, startIndex + (this.columnsCount + 1) * rowsCount);
+          startIndex = Math.floor(this._horizontalScrollPosition / (this.columnWidth + this.horizontalGap)) * this.rowsCount;
+          endIndex = Math.min(this._dataProvider.length, startIndex + (this.columnsCount + 1) * this.rowsCount);
           break;
       }
     }
@@ -208,10 +168,14 @@ export class TileList<T> extends List<T> {
 
   public get pagesCount(): number {
     switch (this._direction) {
-      case "vertical":
-        return Math.ceil(this.availableRowsCount / this.pageSize);
-      case "horizontal":
-        return Math.ceil(this.availableColumnsCount / this.pageSize);
+      case "vertical": {
+        const paddedRowHeight = this.rowHeight + this.verticalGap;
+        return Math.ceil(this.contentHeight / paddedRowHeight / this.pageSize);
+      }
+      case "horizontal": {
+        const paddedColumnWidth = this.columnWidth + this.horizontalGap;
+        return Math.ceil(this.contentWidth / paddedColumnWidth / this.pageSize);
+      }
     }
   }
 
@@ -220,17 +184,19 @@ export class TileList<T> extends List<T> {
     let column: number;
     let row: number;
 
-    switch (this._direction) {
-      case "vertical":
+    switch (this.direction) {
+      case "vertical": {
         const columnsCount = this.columnsCount;
         column = (index - startIndex) % columnsCount;
         row = Math.floor((index - startIndex) / columnsCount);
         break;
-      case "horizontal":
+      }
+      case "horizontal": {
         const rowsCount = this.rowsCount;
         column = Math.floor((index - startIndex) / rowsCount);
         row = (index - startIndex) % rowsCount;
         break;
+      }
     }
 
     renderer.x = column * (this.columnWidth + this.horizontalGap);
@@ -243,18 +209,12 @@ export class TileList<T> extends List<T> {
     const paddedColumnWidth = this.columnWidth + this.horizontalGap;
     switch (this._direction) {
       case "horizontal":
-        const availableHeight = this.calculateAvailableHeight() + this.verticalGap;
-        this._columnsCount = Math.ceil(this.calculateAvailableWidth() / paddedColumnWidth);
-        this._rowsCount = Math.floor(availableHeight / paddedRowHeight);
-        this._contentWidth = Math.max(this.availableColumnsCount * paddedColumnWidth, 0);
-        this._contentHeight = this.calculateAvailableHeight();
+        this._contentWidth = Math.max(0, paddedColumnWidth * Math.ceil(this.length / this.rowsCount) - this.horizontalGap);
+        this._contentHeight = Math.max(0, paddedRowHeight * this.rowsCount - this.verticalGap);
         break;
       case "vertical":
-        const availableWidth = this.calculateAvailableWidth() + this.horizontalGap;
-        this._rowsCount = Math.ceil(this.calculateAvailableHeight() / paddedRowHeight);
-        this._columnsCount = Math.floor(availableWidth / paddedColumnWidth);
-        this._contentWidth = this.calculateAvailableWidth();
-        this._contentHeight = Math.max(this.availableRowsCount * paddedRowHeight, 0);
+        this._contentWidth = Math.max(0, paddedColumnWidth * this.columnsCount - this.horizontalGap);
+        this._contentHeight = Math.max(0, paddedRowHeight * Math.ceil(this.length / this.columnsCount) - this.verticalGap);
         break;
     }
   }
