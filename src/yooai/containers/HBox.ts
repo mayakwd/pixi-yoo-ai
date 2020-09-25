@@ -25,6 +25,7 @@ export class HBox extends AbstractBox {
     this.calculateContentSize();
 
     this._componentWidth = this._contentWidth + this.marginLeft + this.marginRight;
+    this._componentHeight = this._contentHeight + this.marginTop + this.marginBottom;
   }
 
   private calculateContentSize() {

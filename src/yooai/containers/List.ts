@@ -8,6 +8,16 @@ export class List<T> extends VirtualScrollList<T> {
     this._enabledPredicate = value;
   }
 
+  public set rowsCount(value: number) {
+    value = Math.max(1, value);
+    this.componentHeight = (this.verticalGap + this.rowHeight) * value - this.verticalGap + this.contentPadding * 2;
+  }
+
+  public get rowsCount(): number {
+    const paddedRowHeight = this.rowHeight + this.verticalGap;
+    return Math.max(1, Math.ceil((this.innerHeight + this.verticalGap) / paddedRowHeight));
+  }
+
   public get enabledPredicate(): ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined {
     return this._enabledPredicate;
   }
@@ -22,18 +32,13 @@ export class List<T> extends VirtualScrollList<T> {
   }
 
   public get maxHorizontalScrollPosition(): number {
-    return Math.max(this.contentWidth - this.componentWidth + this.contentPadding * 2, 0);
+    return Math.max(0, this.contentWidth - this.innerWidth);
   }
 
   public get maxVerticalScrollPosition(): number {
-    return Math.max(0, this.contentHeight - this.componentHeight + this.contentPadding * 2);
+    return Math.max(0, this.contentHeight - this.innerHeight);
   }
 
-  public get rowsCount(): number {
-    return this._rowsCount;
-  }
-
-  protected _rowsCount: number = 0;
   protected _labelEmitter?: ((data?: T) => string);
   protected _enabledPredicate?: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean);
 
@@ -61,7 +66,7 @@ export class List<T> extends VirtualScrollList<T> {
   }
 
   protected draw(): void {
-    if (this.isInvalid("size")) {
+    if (this.isInvalid("size") || this.isInvalid("data")) {
       this.validateContentSize();
     }
     super.draw();
@@ -150,7 +155,7 @@ export class List<T> extends VirtualScrollList<T> {
 
   protected layoutRenderer(renderer: ItemRenderer<T>, index: number, startIndex: number, endIndex: number) {
     renderer.y = (this.rowHeight + this.verticalGap) * (index - startIndex);
-    renderer.resize(this.calculateAvailableWidth(), this.rowHeight);
+    renderer.resize(this.innerWidth, this.rowHeight);
   }
 
   protected addRendererListeners(renderer: ItemRenderer<T>) {
@@ -185,14 +190,10 @@ export class List<T> extends VirtualScrollList<T> {
     }
   }
 
-  public get availableRowsCount(): number {
-    return this.length;
-  }
-
   protected validateContentSize() {
     const paddedRowHeight = this.rowHeight + this.verticalGap;
-    this._contentWidth = this.calculateAvailableWidth();
-    this._contentHeight = Math.max(this.availableRowsCount * (paddedRowHeight), 0);
-    this._rowsCount = Math.ceil(this.calculateAvailableHeight() / paddedRowHeight);
+
+    this._contentWidth = this.innerWidth;
+    this._contentHeight = Math.max(this.length * paddedRowHeight - this.verticalGap, 0);
   }
 }

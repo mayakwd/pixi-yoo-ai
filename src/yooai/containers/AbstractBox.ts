@@ -1,13 +1,14 @@
 import {Container} from "pixi.js";
-import {HorizontalAlign, LayoutBehavior, VerticalAlign} from "../..";
+import {HorizontalAlign, invalidate, LayoutBehavior, VerticalAlign} from "../..";
+import {isComponent} from "../layout/utils";
 import {Pane} from "./Pane";
 
 export abstract class AbstractBox extends Pane {
-
   public get marginLeft(): number {
     return this.layoutBehavior.marginLeft;
   }
 
+  @invalidate("size")
   public set marginLeft(value: number) {
     this.layoutBehavior.marginLeft = value;
   }
@@ -16,6 +17,7 @@ export abstract class AbstractBox extends Pane {
     return this.layoutBehavior.marginRight;
   }
 
+  @invalidate("size")
   public set marginRight(value: number) {
     this.layoutBehavior.marginRight = value;
   }
@@ -24,6 +26,7 @@ export abstract class AbstractBox extends Pane {
     return this.layoutBehavior.marginTop;
   }
 
+  @invalidate("size")
   public set marginTop(value: number) {
     this.layoutBehavior.marginTop = value;
   }
@@ -32,6 +35,7 @@ export abstract class AbstractBox extends Pane {
     return this.layoutBehavior.marginBottom;
   }
 
+  @invalidate("size")
   public set marginBottom(value: number) {
     this.layoutBehavior.marginBottom = value;
   }
@@ -40,6 +44,7 @@ export abstract class AbstractBox extends Pane {
     return this.layoutBehavior.verticalGap;
   }
 
+  @invalidate("size")
   public set verticalGap(value: number) {
     this.layoutBehavior.verticalGap = value;
   }
@@ -48,6 +53,7 @@ export abstract class AbstractBox extends Pane {
     return this.layoutBehavior.horizontalGap;
   }
 
+  @invalidate("size")
   public set horizontalGap(value: number) {
     this.layoutBehavior.horizontalGap = value;
   }
@@ -56,6 +62,7 @@ export abstract class AbstractBox extends Pane {
     return this.layoutBehavior.vAlign;
   }
 
+  @invalidate("size")
   public set vAlign(value: VerticalAlign) {
     this.layoutBehavior.vAlign = value;
   }
@@ -64,6 +71,7 @@ export abstract class AbstractBox extends Pane {
     return this.layoutBehavior.hAlign;
   }
 
+  @invalidate("size")
   public set hAlign(value: HorizontalAlign) {
     this.layoutBehavior.hAlign = value;
   }
@@ -79,6 +87,49 @@ export abstract class AbstractBox extends Pane {
     y: number = 0,
   ) {
     super(parent, x, y);
+  }
+
+  public addChild<TChildren extends PIXI.DisplayObject[]>(...children: TChildren): TChildren[0] {
+    children.forEach((child) => {
+      if (isComponent(child)) {
+        child.on("resize", this.invalidateSize, this);
+      }
+    });
+    return super.addChild(...children);
+  }
+
+  public addChildAt<T extends PIXI.DisplayObject>(child: T, index: number): T {
+    if (isComponent(child)) {
+      child.on("resize", this.invalidateSize, this);
+    }
+    return super.addChildAt(child, index);
+  }
+
+  public removeChild<TChildren extends PIXI.DisplayObject[]>(...children: TChildren): TChildren[0] {
+    children.forEach((child) => {
+      if (isComponent(child)) {
+        child.off("resize", this.invalidateSize, this);
+      }
+    });
+    return super.removeChild(...children);
+  }
+
+  public removeChildAt(index: number): PIXI.DisplayObject {
+    const child = super.removeChildAt(index);
+    if (isComponent(child)) {
+      child.on("resize", this.invalidateSize, this);
+    }
+    return child;
+  }
+
+  public removeChildren(beginIndex?: number, endIndex?: number): PIXI.DisplayObject[] {
+    const children = super.removeChildren(beginIndex, endIndex);
+    children.forEach((child) => {
+      if (isComponent(child)) {
+        child.on("resize", this.invalidateSize, this);
+      }
+    });
+    return children;
   }
 
   public swapChildrenAt(index1: number, index2: number): void {
@@ -105,5 +156,9 @@ export abstract class AbstractBox extends Pane {
     if (this.layoutBehavior) {
       this.layoutBehavior.apply(this, this._componentWidth, this._componentHeight);
     }
+  }
+
+  private invalidateSize(): void {
+    this.invalidate("size");
   }
 }
