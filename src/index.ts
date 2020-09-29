@@ -17,6 +17,7 @@ export * from "./yooai/containers/BaseScrollPane";
 export * from "./yooai/containers/VirtualScrollList";
 export * from "./yooai/containers/List";
 export * from "./yooai/containers/TileList";
+export * from "./yooai/containers/LayoutBuilder";
 export * from "./yooai/popup/PopupManager";
 export * from "./yooai/controls/InteractiveComponent";
 export * from "./yooai/controls/InteractiveState";
