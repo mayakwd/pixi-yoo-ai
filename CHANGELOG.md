@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 0.0.35 - 2020-09-29
+- Fixed: Exposed LayoutBuilder and LayoutBuilderConfig
+
 # 0.0.34 - 2020-09-25
 - Fixed: Layout validation on margin/padding/alignment change for AbstractBox
 - Fixed: Invalidation decorator became more strict and now always require existing of getter and setter. Also, @invalidate now can be applied to methods, invalidation will be triggered after method completion.
