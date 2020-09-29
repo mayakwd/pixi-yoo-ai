@@ -5,7 +5,7 @@ import {AbstractBox} from "./AbstractBox";
 import {HBox} from "./HBox";
 import {VBox} from "./VBox";
 
-type LayoutBuilderSettings = {
+export type LayoutBuilderSettings = {
   hAlign?: HorizontalAlign,
   vAlign?: VerticalAlign,
   hGap?: number,
