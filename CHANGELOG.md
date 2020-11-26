@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 0.0.36 - 2020-11-20
+- Fixed: Added support for legacy canvas renderer
+
 # 0.0.35 - 2020-09-29
 - Fixed: Exposed LayoutBuilder and LayoutBuilderConfig
 

@@ -48,6 +48,17 @@ export class AbstractComponent extends Container {
   protected afterDraw() {
   }
 
+  public renderCanvas(renderer: unknown) {
+    // @ts-ignore
+    if (super.renderCanvas !== undefined) {
+      // @ts-ignore
+      super.renderCanvas(renderer);
+    }
+    if (this.isInvalid()) {
+      this.validateNow();
+    }
+  }
+
   public render(renderer: PIXI.Renderer) {
     super.render(renderer);
     if (this.isInvalid()) {
