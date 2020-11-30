@@ -1,5 +1,5 @@
 import {Container, DisplayObject} from "pixi.js";
-import {Component} from "../..";
+import {AbstractComponent} from "../core/AbstractComponent";
 import {LayoutBehavior} from "./LayoutBehavior";
 import {getHeight, getWidth} from "./utils";
 
@@ -12,8 +12,8 @@ export class VerticalLayoutBehavior extends LayoutBehavior {
     let yOffset: number = this._margins.top;
 
     for (child of children) {
-      if (child instanceof Component) {
-        child.drawNow();
+      if (child instanceof AbstractComponent && child.isInvalid()) {
+        child.validateNow();
       }
 
       if (child instanceof Container) {
@@ -24,7 +24,7 @@ export class VerticalLayoutBehavior extends LayoutBehavior {
             child.x = xOffset;
             break;
           case "center":
-            child.x = xOffset + (width - this.marginLeft - this.marginRight - childWidth) * 0.5;
+            child.x = xOffset + (width - childWidth) * 0.5;
             break;
           case "right":
             child.x = width - this.marginRight - childWidth;

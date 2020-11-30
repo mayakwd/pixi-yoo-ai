@@ -76,9 +76,16 @@ export abstract class AbstractBox extends Pane {
     this.layoutBehavior.hAlign = value;
   }
 
-  public abstract get contentHeight(): number;
+  public get contentWidth(): number {
+    return this._contentWidth;
+  }
 
-  public abstract get contentWidth(): number;
+  public get contentHeight(): number {
+    return this._contentHeight;
+  }
+
+  protected _contentWidth: number = 0;
+  protected _contentHeight: number = 0;
 
   protected constructor(
     private readonly layoutBehavior: LayoutBehavior,
@@ -154,7 +161,7 @@ export abstract class AbstractBox extends Pane {
 
   protected drawLayout(): void {
     if (this.layoutBehavior) {
-      this.layoutBehavior.apply(this, this._componentWidth, this._componentHeight);
+      this.layoutBehavior.apply(this, this._contentWidth, this._contentHeight);
     }
   }
 
