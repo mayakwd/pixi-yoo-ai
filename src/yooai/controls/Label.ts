@@ -139,4 +139,17 @@ export class Label extends Component {
   protected drawLayout() {
     this.alignChild(this._textField, this._vAlign, this._hAlign, this._offset);
   }
+
+  public resizeToContent(options?: { width?: boolean, height?: boolean }): void {
+    if (this.isInvalid()) {
+      this.validateNow();
+    }
+    const {width = true, height = true} = options ?? {};
+    if (width) {
+      this.componentWidth = this.contentWidth;
+    }
+    if (height) {
+      this.componentHeight = this.contentHeight;
+    }
+  }
 }
