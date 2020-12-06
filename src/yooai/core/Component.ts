@@ -44,8 +44,16 @@ export class Component extends AbstractComponent implements IDestroyable {
     return this.x + this._componentWidth * 0.5;
   }
 
+  public set centerX(value: number) {
+    this.x = value - this._componentWidth * 0.5;
+  }
+
   public get centerY(): number {
     return this.y + this._componentWidth * 0.5;
+  }
+
+  public set centerY(value: number) {
+    this.y = value - this._componentHeight * 0.5;
   }
 
   public set left(value: number) {
