@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 0.0.37 - 2020-12-06
+- Feature: Added setters for `centerX` and `centerY`
+
 # 0.0.37 - 2020-11-30
 - Fixed: Layouts behavior
 - Feature: Added `resizeToContent` method for `Label`
