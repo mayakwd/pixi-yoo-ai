@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 0.0.40 - 2020-12-20
+- Fixed: CI build produces empty package
+
 # 0.0.39 - 2020-12-20
 - Fixed: All scroll methods of the lists now works with the `animated` flag as expected. 
 
