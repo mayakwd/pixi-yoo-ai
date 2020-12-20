@@ -18,6 +18,14 @@ export class List<T> extends VirtualScrollList<T> {
     return Math.max(1, Math.ceil((this.innerHeight + this.verticalGap) / paddedRowHeight));
   }
 
+  public get pageIndex(): number {
+    return Math.floor(this.verticalScrollPosition / this.pageHeight);
+  }
+
+  public set pageIndex(value: number) {
+    this.verticalScrollPosition = this.pageHeight * value;
+  }
+
   public get enabledPredicate(): ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined {
     return this._enabledPredicate;
   }

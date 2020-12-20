@@ -134,6 +134,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     this.selectedIndices = (value === -1) ? [] : [value];
   }
 
+  public abstract get pageIndex(): number;
+
+  public abstract set pageIndex(value: number);
+
   public get selectedItems(): ReadonlyArray<T> {
     if (this._dataProvider !== undefined) {
       return this._selectedIndices.map((index) => this._dataProvider!.getItemAt(index));
@@ -369,7 +373,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     this.scrollTo(
       this.verticalScrollPosition + this.rowHeight + this.verticalGap,
       this.horizontalScrollPosition,
-      animated
+      animated,
     );
   }
 

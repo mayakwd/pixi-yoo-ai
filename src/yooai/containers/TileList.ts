@@ -31,6 +31,26 @@ export class TileList<T> extends List<T> {
     this._columnWidth = value;
   }
 
+  public get pageIndex(): number {
+    switch (this._direction) {
+      case "vertical":
+        return Math.floor(this.verticalScrollPosition / this.pageHeight);
+      case "horizontal":
+        return Math.floor(this.horizontalScrollPosition / this.pageWidth);
+    }
+  }
+
+  public set pageIndex(value: number) {
+    switch (this._direction) {
+      case "vertical":
+        this.verticalScrollPosition = this.pageHeight * value;
+        break;
+      case "horizontal":
+        this.horizontalScrollPosition = this.pageWidth * value;
+        break;
+    }
+  }
+
   protected _columnWidth = 80;
   protected _horizontalGap = 0;
   protected _direction: Direction = "vertical";
