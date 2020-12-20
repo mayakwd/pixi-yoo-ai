@@ -11,6 +11,7 @@ import {
   ListEvent,
 } from "../..";
 import {BaseScrollPane} from "./BaseScrollPane";
+import {ListScrollOptions} from "./ListScrollOptions";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
   public get maxSelectedItemsCount(): number {
@@ -337,11 +338,16 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return index !== -1 && this._selectedIndices.indexOf(index) !== -1;
   }
 
-  public scrollToSelected(animated: boolean = true): void {
-    this.scrollToIndex(this.selectedIndex, animated);
+  public scrollToSelected(scrollOptions: ListScrollOptions = {}): void {
+    this.scrollToIndex(this.selectedIndex, scrollOptions);
   }
 
-  public abstract scrollToIndex(index: number, animated: boolean): void;
+  public scrollToItem(item: T, scrollOptions: ListScrollOptions = {}): void {
+    const index = this._dataProvider?.getItemIndex(item) ?? 0;
+    this.scrollToIndex(index, scrollOptions);
+  }
+
+  public abstract scrollToIndex(index: number, scrollOptions: ListScrollOptions): void;
 
   public abstract scrollToPage(index: number, animated: boolean): void;
 
@@ -421,6 +427,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     if (!this._dataProvider) {
       this._dataProvider = new DataProvider<T>();
     }
+  }
+
+  protected getPageForIndex(index: number): number {
+    return Math.floor(index / this.pageSize);
   }
 
   protected draw(): void {

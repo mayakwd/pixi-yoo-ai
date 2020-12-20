@@ -1,5 +1,6 @@
 import {Container, InteractionEvent} from "pixi.js";
 import {DataProvider, invalidate, ItemRenderer, ListEvent} from "../..";
+import {ListScrollOptions} from "./ListScrollOptions";
 import {VirtualScrollList} from "./VirtualScrollList";
 
 export class List<T> extends VirtualScrollList<T> {
@@ -59,19 +60,24 @@ export class List<T> extends VirtualScrollList<T> {
     super(parent, dataProvider, x, y, width, height);
   }
 
-  public scrollToIndex(index: number, animated: boolean = true): void {
-    this.scrollTo(
-      index * (this.rowHeight + this.verticalGap),
-      this.horizontalScrollPosition,
-      animated
-    );
+  public scrollToIndex(index: number, {animated = true, alignToPage = true}: ListScrollOptions): void {
+    if (alignToPage) {
+      const page = this.getPageForIndex(index);
+      this.scrollToPage(page, animated);
+    } else {
+      this.scrollTo(
+        index * (this.rowHeight + this.verticalGap),
+        this.horizontalScrollPosition,
+        animated,
+      );
+    }
   }
 
   public scrollToPage(index: number, animated: boolean = true): void {
     this.scrollTo(
       this.pageHeight * index,
       this.horizontalScrollPosition,
-      animated
+      animated,
     );
   }
 

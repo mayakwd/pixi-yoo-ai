@@ -14,6 +14,7 @@ export * from "./yooai/containers/HBox";
 export * from "./yooai/containers/VBox";
 export * from "./yooai/containers/Image";
 export * from "./yooai/containers/BaseScrollPane";
+export * from "./yooai/containers/ListScrollOptions";
 export * from "./yooai/containers/VirtualScrollList";
 export * from "./yooai/containers/List";
 export * from "./yooai/containers/TileList";
