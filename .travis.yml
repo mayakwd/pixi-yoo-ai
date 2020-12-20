@@ -21,12 +21,12 @@ deploy:
     api_key: $GITHUB_TOKEN
     file_glob: true
     file: "pixi-yoo-ai-*.tgz"
-    cleanup: true
+    cleanup: false
     on:
       tags: true
   - provider: npm
     edge: true
-    cleanup: true
+    cleanup: false
     email: "contact@pastila.org"
     api_key: $NPM_TOKEN
     on:
