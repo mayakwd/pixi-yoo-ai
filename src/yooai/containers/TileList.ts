@@ -49,7 +49,7 @@ export class TileList<T> extends List<T> {
     this.componentWidth = (this.horizontalGap + this.columnWidth) * value - this.horizontalGap + this.contentPadding * 2;
   }
 
-  public scrollToIndex(index: number): void {
+  public scrollToIndex(index: number, animated: boolean = true): void {
     let verticalPosition: number = this.verticalScrollPosition;
     let horizontalPosition: number = this.horizontalScrollPosition;
     switch (this._direction) {
@@ -60,7 +60,7 @@ export class TileList<T> extends List<T> {
         horizontalPosition = Math.floor(index / this.rowsCount) * (this.columnWidth + this.horizontalGap);
         break;
     }
-    this.scrollTo(verticalPosition, horizontalPosition);
+    this.scrollTo(verticalPosition, horizontalPosition, animated);
   }
 
   public scrollToPage(index: number, animated = true): void {
@@ -74,7 +74,7 @@ export class TileList<T> extends List<T> {
         horizontalPosition = this.pageWidth * index;
         break;
     }
-    this.scrollTo(verticalPosition, horizontalPosition);
+    this.scrollTo(verticalPosition, horizontalPosition, animated);
   }
 
   public scrollPageUp(animated = true): void {
@@ -109,10 +109,10 @@ export class TileList<T> extends List<T> {
     );
   }
 
-  protected scrollBy(verticalOffset: number, horizontalOffset: number, animated: boolean) {
+  protected scrollBy(verticalOffset: number, horizontalOffset: number, animated: boolean = true) {
     const verticalPosition: number = this.verticalScrollPosition + verticalOffset;
     const horizontalPosition: number = this.horizontalScrollPosition + horizontalOffset;
-    this.scrollTo(verticalPosition, horizontalPosition);
+    this.scrollTo(verticalPosition, horizontalPosition, animated);
   }
 
   protected calculateDrawListIndexes(): { startIndex: number; endIndex: number } {

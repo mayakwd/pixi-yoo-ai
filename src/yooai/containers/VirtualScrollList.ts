@@ -13,14 +13,6 @@ import {
 import {BaseScrollPane} from "./BaseScrollPane";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
-  public get animated(): boolean {
-    return this._animated;
-  }
-
-  public set animated(value: boolean) {
-    this._animated = value;
-  }
-
   public get maxSelectedItemsCount(): number {
     return this._maxSelectedItemsCount;
   }
@@ -341,43 +333,47 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return index !== -1 && this._selectedIndices.indexOf(index) !== -1;
   }
 
-  public scrollToSelected(): void {
-    this.scrollToIndex(this.selectedIndex);
+  public scrollToSelected(animated: boolean = true): void {
+    this.scrollToIndex(this.selectedIndex, animated);
   }
 
-  public abstract scrollToIndex(index: number): void;
+  public abstract scrollToIndex(index: number, animated: boolean): void;
 
-  public abstract scrollToPage(index: number): void;
+  public abstract scrollToPage(index: number, animated: boolean): void;
 
-  public scrollPageUp(): void {
+  public scrollPageUp(animated: boolean = true): void {
     this.scrollTo(
       this.verticalScrollPosition - this.pageHeight,
       this.horizontalScrollPosition,
+      animated,
     );
   }
 
-  public scrollPageDown(): void {
+  public scrollPageDown(animated: boolean = true): void {
     this.scrollTo(
       this.verticalScrollPosition + this.pageHeight,
       this.horizontalScrollPosition,
+      animated,
     );
   }
 
-  public scrollRowUp(): void {
+  public scrollRowUp(animated: boolean = true): void {
     this.scrollTo(
       this.verticalScrollPosition - this.rowHeight - this.verticalGap,
       this.horizontalScrollPosition,
+      animated,
     );
   }
 
-  public scrollRowDown(): void {
+  public scrollRowDown(animated: boolean = true): void {
     this.scrollTo(
       this.verticalScrollPosition + this.rowHeight + this.verticalGap,
       this.horizontalScrollPosition,
+      animated
     );
   }
 
-  public scrollTo(verticalPosition: number, horizontalPosition: number) {
+  public scrollTo(verticalPosition: number, horizontalPosition: number, animated: boolean = true) {
     verticalPosition = Math.min(Math.max(0, verticalPosition), this.maxVerticalScrollPosition);
     horizontalPosition = Math.min(Math.max(0, horizontalPosition), this.maxHorizontalScrollPosition);
 
@@ -385,7 +381,7 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       return;
     }
 
-    if (this._animated) {
+    if (animated) {
       const distance = Math.sqrt(
         Math.pow(this.verticalScrollPosition - verticalPosition, 2) +
         Math.pow(this.horizontalScrollPosition - horizontalPosition, 2),
