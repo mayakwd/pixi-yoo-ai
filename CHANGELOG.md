@@ -1,7 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-# 0.0.37 - 2020-12-06
+# 0.0.39 - 2020-12-20
+- Fixed: All scroll methods of the lists now works with the `animated` flag as expected. 
+
+# 0.0.38 - 2020-12-06
 - Feature: Added setters for `centerX` and `centerY`
 
 # 0.0.37 - 2020-11-30
