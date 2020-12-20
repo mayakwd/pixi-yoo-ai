@@ -2,6 +2,7 @@ import {Container} from "pixi.js";
 import {DataProvider, invalidate, ItemRenderer} from "../..";
 import {Direction} from "../layout/Direction";
 import {List} from "./List";
+import {ListScrollOptions} from "./ListScrollOptions";
 
 export class TileList<T> extends List<T> {
   public get direction(): Direction {
@@ -31,6 +32,26 @@ export class TileList<T> extends List<T> {
     this._columnWidth = value;
   }
 
+  public get pageIndex(): number {
+    switch (this._direction) {
+      case "vertical":
+        return Math.floor(this.verticalScrollPosition / this.pageHeight);
+      case "horizontal":
+        return Math.floor(this.horizontalScrollPosition / this.pageWidth);
+    }
+  }
+
+  public set pageIndex(value: number) {
+    switch (this._direction) {
+      case "vertical":
+        this.verticalScrollPosition = this.pageHeight * value;
+        break;
+      case "horizontal":
+        this.horizontalScrollPosition = this.pageWidth * value;
+        break;
+    }
+  }
+
   protected _columnWidth = 80;
   protected _horizontalGap = 0;
   protected _direction: Direction = "vertical";
@@ -49,18 +70,23 @@ export class TileList<T> extends List<T> {
     this.componentWidth = (this.horizontalGap + this.columnWidth) * value - this.horizontalGap + this.contentPadding * 2;
   }
 
-  public scrollToIndex(index: number, animated: boolean = true): void {
-    let verticalPosition: number = this.verticalScrollPosition;
-    let horizontalPosition: number = this.horizontalScrollPosition;
-    switch (this._direction) {
-      case "vertical":
-        verticalPosition = Math.floor(index / this.columnsCount) * (this.rowHeight + this.verticalGap);
-        break;
-      case "horizontal":
-        horizontalPosition = Math.floor(index / this.rowsCount) * (this.columnWidth + this.horizontalGap);
-        break;
+  public scrollToIndex(index: number, {animated = true, alignToPage = true}: ListScrollOptions = {}): void {
+    if (alignToPage) {
+      const page = this.getPageForIndex(index);
+      this.scrollToPage(page, animated);
+    } else {
+      let verticalPosition: number = this.verticalScrollPosition;
+      let horizontalPosition: number = this.horizontalScrollPosition;
+      switch (this._direction) {
+        case "vertical":
+          verticalPosition = Math.floor(index / this.columnsCount) * (this.rowHeight + this.verticalGap);
+          break;
+        case "horizontal":
+          horizontalPosition = Math.floor(index / this.rowsCount) * (this.columnWidth + this.horizontalGap);
+          break;
+      }
+      this.scrollTo(verticalPosition, horizontalPosition, animated);
     }
-    this.scrollTo(verticalPosition, horizontalPosition, animated);
   }
 
   public scrollToPage(index: number, animated = true): void {

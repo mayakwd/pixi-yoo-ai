@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 0.0.41 - 2020-12-21
+- Feature: Added pageIndex for the lists
+- Feature: Added scrollToItem method for the lists
+- Feature: Added ListScrollOptions for the most scrolling methods, which specifies whether scrolling should be animated or not and should the position be aligned to the page size.   
+
 # 0.0.40 - 2020-12-20
 - Fixed: CI build produces empty package
 
