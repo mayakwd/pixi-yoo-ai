@@ -1,6 +1,5 @@
 import {Container, Point, TextStyle} from "pixi.js";
-import {HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
-import {alignChild} from "../..";
+import {alignChild, HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
 import {getHeight, getWidth} from "../layout/utils";
 import {InteractiveComponent} from "./InteractiveComponent";
 import {Label} from "./Label";
@@ -110,7 +109,7 @@ export class Button extends InteractiveComponent {
   protected _disabledIcon?: Container;
   protected _currentIcon?: Container;
 
-  protected _contentOffset: Point = new Point();
+  protected _contentOffset!: Point;
   protected _vAlign: VerticalAlign = "center";
   protected _hAlign: HorizontalAlign = "center";
   protected _iconPlacement: Placement = "left";
@@ -135,11 +134,15 @@ export class Button extends InteractiveComponent {
 
   protected configure() {
     super.configure();
+    this._contentOffset = new Point();
     this._label = new Label(this);
     this.buttonMode = true;
   }
 
   protected draw(): void {
+    if (this.isInvalid("state")) {
+      this.invalidate("icon");
+    }
     if (this.isInvalid("icon")) {
       this.drawIcon();
       this.invalidate("size");
@@ -214,13 +217,10 @@ export class Button extends InteractiveComponent {
 
   protected getIconForCurrentState() {
     if (!this._enabled) {
-      if (this._disabledIcon !== undefined) {
-        return this._disabledIcon;
-      }
-      return this._icon;
+      return this._disabledIcon ?? this._icon;
     }
-    if (this._selected && this._selectedIcon !== undefined) {
-      return this._selectedIcon;
+    if (this._selected) {
+      return this._selectedIcon ?? this._icon;
     }
     return this._icon;
   }

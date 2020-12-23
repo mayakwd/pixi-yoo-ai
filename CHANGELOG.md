@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 0.0.42 - 2020-12-23
+- Fixed: Content offset manipulation now not throws error if trying to access it in the configure method
+- Fixed: Button`s icon is now changing on button state change
+
 # 0.0.41 - 2020-12-21
 - Feature: Added pageIndex for the lists
 - Feature: Added scrollToItem method for the lists
