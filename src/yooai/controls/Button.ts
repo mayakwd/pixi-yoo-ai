@@ -140,6 +140,9 @@ export class Button extends InteractiveComponent {
   }
 
   protected draw(): void {
+    if (this.isInvalid("state")) {
+      this.invalidate("icon");
+    }
     if (this.isInvalid("icon")) {
       this.drawIcon();
       this.invalidate("size");
@@ -214,13 +217,10 @@ export class Button extends InteractiveComponent {
 
   protected getIconForCurrentState() {
     if (!this._enabled) {
-      if (this._disabledIcon !== undefined) {
-        return this._disabledIcon;
-      }
-      return this._icon;
+      return this._disabledIcon ?? this._icon;
     }
-    if (this._selected && this._selectedIcon !== undefined) {
-      return this._selectedIcon;
+    if (this._selected) {
+      return this._selectedIcon ?? this._icon;
     }
     return this._icon;
   }
