@@ -1,6 +1,5 @@
 import {Container, Point, TextStyle} from "pixi.js";
-import {HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
-import {alignChild} from "../..";
+import {alignChild, HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
 import {getHeight, getWidth} from "../layout/utils";
 import {InteractiveComponent} from "./InteractiveComponent";
 import {Label} from "./Label";
@@ -110,7 +109,7 @@ export class Button extends InteractiveComponent {
   protected _disabledIcon?: Container;
   protected _currentIcon?: Container;
 
-  protected _contentOffset: Point = new Point();
+  protected _contentOffset!: Point;
   protected _vAlign: VerticalAlign = "center";
   protected _hAlign: HorizontalAlign = "center";
   protected _iconPlacement: Placement = "left";
@@ -135,6 +134,7 @@ export class Button extends InteractiveComponent {
 
   protected configure() {
     super.configure();
+    this._contentOffset = new Point();
     this._label = new Label(this);
     this.buttonMode = true;
   }
