@@ -15,7 +15,7 @@ export type LayoutBuilderSettings = {
 export class LayoutBuilder {
   private vGap: number = 0;
   private hGap: number = 0;
-  private children: Array<LayoutBuilder | DisplayObject> = [];
+  private children: (LayoutBuilder | DisplayObject)[] = [];
   private hAlign: HorizontalAlign = "left";
   private vAlign: VerticalAlign = "top";
 
@@ -32,7 +32,7 @@ export class LayoutBuilder {
     this.hGap = hGap;
   }
 
-  public add(...items: Array<LayoutBuilder | DisplayObject>): this {
+  public add(...items: (LayoutBuilder | DisplayObject)[]): this {
     this.children.push(...items);
     return this;
   }

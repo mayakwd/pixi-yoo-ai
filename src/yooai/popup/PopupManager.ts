@@ -5,13 +5,6 @@ import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
 import {getHeight, getWidth} from "../layout/utils";
 
 export class PopupManager {
-  private get stageWidth(): number {
-    return this.application.screen.width;
-  }
-
-  private get stageHeight(): number {
-    return this.application.screen.height;
-  }
 
   private static createWrapper(color: number, alpha: number): DisplayObjectWithSize {
     const quad = new Graphics();
@@ -33,6 +26,13 @@ export class PopupManager {
     root?: Container,
   ) {
     this._root = root === undefined ? application.stage : root;
+  }
+  private get stageWidth(): number {
+    return this.application.screen.width;
+  }
+
+  private get stageHeight(): number {
+    return this.application.screen.height;
   }
 
   public show(popup: DisplayObjectWithSize, params: IShowParams = {}) {

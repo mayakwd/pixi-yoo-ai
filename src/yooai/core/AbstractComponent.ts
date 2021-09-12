@@ -38,16 +38,6 @@ export class AbstractComponent extends Container {
     }
   }
 
-  private validate(): void {
-    this._invalidationSet.clear();
-  }
-
-  protected draw(): void {
-  }
-
-  protected afterDraw() {
-  }
-
   public renderCanvas(renderer: unknown) {
     // @ts-ignore
     if (super.renderCanvas !== undefined) {
@@ -64,5 +54,17 @@ export class AbstractComponent extends Container {
     if (this.isInvalid()) {
       this.validateNow();
     }
+  }
+
+  protected draw(): void {
+    // Intended to be empty
+  }
+
+  protected afterDraw() {
+    // Intended to be empty
+  }
+
+  private validate(): void {
+    this._invalidationSet.clear();
   }
 }

@@ -3,6 +3,7 @@ import {AbstractComponent} from "./AbstractComponent";
 import {InvalidationType} from "./InvalidationType";
 
 export function invalidate(invalidationType: InvalidationType) {
+  // tslint:disable-next-line:only-arrow-functions
   return function <T>(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
     const {set, get} = descriptor;
     if (set !== undefined) {

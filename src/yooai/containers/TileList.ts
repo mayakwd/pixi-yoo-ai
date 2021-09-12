@@ -5,6 +5,14 @@ import {List} from "./List";
 import {ListScrollOptions} from "./ListScrollOptions";
 
 export class TileList<T> extends List<T> {
+
+  protected _columnWidth = 80;
+  protected _horizontalGap = 0;
+  protected _direction: Direction = "vertical";
+
+  public constructor(parent?: Container, dataProvider?: DataProvider<T>, x?: number, y?: number, width?: number, height?: number) {
+    super(parent, dataProvider, x, y, width, height);
+  }
   public get direction(): Direction {
     return this._direction;
   }
@@ -52,14 +60,6 @@ export class TileList<T> extends List<T> {
     }
   }
 
-  protected _columnWidth = 80;
-  protected _horizontalGap = 0;
-  protected _direction: Direction = "vertical";
-
-  public constructor(parent?: Container, dataProvider?: DataProvider<T>, x?: number, y?: number, width?: number, height?: number) {
-    super(parent, dataProvider, x, y, width, height);
-  }
-
   public get columnsCount(): number {
     const paddedColumnWidth = this.columnWidth + this.horizontalGap;
     return Math.max(1, Math.ceil((this.innerWidth + this.horizontalGap) / paddedColumnWidth));
@@ -68,6 +68,37 @@ export class TileList<T> extends List<T> {
   public set columnsCount(value: number) {
     value = Math.max(1, value);
     this.componentWidth = (this.horizontalGap + this.columnWidth) * value - this.horizontalGap + this.contentPadding * 2;
+  }
+
+  public get pagesCount(): number {
+    switch (this._direction) {
+      case "vertical": {
+        const paddedRowHeight = this.rowHeight + this.verticalGap;
+        return Math.ceil(this.contentHeight / paddedRowHeight / this.pageSize);
+      }
+      case "horizontal": {
+        const paddedColumnWidth = this.columnWidth + this.horizontalGap;
+        return Math.ceil(this.contentWidth / paddedColumnWidth / this.pageSize);
+      }
+    }
+  }
+
+  protected get pageWidth(): number {
+    switch (this._direction) {
+      case "vertical":
+        return this._contentWidth;
+      case "horizontal":
+        return this.pageSize * (this.columnWidth + this.horizontalGap);
+    }
+  }
+
+  protected get pageHeight(): number {
+    switch (this._direction) {
+      case "vertical":
+        return this.pageSize * (this.rowHeight + this.verticalGap);
+      case "horizontal":
+        return this._contentHeight;
+    }
   }
 
   public scrollToIndex(index: number, {animated = true, alignToPage = true}: ListScrollOptions = {}): void {
@@ -172,37 +203,6 @@ export class TileList<T> extends List<T> {
     }
     this._list.x = this._contentPadding - horizontalPosition;
     this._list.y = this._contentPadding - verticalPosition;
-  }
-
-  protected get pageWidth(): number {
-    switch (this._direction) {
-      case "vertical":
-        return this._contentWidth;
-      case "horizontal":
-        return this.pageSize * (this.columnWidth + this.horizontalGap);
-    }
-  }
-
-  protected get pageHeight(): number {
-    switch (this._direction) {
-      case "vertical":
-        return this.pageSize * (this.rowHeight + this.verticalGap);
-      case "horizontal":
-        return this._contentHeight;
-    }
-  }
-
-  public get pagesCount(): number {
-    switch (this._direction) {
-      case "vertical": {
-        const paddedRowHeight = this.rowHeight + this.verticalGap;
-        return Math.ceil(this.contentHeight / paddedRowHeight / this.pageSize);
-      }
-      case "horizontal": {
-        const paddedColumnWidth = this.columnWidth + this.horizontalGap;
-        return Math.ceil(this.contentWidth / paddedColumnWidth / this.pageSize);
-      }
-    }
   }
 
   protected layoutRenderer(renderer: ItemRenderer<T>, index: number, startIndex: number, endIndex: number) {
