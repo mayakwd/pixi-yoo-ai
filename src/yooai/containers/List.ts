@@ -4,6 +4,23 @@ import {ListScrollOptions} from "./ListScrollOptions";
 import {VirtualScrollList} from "./VirtualScrollList";
 
 export class List<T> extends VirtualScrollList<T> {
+
+  protected _labelEmitter?: ((data?: T) => string);
+  protected _enabledPredicate?: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean);
+
+  public constructor(
+    parent?: Container,
+    dataProvider?: DataProvider<T>,
+    x?: number, y?: number,
+    width?: number, height?: number,
+  ) {
+    super(parent, dataProvider, x, y, width, height);
+  }
+
+  public get enabledPredicate(): ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined {
+    return this._enabledPredicate;
+  }
+
   @invalidate("data")
   public set enabledPredicate(value: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined) {
     this._enabledPredicate = value;
@@ -27,10 +44,6 @@ export class List<T> extends VirtualScrollList<T> {
     this.verticalScrollPosition = this.pageHeight * value;
   }
 
-  public get enabledPredicate(): ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined {
-    return this._enabledPredicate;
-  }
-
   public get labelEmitter(): ((data?: T) => string) | undefined {
     return this._labelEmitter;
   }
@@ -46,18 +59,6 @@ export class List<T> extends VirtualScrollList<T> {
 
   public get maxVerticalScrollPosition(): number {
     return Math.max(0, this.contentHeight - this.innerHeight);
-  }
-
-  protected _labelEmitter?: ((data?: T) => string);
-  protected _enabledPredicate?: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean);
-
-  public constructor(
-    parent?: Container,
-    dataProvider?: DataProvider<T>,
-    x?: number, y?: number,
-    width?: number, height?: number,
-  ) {
-    super(parent, dataProvider, x, y, width, height);
   }
 
   public scrollToIndex(index: number, {animated = true, alignToPage = true}: ListScrollOptions): void {
@@ -191,8 +192,10 @@ export class List<T> extends VirtualScrollList<T> {
       if (index !== -1) {
         if (this._allowMultipleSelection) {
           this._selectedIndices.splice(index, 1);
-        } else {
+        } else if (this._allowDeselection) {
           this._selectedIndices.length = 0;
+        } else {
+          return;
         }
       } else {
         if (this._allowMultipleSelection && (this._maxSelectedItemsCount <= 0 || (this._selectedIndices.length < this._maxSelectedItemsCount))) {

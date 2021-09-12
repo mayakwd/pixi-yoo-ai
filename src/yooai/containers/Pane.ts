@@ -3,15 +3,6 @@ import {Component, invalidate} from "../..";
 
 export class Pane extends Component {
 
-  public get skin(): Container | undefined {
-    return this._skin;
-  }
-
-  @invalidate("skin")
-  public set skin(value: Container | undefined) {
-    this._skin = value;
-  }
-
   protected _skin?: Container;
   protected _background?: Container;
 
@@ -20,6 +11,15 @@ export class Pane extends Component {
 
     this._componentWidth = width;
     this._componentHeight = height;
+  }
+
+  public get skin(): Container | undefined {
+    return this._skin;
+  }
+
+  @invalidate("skin")
+  public set skin(value: Container | undefined) {
+    this._skin = value;
   }
 
   protected draw(): void {

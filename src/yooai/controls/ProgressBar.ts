@@ -3,6 +3,28 @@ import {Component, ForwardDirection, HorizontalAlign, invalidate, VerticalAlign}
 import {Label} from "./Label";
 
 export class ProgressBar extends Component {
+
+  private static DEFAULT_TEXT_EMITTER(minimum: number, maximum: number, value: number) {
+    return `${Math.floor(value - minimum)} / ${Math.floor(maximum - minimum)}`;
+  }
+
+  protected _label!: Label;
+
+  protected _barSkin?: Container;
+  protected _trackSkin?: Container;
+
+  protected _barPadding: number = 0;
+  protected _direction: ForwardDirection = "right";
+
+  protected _minimum: number = 0;
+  protected _maximum: number = 1;
+  protected _value: number = 0;
+  protected _displayText: boolean = false;
+  protected _text?: string;
+  protected _displayTextEmitter?: ProgressTextEmitter;
+
+  protected _bar?: Container;
+  protected _track?: Container;
   public get textStyle(): TextStyle {
     return this._label.textStyle;
   }
@@ -140,28 +162,6 @@ export class ProgressBar extends Component {
   public set displayTextEmitter(value: ProgressTextEmitter | undefined) {
     this._displayTextEmitter = value;
   }
-
-  private static DEFAULT_TEXT_EMITTER(minimum: number, maximum: number, value: number) {
-    return `${Math.floor(value - minimum)} / ${Math.floor(maximum - minimum)}`;
-  }
-
-  protected _label!: Label;
-
-  protected _barSkin?: Container;
-  protected _trackSkin?: Container;
-
-  protected _barPadding: number = 0;
-  protected _direction: ForwardDirection = "right";
-
-  protected _minimum: number = 0;
-  protected _maximum: number = 1;
-  protected _value: number = 0;
-  protected _displayText: boolean = false;
-  protected _text?: string;
-  protected _displayTextEmitter?: ProgressTextEmitter;
-
-  protected _bar?: Container;
-  protected _track?: Container;
 
   public setValues(minimum: number, maximum: number, value: number): void {
     this.minimum = minimum;

@@ -6,6 +6,23 @@ import {Label} from "./Label";
 
 export class Button extends InteractiveComponent {
 
+  protected _label!: Label;
+
+  protected _icon?: Container;
+  protected _selectedIcon?: Container;
+  protected _disabledIcon?: Container;
+  protected _currentIcon?: Container;
+
+  protected _contentOffset!: Point;
+  protected _vAlign: VerticalAlign = "center";
+  protected _hAlign: HorizontalAlign = "center";
+  protected _iconPlacement: Placement = "left";
+  protected _iconGap: number = 4;
+
+  constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 80, height: number = 24) {
+    super(parent, x, y, width, height);
+  }
+
   public get text(): string {
     return this._label.text;
   }
@@ -100,23 +117,6 @@ export class Button extends InteractiveComponent {
   @invalidate("size")
   public set hAlign(value: HorizontalAlign) {
     this._hAlign = value;
-  }
-
-  protected _label!: Label;
-
-  protected _icon?: Container;
-  protected _selectedIcon?: Container;
-  protected _disabledIcon?: Container;
-  protected _currentIcon?: Container;
-
-  protected _contentOffset!: Point;
-  protected _vAlign: VerticalAlign = "center";
-  protected _hAlign: HorizontalAlign = "center";
-  protected _iconPlacement: Placement = "left";
-  protected _iconGap: number = 4;
-
-  constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 80, height: number = 24) {
-    super(parent, x, y, width, height);
   }
 
   public setContentOffset(x: number | IPoint, y?: number): void {

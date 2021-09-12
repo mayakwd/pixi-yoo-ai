@@ -3,6 +3,11 @@ import {HorizontalAlign} from "./HorizontalAlign";
 import {VerticalAlign} from "./VerticalAlign";
 
 export abstract class LayoutBehavior {
+  public vAlign: VerticalAlign = "center";
+  public hAlign: HorizontalAlign = "left";
+
+  protected _margins: Rectangle = new Rectangle();
+  protected _gaps: Point = new Point();
 
   public get verticalGap(): number {
     return this._gaps.y;
@@ -51,11 +56,6 @@ export abstract class LayoutBehavior {
   public set marginBottom(value: number) {
     this._margins.bottom = value;
   }
-  public vAlign: VerticalAlign = "center";
-  public hAlign: HorizontalAlign = "left";
-
-  protected _margins: Rectangle = new Rectangle();
-  protected _gaps: Point = new Point();
 
   public abstract apply(target: Container, width: number, height: number): void;
 

@@ -4,6 +4,18 @@ import {isComponent} from "../layout/utils";
 import {Pane} from "./Pane";
 
 export abstract class AbstractBox extends Pane {
+
+  protected _contentWidth: number = 0;
+  protected _contentHeight: number = 0;
+
+  protected constructor(
+    private readonly layoutBehavior: LayoutBehavior,
+    parent?: Container,
+    x: number = 0,
+    y: number = 0,
+  ) {
+    super(parent, x, y);
+  }
   public get marginLeft(): number {
     return this.layoutBehavior.marginLeft;
   }
@@ -82,18 +94,6 @@ export abstract class AbstractBox extends Pane {
 
   public get contentHeight(): number {
     return this._contentHeight;
-  }
-
-  protected _contentWidth: number = 0;
-  protected _contentHeight: number = 0;
-
-  protected constructor(
-    private readonly layoutBehavior: LayoutBehavior,
-    parent?: Container,
-    x: number = 0,
-    y: number = 0,
-  ) {
-    super(parent, x, y);
   }
 
   public addChild<TChildren extends PIXI.DisplayObject[]>(...children: TChildren): TChildren[0] {

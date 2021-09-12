@@ -4,6 +4,18 @@ import {InteractiveState} from "./InteractiveState";
 
 export class InteractiveComponent extends Pane {
 
+  protected _state: InteractiveState = "up";
+  protected _selected: boolean = false;
+  protected _selectable: boolean = false;
+
+  protected _upSkin?: Container;
+  protected _overSkin?: Container;
+  protected _downSkin?: Container;
+  protected _selectedUpSkin?: Container;
+  protected _selectedOverSkin?: Container;
+  protected _selectedDownSkin?: Container;
+  protected _disabledSkin?: Container;
+
   public get disabledSkin(): Container | undefined {
     return this._disabledSkin;
   }
@@ -110,15 +122,6 @@ export class InteractiveComponent extends Pane {
     this._selectable = value;
   }
 
-  protected get state(): InteractiveState {
-    return this._state;
-  }
-
-  @invalidate("state")
-  protected set state(value: InteractiveState) {
-    this._state = value;
-  }
-
   public get selected(): boolean {
     return this._selected;
   }
@@ -128,17 +131,14 @@ export class InteractiveComponent extends Pane {
     this._selected = value;
   }
 
-  protected _state: InteractiveState = "up";
-  protected _selected: boolean = false;
-  protected _selectable: boolean = false;
+  protected get state(): InteractiveState {
+    return this._state;
+  }
 
-  protected _upSkin?: Container;
-  protected _overSkin?: Container;
-  protected _downSkin?: Container;
-  protected _selectedUpSkin?: Container;
-  protected _selectedOverSkin?: Container;
-  protected _selectedDownSkin?: Container;
-  protected _disabledSkin?: Container;
+  @invalidate("state")
+  protected set state(value: InteractiveState) {
+    this._state = value;
+  }
 
   public setSkins(options: IInteractiveSkinOptions) {
     ({

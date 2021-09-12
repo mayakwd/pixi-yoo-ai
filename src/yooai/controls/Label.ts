@@ -2,6 +2,26 @@ import {Container, Point, Text, TextStyle} from "pixi.js";
 import {Component, HorizontalAlign, invalidate, IPoint, theme, VerticalAlign} from "../..";
 
 export class Label extends Component {
+
+  protected _textField!: Text;
+  protected _textStyle: TextStyle = theme.defaultTextStyle;
+  protected _disabledTextStyle?: TextStyle = theme.defaultTextStyle;
+
+  protected _hAlign: HorizontalAlign = "left";
+  protected _vAlign: VerticalAlign = "center";
+  protected _offset: Point = new Point();
+
+  protected _text: string = "";
+  protected _wordWrap: boolean = false;
+
+  public constructor(parent?: Container, x: number = 0, y: number = 0, text: string = "") {
+    super(parent, x, y);
+
+    this.text = text;
+
+    this._componentWidth = 100;
+    this._componentHeight = 24;
+  }
   public get wordWrap(): boolean {
     return this._wordWrap;
   }
@@ -77,26 +97,6 @@ export class Label extends Component {
     return this._textField.height;
   }
 
-  protected _textField!: Text;
-  protected _textStyle: TextStyle = theme.defaultTextStyle;
-  protected _disabledTextStyle?: TextStyle = theme.defaultTextStyle;
-
-  protected _hAlign: HorizontalAlign = "left";
-  protected _vAlign: VerticalAlign = "center";
-  protected _offset: Point = new Point();
-
-  protected _text: string = "";
-  protected _wordWrap: boolean = false;
-
-  public constructor(parent?: Container, x: number = 0, y: number = 0, text: string = "") {
-    super(parent, x, y);
-
-    this.text = text;
-
-    this._componentWidth = 100;
-    this._componentHeight = 24;
-  }
-
   public setOffset(x: number | IPoint, y?: number): void {
     if (typeof x === "object") {
       const point = x as IPoint;
@@ -108,6 +108,19 @@ export class Label extends Component {
       this._offset.y = y;
     }
     this.invalidate("size");
+  }
+
+  public resizeToContent(options?: { width?: boolean, height?: boolean }): void {
+    if (this.isInvalid()) {
+      this.validateNow();
+    }
+    const {width = true, height = true} = options ?? {};
+    if (width) {
+      this.componentWidth = this.contentWidth;
+    }
+    if (height) {
+      this.componentHeight = this.contentHeight;
+    }
   }
 
   protected configure() {
@@ -138,18 +151,5 @@ export class Label extends Component {
 
   protected drawLayout() {
     this.alignChild(this._textField, this._vAlign, this._hAlign, this._offset);
-  }
-
-  public resizeToContent(options?: { width?: boolean, height?: boolean }): void {
-    if (this.isInvalid()) {
-      this.validateNow();
-    }
-    const {width = true, height = true} = options ?? {};
-    if (width) {
-      this.componentWidth = this.contentWidth;
-    }
-    if (height) {
-      this.componentHeight = this.contentHeight;
-    }
   }
 }

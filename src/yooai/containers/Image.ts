@@ -5,6 +5,34 @@ import LOAD_TYPE = LoaderResource.LOAD_TYPE;
 import Texture = PIXI.Texture;
 
 export class Image extends Pane {
+
+  protected _scaleMode: ScaleMode = ScaleMode.FILL;
+  protected _vAlign: VerticalAlign = "center";
+  protected _hAlign: HorizontalAlign = "center";
+  protected _placeHolder?: Graphics | Sprite;
+  protected _imageUrl?: string;
+  protected _image?: Container;
+  protected _imageOffset?: IPoint;
+
+  protected _imageMaskRect?: IHasDimensions;
+  protected _imageMask?: Graphics | Sprite;
+  protected _imageMaskOffset?: IPoint;
+  protected _imageMaskVAlign: VerticalAlign = "center";
+  protected _imageMaskHAlign: HorizontalAlign = "center";
+
+  protected _currentImage?: Container;
+  protected _currentMask?: Graphics | Sprite;
+  protected _rectMask?: Graphics;
+
+  protected _loader?: Loader;
+  protected _loadedImage?: Sprite;
+
+  protected _sizeRect = new Rectangle();
+  protected _imageSizeRect = new Rectangle();
+
+  public constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 100, height: number = 100) {
+    super(parent, x, y, width, height);
+  }
   public get imageOffset(): IPoint | undefined {
     return this._imageOffset;
   }
@@ -115,34 +143,6 @@ export class Image extends Pane {
   @invalidate("size")
   public set scaleMode(value: ScaleMode) {
     this._scaleMode = value;
-  }
-
-  protected _scaleMode: ScaleMode = ScaleMode.FILL;
-  protected _vAlign: VerticalAlign = "center";
-  protected _hAlign: HorizontalAlign = "center";
-  protected _placeHolder?: Graphics | Sprite;
-  protected _imageUrl?: string;
-  protected _image?: Container;
-  protected _imageOffset?: IPoint;
-
-  protected _imageMaskRect?: IHasDimensions;
-  protected _imageMask?: Graphics | Sprite;
-  protected _imageMaskOffset?: IPoint;
-  protected _imageMaskVAlign: VerticalAlign = "center";
-  protected _imageMaskHAlign: HorizontalAlign = "center";
-
-  protected _currentImage?: Container;
-  protected _currentMask?: Graphics | Sprite;
-  protected _rectMask?: Graphics;
-
-  protected _loader?: Loader;
-  protected _loadedImage?: Sprite;
-
-  protected _sizeRect = new Rectangle();
-  protected _imageSizeRect = new Rectangle();
-
-  public constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 100, height: number = 100) {
-    super(parent, x, y, width, height);
   }
 
   protected draw(): void {

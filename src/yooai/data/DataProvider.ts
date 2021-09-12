@@ -15,6 +15,10 @@ export class DataProvider<T> extends EventEmitter {
     return this._data.length;
   }
 
+  public get items(): ReadonlyArray<T> {
+    return this._data;
+  }
+
   public invalidateItemAt(index: number): void {
     if (this.length === 0) {
       throw new Error(`DataProvider is empty`);
@@ -66,11 +70,7 @@ export class DataProvider<T> extends EventEmitter {
   }
 
   public hasItem(item: T): boolean {
-    return this._data.indexOf(item) != -1;
-  }
-
-  public get items(): ReadonlyArray<T> {
-    return this._data;
+    return this._data.indexOf(item) !== -1;
   }
 
   public removeItemAt(index: number): T {

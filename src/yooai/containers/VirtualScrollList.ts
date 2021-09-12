@@ -14,6 +14,46 @@ import {BaseScrollPane} from "./BaseScrollPane";
 import {ListScrollOptions} from "./ListScrollOptions";
 
 export abstract class VirtualScrollList<T> extends BaseScrollPane {
+  protected _holder: Container;
+  protected _list: Container;
+  protected _activeRenderers: ItemRenderer<T>[] = [];
+  protected _availableRenderers: ItemRenderer<T>[] = [];
+  protected _renderedItems: Set<T> = new Set<T>();
+  protected _invalidItems: Set<T> = new Set<T>();
+  protected _allowMultipleSelection: boolean = false;
+  protected _maxSelectedItemsCount: number = 0;
+  protected _allowDeselection: boolean = true;
+  protected _selectable: boolean = false;
+  protected _selectedIndices: number[] = [];
+  protected _dataProvider?: DataProvider<T>;
+  protected _rectMask: Graphics;
+  protected _rendererClass: new() => ItemRenderer<T> = ItemRenderer;
+  protected _rendererEvents: EventProxy<T> = new EventProxy<T>();
+
+  protected _rowHeight: number = 32;
+  protected _verticalGap: number = 0;
+  protected _pageSize: number = 1;
+  protected _pageScrollDuration: number = 0.175;
+  protected _animated: boolean = true;
+
+  protected constructor(
+    parent?: Container,
+    dataProvider?: DataProvider<T>,
+    x?: number, y?: number, width?: number, height?: number,
+  ) {
+    super(parent, x, y, width, height);
+
+    this.interactiveChildren = true;
+    this._dataProvider = dataProvider !== undefined ? dataProvider : new DataProvider<T>();
+    this._holder = this.addChild(new Container());
+    this._holder.interactiveChildren = true;
+    this._holder.mask = this._rectMask = new Graphics();
+    this.addChild(this._rectMask);
+
+    this._list = this._holder.addChild(new Container());
+    this._list.interactiveChildren = true;
+  }
+
   public get maxSelectedItemsCount(): number {
     return this._maxSelectedItemsCount;
   }
@@ -25,6 +65,20 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       this._selectedIndices.length = this._maxSelectedItemsCount;
       this.emit(ListEvent.SELECTION_CHANGE);
     }
+  }
+
+  public get allowDeselection(): boolean {
+    return this._allowDeselection;
+  }
+
+  /**
+   * Allows deselection, works only in non-multiple selection mode.
+   * @default true
+   * @param value
+   */
+  @invalidate("selection")
+  public set allowDeselection(value: boolean) {
+    this._allowDeselection = value;
   }
 
   public get rendererEvents(): EventProxy<T> {
@@ -166,6 +220,10 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return this._dataProvider;
   }
 
+  public get length(): number {
+    return this.dataProvider.length;
+  }
+
   protected get pageHeight(): number {
     return this.pageSize * (this.rowHeight + this.verticalGap);
   }
@@ -174,47 +232,12 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     return this._contentWidth;
   }
 
-  public get length(): number {
-    return this.dataProvider.length;
+  protected get innerHeight() {
+    return this._componentHeight - this._contentPadding * 2;
   }
 
-  protected _holder: Container;
-  protected _list: Container;
-  protected _activeRenderers: Array<ItemRenderer<T>> = [];
-  protected _availableRenderers: Array<ItemRenderer<T>> = [];
-  protected _renderedItems: Set<T> = new Set<T>();
-  protected _invalidItems: Set<T> = new Set<T>();
-  protected _allowMultipleSelection: boolean = false;
-  protected _maxSelectedItemsCount: number = 0;
-  protected _selectable: boolean = false;
-  protected _selectedIndices: number[] = [];
-  protected _dataProvider?: DataProvider<T>;
-  protected _rectMask: Graphics;
-  protected _rendererClass: new() => ItemRenderer<T> = ItemRenderer;
-  protected _rendererEvents: EventProxy<T> = new EventProxy<T>();
-
-  protected _rowHeight: number = 32;
-  protected _verticalGap: number = 0;
-  protected _pageSize: number = 1;
-  protected _pageScrollDuration: number = 0.175;
-  protected _animated: boolean = true;
-
-  protected constructor(
-    parent?: Container,
-    dataProvider?: DataProvider<T>,
-    x?: number, y?: number, width?: number, height?: number,
-  ) {
-    super(parent, x, y, width, height);
-
-    this.interactiveChildren = true;
-    this._dataProvider = dataProvider !== undefined ? dataProvider : new DataProvider<T>();
-    this._holder = this.addChild(new Container());
-    this._holder.interactiveChildren = true;
-    this._holder.mask = this._rectMask = new Graphics();
-    this.addChild(this._rectMask);
-
-    this._list = this._holder.addChild(new Container());
-    this._list.interactiveChildren = true;
+  protected get innerWidth() {
+    return this._componentWidth - this._contentPadding * 2;
   }
 
   public setDataProvider(value: DataProvider<T> | undefined) {
@@ -415,14 +438,6 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
     super.destroy();
   }
 
-  protected get innerHeight() {
-    return this._componentHeight - this._contentPadding * 2;
-  }
-
-  protected get innerWidth() {
-    return this._componentWidth - this._contentPadding * 2;
-  }
-
   protected checkDataProviderAvailability() {
     if (!this._dataProvider) {
       this._dataProvider = new DataProvider<T>();
@@ -484,7 +499,9 @@ export abstract class VirtualScrollList<T> extends BaseScrollPane {
       case ChangeType.REMOVE:
         for (let i = this._selectedIndices.length - 1; i >= 0; i--) {
           const index = this._selectedIndices[i];
-          if (index < startIndex) { continue; }
+          if (index < startIndex) {
+            continue;
+          }
           if (index <= endIndex) {
             this._selectedIndices.splice(i, 1);
           } else {

@@ -5,6 +5,29 @@ import {IDestroyable} from "./IDestroyable";
 import {invalidate} from "./invalidate";
 
 export class Component extends AbstractComponent implements IDestroyable {
+
+  protected static readonly INITIAL_HEIGHT = 100;
+  protected static readonly INITIAL_WIDTH = 100;
+
+  protected _isDestroyed: boolean = false;
+  protected _componentWidth: number = 0;
+  protected _componentHeight: number = 0;
+  protected _enabled: boolean = true;
+  protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
+  protected _disabledFilters?: Filter[];
+
+  public constructor(parent?: Container, x: number = 0, y: number = 0) {
+    super();
+
+    this.x = x;
+    this.y = y;
+
+    this.configure();
+    this.invalidate("all");
+    if (parent) {
+      parent.addChild(this);
+    }
+  }
   public get isDestroyed(): boolean {
     return this._isDestroyed;
   }
@@ -99,29 +122,6 @@ export class Component extends AbstractComponent implements IDestroyable {
       this.removeDisabledFilters();
     } else {
       this.applyDisabledFilters();
-    }
-  }
-
-  protected static readonly INITIAL_HEIGHT = 100;
-  protected static readonly INITIAL_WIDTH = 100;
-
-  protected _isDestroyed: boolean = false;
-  protected _componentWidth: number = 0;
-  protected _componentHeight: number = 0;
-  protected _enabled: boolean = true;
-  protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
-  protected _disabledFilters?: Filter[];
-
-  public constructor(parent?: Container, x: number = 0, y: number = 0) {
-    super();
-
-    this.x = x;
-    this.y = y;
-
-    this.configure();
-    this.invalidate("all");
-    if (parent) {
-      parent.addChild(this);
     }
   }
 
