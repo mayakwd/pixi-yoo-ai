@@ -1,7 +1,6 @@
-import {utils} from "pixi.js";
-import EventEmitter = utils.EventEmitter;
+import { EventEmitter } from '@pixi/utils';
 
-export class EventProxy<T> {
+export class EventProxy {
   private readonly _targets: EventEmitter[] = [];
   private _events: Map<string | symbol, IEventScope[]> = new Map();
 
@@ -9,7 +8,7 @@ export class EventProxy<T> {
     this._targets.push(target);
     for (const [event, scopes] of this._events) {
       for (const scope of scopes) {
-        const {fn, context} = scope;
+        const { fn, context } = scope;
         if (scope.once) {
           target.once(event, fn, context);
         } else {
@@ -25,14 +24,14 @@ export class EventProxy<T> {
       this._targets.splice(index, 1);
       for (const [event, scopes] of this._events) {
         for (const scope of scopes) {
-          const {fn, context, once} = scope;
+          const { fn, context, once } = scope;
           target.removeListener(event, fn, context, once);
         }
       }
     }
   }
 
-  public on(event: string | symbol, fn: (...args: any[]) => void, context?: any): this {
+  public on(event: string | symbol, fn: (...args: unknown[]) => void, context?: unknown): this {
     for (const target of this._targets) {
       target.on(event, fn, context);
     }
@@ -40,14 +39,10 @@ export class EventProxy<T> {
     return this;
   }
 
-  public off(event: string | symbol, fn?: (...args: any[]) => void, context?: any, once?: boolean): this {
+  public off(event: string | symbol, fn?: (...args: unknown[]) => void, context?: unknown, once?: boolean): this {
     const scopes = this._events.get(event);
     if (scopes !== undefined) {
-      const index = scopes.findIndex((value) =>
-        value.fn === fn
-        && value.context === context
-        && value.once === once,
-      );
+      const index = scopes.findIndex((value) => value.fn === fn && value.context === context && value.once === once);
       if (index !== -1) {
         scopes.splice(index, 1);
         for (const target of this._targets) {
@@ -58,7 +53,12 @@ export class EventProxy<T> {
     return this;
   }
 
-  public removeListener(event: string | symbol, fn?: (...args: any[]) => void, context?: any, once?: boolean): this {
+  public removeListener(
+    event: string | symbol,
+    fn?: (...args: unknown[]) => void,
+    context?: unknown,
+    once?: boolean
+  ): this {
     this.off(event, fn, context, once);
     return this;
   }
@@ -75,19 +75,19 @@ export class EventProxy<T> {
     return this;
   }
 
-  private addEventScope(event: string | symbol, fn: (...args: any[]) => void, context: any, once: boolean) {
+  private addEventScope(event: string | symbol, fn: (...args: unknown[]) => void, context: unknown, once: boolean) {
     let scopes: IEventScope[] | undefined;
     if (this._events.has(event)) {
-      scopes = this._events.get(event)!;
+      scopes = this._events.get(event);
     } else {
-      this._events.set(event, scopes = []);
+      this._events.set(event, (scopes = []));
     }
-    scopes.push({fn, context, once: false});
+    scopes?.push({ fn, context, once });
   }
 }
 
 interface IEventScope {
-  fn: (...args: any[]) => void;
-  context?: any;
+  fn: (...args: unknown[]) => void;
+  context?: unknown;
   once?: boolean;
 }

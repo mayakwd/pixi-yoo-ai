@@ -1,8 +1,11 @@
-import {gsap} from "gsap";
-import {Application, Container, Graphics, InteractionEvent} from "pixi.js";
-import {PopupEvent} from "../..";
-import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
-import {getHeight, getWidth} from "../layout/utils";
+import { Application } from '@pixi/app';
+import { Container } from '@pixi/display';
+import { Graphics } from '@pixi/graphics';
+import { InteractionEvent } from '@pixi/interaction';
+import { gsap } from 'gsap';
+import { PopupEvent } from '../..';
+import { DisplayObjectWithSize } from '../display/DisplayObjectWithSize';
+import { getHeight, getWidth } from '../layout/utils';
 
 export class PopupManager {
   private get stageWidth(): number {
@@ -28,15 +31,12 @@ export class PopupManager {
 
   private _activePopup?: DisplayObjectWithSize;
 
-  public constructor(
-    private readonly application: Application,
-    root?: Container,
-  ) {
+  public constructor(private readonly application: Application, root?: Container) {
     this._root = root === undefined ? application.stage : root;
   }
 
   public show(popup: DisplayObjectWithSize, params: IShowParams = {}) {
-    const {isModal = true, isCentered = true, offsetX = 0, offsetY = 0, onComplete} = params;
+    const { isModal = true, isCentered = true, offsetX = 0, offsetY = 0, onComplete } = params;
     if (isModal && this._activePopup !== undefined) {
       this.pushInStack(this._activePopup);
     }
@@ -48,7 +48,7 @@ export class PopupManager {
       this._root.addChild(wrapper);
 
       wrapper.alpha = 0;
-      gsap.to(wrapper, {duration: 0.15, alpha: 1}).play();
+      gsap.to(wrapper, { duration: 0.15, alpha: 1 }).play();
     }
 
     popup.emit(PopupEvent.FOCUS_IN);
@@ -59,17 +59,22 @@ export class PopupManager {
       popup.y = (this.stageHeight - getHeight(popup)) * 0.5 + offsetY;
     }
 
-    popup.on("removed", this.onPopupRemoved, this);
+    popup.on('removed', this.onPopupRemoved, this);
 
     popup.alpha = 0;
-    gsap.fromTo(
-      popup, 0.175,
-      {alpha: 0, y: popup.y + 20},
-      {
-        alpha: 1, y: popup.y, ease: "power2.out",
-        onComplete,
-      },
-    ).play();
+    gsap
+      .fromTo(
+        popup,
+        0.175,
+        { alpha: 0, y: popup.y + 20 },
+        {
+          alpha: 1,
+          y: popup.y,
+          ease: 'power2.out',
+          onComplete
+        }
+      )
+      .play();
 
     this._popups.set(popup, wrapper);
     if (isModal) {
@@ -80,7 +85,7 @@ export class PopupManager {
   public hide(popup: DisplayObjectWithSize, destroy: boolean = false, onComplete?: () => void): void {
     if (this._popups.has(popup)) {
       popup.emit(PopupEvent.FOCUS_OUT);
-      popup.off("removed", this.onPopupRemoved, this);
+      popup.off('removed', this.onPopupRemoved, this);
 
       const wrapper = this._popups.get(popup);
       if (wrapper !== undefined) {
@@ -90,25 +95,27 @@ export class PopupManager {
           onComplete: () => {
             this._root.removeChild(wrapper);
             wrapper.destroy();
-          },
+          }
         });
       }
 
       if (popup.parent === this._root) {
-        gsap.to(popup, {
-          alpha: 0,
-          y: popup.y + 20,
-          ease: "power2.out",
-          duration: 0.15,
-          onComplete: () => {
-            gsap.killTweensOf(popup);
-            this._root.removeChild(popup);
-            if (destroy) {
-              popup.destroy();
+        gsap
+          .to(popup, {
+            alpha: 0,
+            y: popup.y + 20,
+            ease: 'power2.out',
+            duration: 0.15,
+            onComplete: () => {
+              gsap.killTweensOf(popup);
+              this._root.removeChild(popup);
+              if (destroy) {
+                popup.destroy();
+              }
+              onComplete?.();
             }
-            onComplete?.();
-          },
-        }).play();
+          })
+          .play();
       } else {
         gsap.killTweensOf(popup);
         popup.destroy();
@@ -150,7 +157,7 @@ export class PopupManager {
 
   private pushPopup(popup: DisplayObjectWithSize) {
     if (this._popups.has(popup)) {
-      popup.off("removed", this.onPopupRemoved, this);
+      popup.off('removed', this.onPopupRemoved, this);
       if (popup.parent === this._root) {
         const wrapper = this._popups.get(popup);
         const targets = [popup];
@@ -161,14 +168,14 @@ export class PopupManager {
         gsap.to(targets, {
           alpha: 0,
           duration: 0.15,
-          ease: "power2.in",
+          ease: 'power2.in',
           onComplete: () => {
             for (const target of targets) {
               if (this._root === target.parent) {
                 this._root.removeChild(target);
               }
             }
-          },
+          }
         });
       }
     }
@@ -177,7 +184,7 @@ export class PopupManager {
   private popPopup(popup: DisplayObjectWithSize) {
     if (this._popups.has(popup)) {
       popup.emit(PopupEvent.FOCUS_IN);
-      popup.on("removed", this.onPopupRemoved, this);
+      popup.on('removed', this.onPopupRemoved, this);
       const wrapper = this._popups.get(popup);
       const targets = [popup];
       if (wrapper !== undefined) {
@@ -189,7 +196,7 @@ export class PopupManager {
       gsap.to(targets, {
         alpha: 1,
         duration: 0.15,
-        ease: "power2.out",
+        ease: 'power2.out'
       });
     }
   }

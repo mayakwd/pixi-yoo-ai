@@ -1,8 +1,10 @@
-import {Container, DisplayObject, Filter, Rectangle} from "pixi.js";
-import {alignChild, HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
-import {AbstractComponent} from "./AbstractComponent";
-import {IDestroyable} from "./IDestroyable";
-import {invalidate} from "./invalidate";
+import { Filter } from '@pixi/core';
+import { Container, DisplayObject } from '@pixi/display';
+import { Rectangle } from '@pixi/math';
+import { alignChild, HorizontalAlign, IHasDimensions, IPoint, VerticalAlign } from '../..';
+import { AbstractComponent } from './AbstractComponent';
+import { IDestroyable } from './IDestroyable';
+import { invalidate } from './invalidate';
 
 export class Component extends AbstractComponent implements IDestroyable {
   public get isDestroyed(): boolean {
@@ -13,9 +15,11 @@ export class Component extends AbstractComponent implements IDestroyable {
     return this._disabledFilters;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set disabledFilters(value: Filter[] | undefined) {
-    if (this._disabledFilters !== value) { this.removeDisabledFilters(); }
+    if (this._disabledFilters !== value) {
+      this.removeDisabledFilters();
+    }
     this._disabledFilters = value;
     this.applyDisabledFilters();
   }
@@ -24,20 +28,20 @@ export class Component extends AbstractComponent implements IDestroyable {
     return this._componentWidth;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set componentWidth(width: number) {
     this._componentWidth = width;
-    this.emit("resize");
+    this.emit('resize');
   }
 
   public get componentHeight(): number {
     return this._componentHeight;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set componentHeight(height: number) {
     this._componentHeight = height;
-    this.emit("resize");
+    this.emit('resize');
   }
 
   public get centerX(): number {
@@ -92,7 +96,7 @@ export class Component extends AbstractComponent implements IDestroyable {
     return this._enabled;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set enabled(enabled: boolean) {
     this._enabled = enabled;
     if (this._enabled) {
@@ -119,7 +123,7 @@ export class Component extends AbstractComponent implements IDestroyable {
     this.y = y;
 
     this.configure();
-    this.invalidate("all");
+    this.invalidate('all');
     if (parent) {
       parent.addChild(this);
     }
@@ -146,8 +150,8 @@ export class Component extends AbstractComponent implements IDestroyable {
     this._componentWidth = width;
     this._componentHeight = height;
 
-    this.invalidate("size");
-    this.emit("resize");
+    this.invalidate('size');
+    this.emit('resize');
   }
 
   public moveTo(x: number, y: number): void {
@@ -159,7 +163,7 @@ export class Component extends AbstractComponent implements IDestroyable {
     if (this._isDestroyed) {
       return;
     }
-    super.destroy({children: true});
+    super.destroy({ children: true });
   }
 
   protected configure() {
@@ -211,7 +215,7 @@ export class Component extends AbstractComponent implements IDestroyable {
 
   protected removeDisabledFilters() {
     if (this._disabledFilters !== undefined && this._enabled) {
-      this.filters = this.filters?.filter((filter) => this._disabledFilters!.indexOf(filter) === -1);
+      this.filters = this.filters?.filter((filter) => this._disabledFilters?.indexOf(filter) === -1) ?? null;
     }
   }
 

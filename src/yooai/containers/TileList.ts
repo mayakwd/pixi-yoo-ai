@@ -1,15 +1,15 @@
-import {Container} from "pixi.js";
-import {DataProvider, invalidate, ItemRenderer} from "../..";
-import {Direction} from "../layout/Direction";
-import {List} from "./List";
-import {ListScrollOptions} from "./ListScrollOptions";
+import { Container } from '@pixi/display';
+import { DataProvider, invalidate, ItemRenderer } from '../..';
+import { Direction } from '../layout/Direction';
+import { List } from './List';
+import { ListScrollOptions } from './ListScrollOptions';
 
 export class TileList<T> extends List<T> {
   public get direction(): Direction {
     return this._direction;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set direction(value: Direction) {
     this._direction = value;
   }
@@ -18,7 +18,7 @@ export class TileList<T> extends List<T> {
     return this._horizontalGap;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set horizontalGap(value: number) {
     this._horizontalGap = value;
   }
@@ -27,26 +27,26 @@ export class TileList<T> extends List<T> {
     return this._columnWidth;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set columnWidth(value: number) {
     this._columnWidth = value;
   }
 
   public get pageIndex(): number {
     switch (this._direction) {
-      case "vertical":
+      case 'vertical':
         return Math.floor(this.verticalScrollPosition / this.pageHeight);
-      case "horizontal":
+      case 'horizontal':
         return Math.floor(this.horizontalScrollPosition / this.pageWidth);
     }
   }
 
   public set pageIndex(value: number) {
     switch (this._direction) {
-      case "vertical":
+      case 'vertical':
         this.verticalScrollPosition = this.pageHeight * value;
         break;
-      case "horizontal":
+      case 'horizontal':
         this.horizontalScrollPosition = this.pageWidth * value;
         break;
     }
@@ -54,9 +54,16 @@ export class TileList<T> extends List<T> {
 
   protected _columnWidth = 80;
   protected _horizontalGap = 0;
-  protected _direction: Direction = "vertical";
+  protected _direction: Direction = 'vertical';
 
-  public constructor(parent?: Container, dataProvider?: DataProvider<T>, x?: number, y?: number, width?: number, height?: number) {
+  public constructor(
+    parent?: Container,
+    dataProvider?: DataProvider<T>,
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number
+  ) {
     super(parent, dataProvider, x, y, width, height);
   }
 
@@ -67,10 +74,11 @@ export class TileList<T> extends List<T> {
 
   public set columnsCount(value: number) {
     value = Math.max(1, value);
-    this.componentWidth = (this.horizontalGap + this.columnWidth) * value - this.horizontalGap + this.contentPadding * 2;
+    this.componentWidth =
+      (this.horizontalGap + this.columnWidth) * value - this.horizontalGap + this.contentPadding * 2;
   }
 
-  public scrollToIndex(index: number, {animated = true, alignToPage = true}: ListScrollOptions = {}): void {
+  public scrollToIndex(index: number, { animated = true, alignToPage = true }: ListScrollOptions = {}): void {
     if (alignToPage) {
       const page = this.getPageForIndex(index);
       this.scrollToPage(page, animated);
@@ -78,10 +86,10 @@ export class TileList<T> extends List<T> {
       let verticalPosition: number = this.verticalScrollPosition;
       let horizontalPosition: number = this.horizontalScrollPosition;
       switch (this._direction) {
-        case "vertical":
+        case 'vertical':
           verticalPosition = Math.floor(index / this.columnsCount) * (this.rowHeight + this.verticalGap);
           break;
-        case "horizontal":
+        case 'horizontal':
           horizontalPosition = Math.floor(index / this.rowsCount) * (this.columnWidth + this.horizontalGap);
           break;
       }
@@ -93,10 +101,10 @@ export class TileList<T> extends List<T> {
     let verticalPosition: number = this.verticalScrollPosition;
     let horizontalPosition: number = this.horizontalScrollPosition;
     switch (this._direction) {
-      case "vertical":
+      case 'vertical':
         verticalPosition = this.pageHeight * index;
         break;
-      case "horizontal":
+      case 'horizontal':
         horizontalPosition = this.pageWidth * index;
         break;
     }
@@ -105,33 +113,33 @@ export class TileList<T> extends List<T> {
 
   public scrollPageUp(animated = true): void {
     this.scrollBy(
-      this.direction === "horizontal" ? 0 : -this.pageWidth,
-      this.direction === "vertical" ? 0 : -this.pageHeight,
-      animated,
+      this.direction === 'horizontal' ? 0 : -this.pageWidth,
+      this.direction === 'vertical' ? 0 : -this.pageHeight,
+      animated
     );
   }
 
   public scrollPageDown(animated = true): void {
     this.scrollBy(
-      this.direction === "horizontal" ? 0 : this.pageWidth,
-      this.direction === "vertical" ? 0 : this.pageHeight,
-      animated,
+      this.direction === 'horizontal' ? 0 : this.pageWidth,
+      this.direction === 'vertical' ? 0 : this.pageHeight,
+      animated
     );
   }
 
   public scrollRowUp(animated = true): void {
     this.scrollBy(
-      this.direction === "horizontal" ? 0 : -this.columnWidth,
-      this.direction === "vertical" ? 0 : -this.rowHeight,
-      animated,
+      this.direction === 'horizontal' ? 0 : -this.columnWidth,
+      this.direction === 'vertical' ? 0 : -this.rowHeight,
+      animated
     );
   }
 
   public scrollRowDown(animated = true): void {
     this.scrollBy(
-      this.direction === "horizontal" ? 0 : this.columnWidth,
-      this.direction === "vertical" ? 0 : this.rowHeight,
-      animated,
+      this.direction === 'horizontal' ? 0 : this.columnWidth,
+      this.direction === 'vertical' ? 0 : this.rowHeight,
+      animated
     );
   }
 
@@ -146,27 +154,29 @@ export class TileList<T> extends List<T> {
     let endIndex = -1;
     if (this._dataProvider !== undefined) {
       switch (this._direction) {
-        case "vertical":
-          startIndex = Math.floor(this._verticalScrollPosition / (this.rowHeight + this.verticalGap)) * this.columnsCount;
+        case 'vertical':
+          startIndex =
+            Math.floor(this._verticalScrollPosition / (this.rowHeight + this.verticalGap)) * this.columnsCount;
           endIndex = Math.min(this._dataProvider.length, startIndex + (this.rowsCount + 1) * this.columnsCount);
           break;
-        case "horizontal":
-          startIndex = Math.floor(this._horizontalScrollPosition / (this.columnWidth + this.horizontalGap)) * this.rowsCount;
+        case 'horizontal':
+          startIndex =
+            Math.floor(this._horizontalScrollPosition / (this.columnWidth + this.horizontalGap)) * this.rowsCount;
           endIndex = Math.min(this._dataProvider.length, startIndex + (this.columnsCount + 1) * this.rowsCount);
           break;
       }
     }
-    return {startIndex, endIndex};
+    return { startIndex, endIndex };
   }
 
   protected drawScroll() {
     let verticalPosition = this.verticalScrollPosition;
     let horizontalPosition = this.horizontalScrollPosition;
     switch (this._direction) {
-      case "vertical":
+      case 'vertical':
         verticalPosition %= this.rowHeight + this.verticalGap;
         break;
-      case "horizontal":
+      case 'horizontal':
         horizontalPosition %= this.columnWidth + this.horizontalGap;
         break;
     }
@@ -176,29 +186,29 @@ export class TileList<T> extends List<T> {
 
   protected get pageWidth(): number {
     switch (this._direction) {
-      case "vertical":
+      case 'vertical':
         return this._contentWidth;
-      case "horizontal":
+      case 'horizontal':
         return this.pageSize * (this.columnWidth + this.horizontalGap);
     }
   }
 
   protected get pageHeight(): number {
     switch (this._direction) {
-      case "vertical":
+      case 'vertical':
         return this.pageSize * (this.rowHeight + this.verticalGap);
-      case "horizontal":
+      case 'horizontal':
         return this._contentHeight;
     }
   }
 
   public get pagesCount(): number {
     switch (this._direction) {
-      case "vertical": {
+      case 'vertical': {
         const paddedRowHeight = this.rowHeight + this.verticalGap;
         return Math.ceil(this.contentHeight / paddedRowHeight / this.pageSize);
       }
-      case "horizontal": {
+      case 'horizontal': {
         const paddedColumnWidth = this.columnWidth + this.horizontalGap;
         return Math.ceil(this.contentWidth / paddedColumnWidth / this.pageSize);
       }
@@ -211,13 +221,13 @@ export class TileList<T> extends List<T> {
     let row: number;
 
     switch (this.direction) {
-      case "vertical": {
+      case 'vertical': {
         const columnsCount = this.columnsCount;
         column = (index - startIndex) % columnsCount;
         row = Math.floor((index - startIndex) / columnsCount);
         break;
       }
-      case "horizontal": {
+      case 'horizontal': {
         const rowsCount = this.rowsCount;
         column = Math.floor((index - startIndex) / rowsCount);
         row = (index - startIndex) % rowsCount;
@@ -234,13 +244,19 @@ export class TileList<T> extends List<T> {
     const paddedRowHeight = this.rowHeight + this.verticalGap;
     const paddedColumnWidth = this.columnWidth + this.horizontalGap;
     switch (this._direction) {
-      case "horizontal":
-        this._contentWidth = Math.max(0, paddedColumnWidth * Math.ceil(this.length / this.rowsCount) - this.horizontalGap);
+      case 'horizontal':
+        this._contentWidth = Math.max(
+          0,
+          paddedColumnWidth * Math.ceil(this.length / this.rowsCount) - this.horizontalGap
+        );
         this._contentHeight = Math.max(0, paddedRowHeight * this.rowsCount - this.verticalGap);
         break;
-      case "vertical":
+      case 'vertical':
         this._contentWidth = Math.max(0, paddedColumnWidth * this.columnsCount - this.horizontalGap);
-        this._contentHeight = Math.max(0, paddedRowHeight * Math.ceil(this.length / this.columnsCount) - this.verticalGap);
+        this._contentHeight = Math.max(
+          0,
+          paddedRowHeight * Math.ceil(this.length / this.columnsCount) - this.verticalGap
+        );
         break;
     }
   }

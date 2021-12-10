@@ -1,18 +1,22 @@
-import {AbstractComponent} from "../core/AbstractComponent";
-import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
-import {HorizontalAlign} from "./HorizontalAlign";
-import {IHasDimensions} from "./IHasDimensions";
-import {IPoint} from "./IPoint";
-import {getHeight, getWidth} from "./utils";
-import {VerticalAlign} from "./VerticalAlign";
+import { AbstractComponent } from '../core/AbstractComponent';
+import { DisplayObjectWithSize } from '../display/DisplayObjectWithSize';
+import { HorizontalAlign } from './HorizontalAlign';
+import { IHasDimensions } from './IHasDimensions';
+import { IPoint } from './IPoint';
+import { getHeight, getWidth } from './utils';
+import { VerticalAlign } from './VerticalAlign';
 
 export function alignChild(
-  child: IHasDimensions | DisplayObjectWithSize, parent: IHasDimensions | DisplayObjectWithSize,
-  vAlign?: VerticalAlign, hAlign?: HorizontalAlign,
+  child: IHasDimensions | DisplayObjectWithSize,
+  parent: IHasDimensions | DisplayObjectWithSize,
+  vAlign?: VerticalAlign,
+  hAlign?: HorizontalAlign,
   offset?: IPoint,
-  result?: IPoint,
+  result?: IPoint
 ) {
-  if (result === undefined) { result = {x: 0, y: 0}; }
+  if (result === undefined) {
+    result = { x: 0, y: 0 };
+  }
 
   if (child instanceof AbstractComponent) {
     child.validateNow();
@@ -29,33 +33,37 @@ export function alignChild(
 
   if (vAlign !== undefined) {
     switch (vAlign) {
-      case "top":
+      case 'top':
         y = 0;
         break;
-      case "center":
+      case 'center':
         y = (parentHeight - childHeight) * 0.5;
         break;
-      case "bottom":
+      case 'bottom':
         y = parentHeight - childHeight;
         break;
     }
   }
   if (hAlign !== undefined) {
     switch (hAlign) {
-      case "left":
+      case 'left':
         x = 0;
         break;
-      case "center":
+      case 'center':
         x = (parentWidth - childWidth) * 0.5;
         break;
-      case "right":
+      case 'right':
         x = parentWidth - childWidth;
         break;
     }
   }
 
-  if (x !== undefined) { result.x = x; }
-  if (y !== undefined) { result.y = y; }
+  if (x !== undefined) {
+    result.x = x;
+  }
+  if (y !== undefined) {
+    result.y = y;
+  }
 
   if (offset !== undefined) {
     result.x += offset.x;

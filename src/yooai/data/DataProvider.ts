@@ -1,7 +1,6 @@
-import {utils} from "pixi.js";
-import {ChangeEvent} from "./ChangeEvent";
-import {ChangeType} from "./ChangeType";
-import EventEmitter = utils.EventEmitter;
+import { EventEmitter } from '@pixi/utils';
+import { ChangeEvent } from './ChangeEvent';
+import { ChangeType } from './ChangeType';
 
 export class DataProvider<T> extends EventEmitter {
   private _data: T[];

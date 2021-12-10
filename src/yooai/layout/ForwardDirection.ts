@@ -1,1 +1,1 @@
-export type ForwardDirection = "right" | "left" | "up" | "down";
+export type ForwardDirection = 'right' | 'left' | 'up' | 'down';

@@ -1,16 +1,17 @@
-import {Container, Point, TextStyle} from "pixi.js";
-import {alignChild, HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign} from "../..";
-import {getHeight, getWidth} from "../layout/utils";
-import {InteractiveComponent} from "./InteractiveComponent";
-import {Label} from "./Label";
+import { Container } from '@pixi/display';
+import { Point } from '@pixi/math';
+import { TextStyle } from '@pixi/text';
+import { alignChild, HorizontalAlign, invalidate, IPoint, Placement, VerticalAlign } from '../..';
+import { getHeight, getWidth } from '../layout/utils';
+import { InteractiveComponent } from './InteractiveComponent';
+import { Label } from './Label';
 
 export class Button extends InteractiveComponent {
-
   public get text(): string {
     return this._label.text;
   }
 
-  @invalidate("text")
+  @invalidate('text')
   public set text(value: string) {
     this._label.text = value;
   }
@@ -25,7 +26,7 @@ export class Button extends InteractiveComponent {
     }
     this._icon = value;
     if (this._enabled || this._disabledIcon === undefined) {
-      this.invalidate("icon");
+      this.invalidate('icon');
     }
   }
 
@@ -39,7 +40,7 @@ export class Button extends InteractiveComponent {
     }
     this._disabledIcon = value;
     if (!this._enabled) {
-      this.invalidate("icon");
+      this.invalidate('icon');
     }
   }
 
@@ -53,7 +54,7 @@ export class Button extends InteractiveComponent {
     }
     this._selectedIcon = value;
     if (this._enabled && this._selected) {
-      this.invalidate("icon");
+      this.invalidate('icon');
     }
   }
 
@@ -63,14 +64,14 @@ export class Button extends InteractiveComponent {
 
   public set textStyle(value: TextStyle) {
     this._label.textStyle = value;
-    this.invalidate("text");
+    this.invalidate('text');
   }
 
   public get contentOffsetX(): number {
     return this._contentOffset.x;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set contentOffsetX(value: number) {
     this._contentOffset.x = value;
   }
@@ -79,7 +80,7 @@ export class Button extends InteractiveComponent {
     return this._contentOffset.y;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set contentOffsetY(value: number) {
     this._contentOffset.y = value;
   }
@@ -88,7 +89,7 @@ export class Button extends InteractiveComponent {
     return this._vAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set vAlign(value: VerticalAlign) {
     this._vAlign = value;
   }
@@ -97,7 +98,7 @@ export class Button extends InteractiveComponent {
     return this._hAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set hAlign(value: HorizontalAlign) {
     this._hAlign = value;
   }
@@ -110,9 +111,9 @@ export class Button extends InteractiveComponent {
   protected _currentIcon?: Container;
 
   protected _contentOffset!: Point;
-  protected _vAlign: VerticalAlign = "center";
-  protected _hAlign: HorizontalAlign = "center";
-  protected _iconPlacement: Placement = "left";
+  protected _vAlign: VerticalAlign = 'center';
+  protected _hAlign: HorizontalAlign = 'center';
+  protected _iconPlacement: Placement = 'left';
   protected _iconGap: number = 4;
 
   constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 80, height: number = 24) {
@@ -120,7 +121,7 @@ export class Button extends InteractiveComponent {
   }
 
   public setContentOffset(x: number | IPoint, y?: number): void {
-    if (typeof x === "object") {
+    if (typeof x === 'object') {
       const point = x as IPoint;
       if (point.x !== undefined && point.y !== undefined) {
         this._contentOffset.set(point.x, point.y);
@@ -129,7 +130,7 @@ export class Button extends InteractiveComponent {
       this._contentOffset.x = x;
       this._contentOffset.y = y;
     }
-    this.invalidate("size");
+    this.invalidate('size');
   }
 
   protected configure() {
@@ -140,16 +141,16 @@ export class Button extends InteractiveComponent {
   }
 
   protected draw(): void {
-    if (this.isInvalid("state")) {
-      this.invalidate("icon");
+    if (this.isInvalid('state')) {
+      this.invalidate('icon');
     }
-    if (this.isInvalid("icon")) {
+    if (this.isInvalid('icon')) {
       this.drawIcon();
-      this.invalidate("size");
+      this.invalidate('size');
     }
-    if (this.isInvalid("text")) {
+    if (this.isInvalid('text')) {
       this.drawLabel();
-      this.invalidate("size");
+      this.invalidate('size');
     }
     super.draw();
   }
@@ -157,11 +158,16 @@ export class Button extends InteractiveComponent {
   protected drawLayout() {
     super.drawLayout();
 
-    const {contentWidth, contentHeight} = this.calculateContentSize();
-    let {x: xOffset, y: yOffset} = alignChild({
-      width: contentWidth,
-      height: contentHeight,
-    }, this, this._vAlign, this._hAlign);
+    const { contentWidth, contentHeight } = this.calculateContentSize();
+    let { x: xOffset, y: yOffset } = alignChild(
+      {
+        width: contentWidth,
+        height: contentHeight
+      },
+      this,
+      this._vAlign,
+      this._hAlign
+    );
 
     xOffset += this.contentOffsetX;
     yOffset += this.contentOffsetY;
@@ -174,22 +180,22 @@ export class Button extends InteractiveComponent {
       const verticalGap = labelHeight > 0 ? this._iconGap : 0;
       const horizontalGap = labelWidth > 0 ? this._iconGap : 0;
       switch (this._iconPlacement) {
-        case "up":
+        case 'up':
           this._currentIcon.x = xOffset + (contentWidth - iconWidth) * 0.5;
           this._currentIcon.y = yOffset;
           yOffset += iconHeight + verticalGap;
           break;
-        case "down":
+        case 'down':
           this._currentIcon.x = xOffset + (contentWidth - iconWidth) * 0.5;
           this._currentIcon.y = yOffset + contentHeight - iconHeight;
           yOffset -= iconHeight + verticalGap - labelHeight;
           break;
-        case "left":
+        case 'left':
           this._currentIcon.x = xOffset;
           this._currentIcon.y = yOffset + (contentHeight - iconHeight) * 0.5;
           xOffset += iconWidth + horizontalGap;
           break;
-        case "right":
+        case 'right':
           this._currentIcon.x = xOffset + contentWidth - iconWidth;
           this._currentIcon.y = yOffset + (contentHeight - iconHeight) * 0.5;
           xOffset -= iconWidth + horizontalGap - labelWidth;
@@ -225,21 +231,21 @@ export class Button extends InteractiveComponent {
     return this._icon;
   }
 
-  protected calculateContentSize(): { contentWidth: number, contentHeight: number } {
+  protected calculateContentSize(): { contentWidth: number; contentHeight: number } {
     let contentWidth = this._label.contentWidth;
     let contentHeight = this._label.contentHeight;
     if (this._currentIcon !== undefined) {
       switch (this._iconPlacement) {
-        case "left":
-        case "right":
+        case 'left':
+        case 'right':
           contentWidth += getWidth(this._currentIcon) + (contentWidth > 0 ? this._iconGap : 0);
           break;
-        case "up":
-        case "down":
+        case 'up':
+        case 'down':
           contentHeight += getHeight(this._currentIcon) + (contentHeight > 0 ? this._iconGap : 0);
           break;
       }
     }
-    return {contentWidth, contentHeight};
+    return { contentWidth, contentHeight };
   }
 }

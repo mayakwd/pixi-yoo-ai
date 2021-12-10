@@ -1,8 +1,8 @@
-import {Container} from "pixi.js";
-import {VerticalLayoutBehavior} from "../..";
-import {AbstractComponent} from "../core/AbstractComponent";
-import {getHeight, getWidth} from "../layout/utils";
-import {AbstractBox} from "./AbstractBox";
+import { Container } from '@pixi/display';
+import { VerticalLayoutBehavior } from '../..';
+import { AbstractComponent } from '../core/AbstractComponent';
+import { getHeight, getWidth } from '../layout/utils';
+import { AbstractBox } from './AbstractBox';
 
 export class VBox extends AbstractBox {
   public constructor(parent?: Container, x: number = 0, y: number = 0) {

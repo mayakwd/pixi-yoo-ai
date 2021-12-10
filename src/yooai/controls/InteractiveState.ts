@@ -1,1 +1,1 @@
-export type InteractiveState = "up" | "down" | "over";
+export type InteractiveState = 'up' | 'down' | 'over';

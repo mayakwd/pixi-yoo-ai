@@ -1,15 +1,19 @@
-import {Container, Graphics, Loader, LoaderResource, Rectangle, Sprite} from "pixi.js";
-import {HorizontalAlign, IHasDimensions, invalidate, IPoint, RatioUtil, ScaleMode, VerticalAlign} from "../..";
-import {Pane} from "./Pane";
+import { Texture } from '@pixi/core';
+import { Container } from '@pixi/display';
+import { Graphics } from '@pixi/graphics';
+import { Loader, LoaderResource } from '@pixi/loaders';
+import { Rectangle } from '@pixi/math';
+import { Sprite } from '@pixi/sprite';
+import { HorizontalAlign, IHasDimensions, invalidate, IPoint, RatioUtil, ScaleMode, VerticalAlign } from '../..';
+import { Pane } from './Pane';
 import LOAD_TYPE = LoaderResource.LOAD_TYPE;
-import Texture = PIXI.Texture;
 
 export class Image extends Pane {
   public get imageOffset(): IPoint | undefined {
     return this._imageOffset;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set imageOffset(value: IPoint | undefined) {
     this._imageOffset = value;
   }
@@ -18,7 +22,7 @@ export class Image extends Pane {
     return this._imageMaskHAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set imageMaskHAlign(value: HorizontalAlign) {
     this._imageMaskHAlign = value;
   }
@@ -27,7 +31,7 @@ export class Image extends Pane {
     return this._imageMaskVAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set imageMaskVAlign(value: VerticalAlign) {
     this._imageMaskVAlign = value;
   }
@@ -36,7 +40,7 @@ export class Image extends Pane {
     return this._imageMaskOffset;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set imageMaskOffset(value: IPoint | undefined) {
     this._imageMaskOffset = value;
   }
@@ -45,7 +49,7 @@ export class Image extends Pane {
     return this._imageMask;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set imageMask(value: Graphics | Sprite | undefined) {
     this._imageMask = value;
   }
@@ -54,7 +58,7 @@ export class Image extends Pane {
     return this._imageMaskRect;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set imageMaskRect(value: IHasDimensions | undefined) {
     this._imageMaskRect = value;
   }
@@ -63,7 +67,7 @@ export class Image extends Pane {
     return this._image;
   }
 
-  @invalidate("data")
+  @invalidate('data')
   public set image(value: Container | undefined) {
     this.destroyImageLoader();
     this.destroyLoadedImage();
@@ -74,7 +78,7 @@ export class Image extends Pane {
     return this._imageUrl;
   }
 
-  @invalidate("data")
+  @invalidate('data')
   public set imageUrl(value: string | undefined) {
     this.destroyImageLoader();
     this.destroyLoadedImage();
@@ -85,7 +89,7 @@ export class Image extends Pane {
     return this._placeHolder;
   }
 
-  @invalidate("data")
+  @invalidate('data')
   public set placeHolder(value: Graphics | Sprite | undefined) {
     this._placeHolder = value;
   }
@@ -94,7 +98,7 @@ export class Image extends Pane {
     return this._hAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set hAlign(value: HorizontalAlign) {
     this._hAlign = value;
   }
@@ -103,7 +107,7 @@ export class Image extends Pane {
     return this._vAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set vAlign(value: VerticalAlign) {
     this._vAlign = value;
   }
@@ -112,14 +116,14 @@ export class Image extends Pane {
     return this._scaleMode;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set scaleMode(value: ScaleMode) {
     this._scaleMode = value;
   }
 
   protected _scaleMode: ScaleMode = ScaleMode.FILL;
-  protected _vAlign: VerticalAlign = "center";
-  protected _hAlign: HorizontalAlign = "center";
+  protected _vAlign: VerticalAlign = 'center';
+  protected _hAlign: HorizontalAlign = 'center';
   protected _placeHolder?: Graphics | Sprite;
   protected _imageUrl?: string;
   protected _image?: Container;
@@ -128,8 +132,8 @@ export class Image extends Pane {
   protected _imageMaskRect?: IHasDimensions;
   protected _imageMask?: Graphics | Sprite;
   protected _imageMaskOffset?: IPoint;
-  protected _imageMaskVAlign: VerticalAlign = "center";
-  protected _imageMaskHAlign: HorizontalAlign = "center";
+  protected _imageMaskVAlign: VerticalAlign = 'center';
+  protected _imageMaskHAlign: HorizontalAlign = 'center';
 
   protected _currentImage?: Container;
   protected _currentMask?: Graphics | Sprite;
@@ -146,19 +150,19 @@ export class Image extends Pane {
   }
 
   protected draw(): void {
-    if (this.isInvalid("size")) {
+    if (this.isInvalid('size')) {
       this.updateSizeRect();
       if (this._rectMask !== undefined && this._currentMask === this._rectMask) {
-        this.invalidate("state");
+        this.invalidate('state');
       }
     }
-    if (this.isInvalid("data")) {
+    if (this.isInvalid('data')) {
       this.drawImage();
-      this.invalidate("state");
+      this.invalidate('state');
     }
-    if (this.isInvalid("state")) {
+    if (this.isInvalid('state')) {
       this.drawMask();
-      this.invalidate("size");
+      this.invalidate('size');
     }
     super.draw();
   }
@@ -180,9 +184,9 @@ export class Image extends Pane {
 
   protected drawMask() {
     this._currentMask = this.updateSkin(this._currentMask, this.getExistingOrDrawMask());
-    if (this._currentMask) {
+    if (this._currentMask !== undefined) {
       if (this._currentImage !== undefined) {
-        this._currentImage.mask = this._currentMask!;
+        this._currentImage.mask = this._currentMask;
         this._currentMask.visible = true;
       } else {
         this._currentMask.visible = false;
@@ -197,14 +201,18 @@ export class Image extends Pane {
   }
 
   protected drawImageLayout() {
-    if (this._currentImage === undefined) { return; }
+    if (this._currentImage === undefined) {
+      return;
+    }
 
     this.scaleImage();
     this.alignChild(this._currentImage, this._vAlign, this._hAlign);
   }
 
   protected drawMaskLayout() {
-    if (this._currentMask === undefined || !this._currentMask.visible) { return; }
+    if (this._currentMask === undefined || !this._currentMask.visible) {
+      return;
+    }
 
     this.alignChild(this._currentMask, this._imageMaskVAlign, this._imageMaskHAlign, this._imageMaskOffset);
   }
@@ -216,23 +224,26 @@ export class Image extends Pane {
 
     const rect = this._imageMaskRect || this._sizeRect;
     this._rectMask.clear();
-    this._rectMask.beginFill(0xFF0000, 1);
+    this._rectMask.beginFill(0xff0000, 1);
     this._rectMask.drawRect(rect.x || 0, rect.y || 0, rect.width, rect.height);
     this._rectMask.endFill();
   }
 
   protected scaleImage() {
-    if (this._currentImage === undefined) { return; }
+    if (this._currentImage === undefined) {
+      return;
+    }
 
     this._imageSizeRect.width = this._currentImage.width;
     this._imageSizeRect.height = this._currentImage.height;
 
-    RatioUtil.scale({
+    RatioUtil.scale(
+      {
         size: this._imageSizeRect,
         fitArea: this._sizeRect,
-        scaleMode: this._scaleMode,
+        scaleMode: this._scaleMode
       },
-      this._imageSizeRect,
+      this._imageSizeRect
     );
     this._currentImage.width = this._imageSizeRect.width;
     this._currentImage.height = this._imageSizeRect.height;
@@ -248,7 +259,7 @@ export class Image extends Pane {
   protected loadImage() {
     if (this._imageUrl !== undefined) {
       this._loader = new Loader();
-      this._loader.add("image", this._imageUrl, {loadType: LOAD_TYPE.IMAGE});
+      this._loader.add('image', this._imageUrl, { loadType: LOAD_TYPE.IMAGE });
       this._loader.load(this.onImageLoaded.bind(this));
     }
   }
@@ -258,16 +269,16 @@ export class Image extends Pane {
       const texture = resources.image.texture;
       Texture.removeFromCache(texture);
       this._loadedImage = new Sprite(texture);
-      this.emit("imageLoaded", this._loadedImage);
-      this.invalidate("data");
+      this.emit('imageLoaded', this._loadedImage);
+      this.invalidate('data');
     } else {
-      this.emit("imageLoaded", undefined);
+      this.emit('imageLoaded', undefined);
     }
   }
 
   protected destroyLoadedImage() {
     if (this._loadedImage !== undefined) {
-      this._loadedImage.destroy({texture: true, baseTexture: true});
+      this._loadedImage.destroy({ texture: true, baseTexture: true });
       this._loadedImage = undefined;
     }
   }

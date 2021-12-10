@@ -1,13 +1,12 @@
-import {Container} from "pixi.js";
-import {Component, invalidate} from "../..";
+import { Container } from '@pixi/display';
+import { Component, invalidate } from '../..';
 
 export class Pane extends Component {
-
   public get skin(): Container | undefined {
     return this._skin;
   }
 
-  @invalidate("skin")
+  @invalidate('skin')
   public set skin(value: Container | undefined) {
     this._skin = value;
   }
@@ -23,10 +22,10 @@ export class Pane extends Component {
   }
 
   protected draw(): void {
-    if (this.isInvalid("skin")) {
+    if (this.isInvalid('skin')) {
       this.drawBackground();
     }
-    if (this.isInvalid("size")) {
+    if (this.isInvalid('size')) {
       this.drawLayout();
     }
     super.draw();
@@ -36,7 +35,7 @@ export class Pane extends Component {
     const oldValue = this._background;
     this._background = this.updateSkin(this._background, this._skin, 0);
     if (oldValue !== this._background) {
-      this.invalidate("size");
+      this.invalidate('size');
     }
   }
 

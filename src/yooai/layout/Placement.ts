@@ -1,1 +1,1 @@
-export type Placement = "up" | "down" | "left" | "right";
+export type Placement = 'up' | 'down' | 'left' | 'right';

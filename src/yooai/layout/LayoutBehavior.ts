@@ -1,9 +1,9 @@
-import {Container, Point, Rectangle} from "pixi.js";
-import {HorizontalAlign} from "./HorizontalAlign";
-import {VerticalAlign} from "./VerticalAlign";
+import { Container } from '@pixi/display';
+import { Point, Rectangle } from '@pixi/math';
+import { HorizontalAlign } from './HorizontalAlign';
+import { VerticalAlign } from './VerticalAlign';
 
 export abstract class LayoutBehavior {
-
   public get verticalGap(): number {
     return this._gaps.y;
   }
@@ -25,7 +25,7 @@ export abstract class LayoutBehavior {
   }
 
   public set marginLeft(value: number) {
-    this._margins.left = value;
+    this._margins.x = value;
   }
 
   public get marginRight(): number {
@@ -33,7 +33,7 @@ export abstract class LayoutBehavior {
   }
 
   public set marginRight(value: number) {
-    this._margins.right = value;
+    this._margins.x = value - this._margins.width;
   }
 
   public get marginTop(): number {
@@ -41,7 +41,7 @@ export abstract class LayoutBehavior {
   }
 
   public set marginTop(value: number) {
-    this._margins.top = value;
+    this._margins.y = value;
   }
 
   public get marginBottom(): number {
@@ -49,14 +49,14 @@ export abstract class LayoutBehavior {
   }
 
   public set marginBottom(value: number) {
-    this._margins.bottom = value;
+    this._margins.y = value - this._margins.height;
   }
-  public vAlign: VerticalAlign = "center";
-  public hAlign: HorizontalAlign = "left";
+
+  public vAlign: VerticalAlign = 'center';
+  public hAlign: HorizontalAlign = 'left';
 
   protected _margins: Rectangle = new Rectangle();
   protected _gaps: Point = new Point();
 
   public abstract apply(target: Container, width: number, height: number): void;
-
 }

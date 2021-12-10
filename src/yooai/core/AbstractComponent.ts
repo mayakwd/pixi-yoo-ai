@@ -1,5 +1,6 @@
-import {Container} from "pixi.js";
-import {InvalidationType} from "./InvalidationType";
+import { Renderer } from '@pixi/core';
+import { Container } from '../types/Container';
+import { InvalidationType } from './InvalidationType';
 
 export class AbstractComponent extends Container {
   private _invalidationSet: Set<InvalidationType> = new Set();
@@ -7,18 +8,18 @@ export class AbstractComponent extends Container {
 
   protected constructor() {
     super();
-    this.invalidate('all')
+    this.invalidate('all');
   }
 
-  public invalidate(invalidationType: InvalidationType = "all"): void {
+  public invalidate(invalidationType: InvalidationType = 'all'): void {
     this._invalidationSet.add(invalidationType);
   }
 
-  public isInvalid(invalidationType: InvalidationType = "all"): boolean {
-    if (invalidationType === "all") {
+  public isInvalid(invalidationType: InvalidationType = 'all'): boolean {
+    if (invalidationType === 'all') {
       return this._invalidationSet.size > 0;
     }
-    return this._invalidationSet.has("all") || this._invalidationSet.has(invalidationType);
+    return this._invalidationSet.has('all') || this._invalidationSet.has(invalidationType);
   }
 
   public drawNow(): void {
@@ -43,15 +44,15 @@ export class AbstractComponent extends Container {
   }
 
   protected draw(): void {
+    // Intended to be empty
   }
 
   protected afterDraw() {
+    // Intended to be empty
   }
 
   public renderCanvas(renderer: unknown) {
-    // @ts-ignore
     if (super.renderCanvas !== undefined) {
-      // @ts-ignore
       super.renderCanvas(renderer);
     }
     if (this.isInvalid()) {
@@ -59,7 +60,7 @@ export class AbstractComponent extends Container {
     }
   }
 
-  public render(renderer: PIXI.Renderer) {
+  public render(renderer: Renderer) {
     super.render(renderer);
     if (this.isInvalid()) {
       this.validateNow();

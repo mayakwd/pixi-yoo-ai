@@ -1,10 +1,15 @@
-import {Container, InteractionEvent} from "pixi.js";
-import {DataProvider, invalidate, ItemRenderer, ListEvent} from "../..";
-import {ListScrollOptions} from "./ListScrollOptions";
-import {VirtualScrollList} from "./VirtualScrollList";
+import { Container } from '@pixi/display';
+import { InteractionEvent } from '@pixi/interaction';
+import { DataProvider, invalidate, ItemRenderer, ListEvent } from '../..';
+import { ListScrollOptions } from './ListScrollOptions';
+import { VirtualScrollList } from './VirtualScrollList';
 
 export class List<T> extends VirtualScrollList<T> {
-  @invalidate("data")
+  public get enabledPredicate(): ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined {
+    return this._enabledPredicate;
+  }
+
+  @invalidate('data')
   public set enabledPredicate(value: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined) {
     this._enabledPredicate = value;
   }
@@ -27,15 +32,11 @@ export class List<T> extends VirtualScrollList<T> {
     this.verticalScrollPosition = this.pageHeight * value;
   }
 
-  public get enabledPredicate(): ((data: T | undefined, dataProvider: DataProvider<T>) => boolean) | undefined {
-    return this._enabledPredicate;
-  }
-
   public get labelEmitter(): ((data?: T) => string) | undefined {
     return this._labelEmitter;
   }
 
-  @invalidate("data")
+  @invalidate('data')
   public set labelEmitter(value: ((data?: T) => string) | undefined) {
     this._labelEmitter = value;
   }
@@ -48,41 +49,35 @@ export class List<T> extends VirtualScrollList<T> {
     return Math.max(0, this.contentHeight - this.innerHeight);
   }
 
-  protected _labelEmitter?: ((data?: T) => string);
-  protected _enabledPredicate?: ((data: T | undefined, dataProvider: DataProvider<T>) => boolean);
+  protected _labelEmitter?: (data?: T) => string;
+  protected _enabledPredicate?: (data: T | undefined, dataProvider: DataProvider<T>) => boolean;
 
   public constructor(
     parent?: Container,
     dataProvider?: DataProvider<T>,
-    x?: number, y?: number,
-    width?: number, height?: number,
+    x?: number,
+    y?: number,
+    width?: number,
+    height?: number
   ) {
     super(parent, dataProvider, x, y, width, height);
   }
 
-  public scrollToIndex(index: number, {animated = true, alignToPage = true}: ListScrollOptions): void {
+  public scrollToIndex(index: number, { animated = true, alignToPage = true }: ListScrollOptions): void {
     if (alignToPage) {
       const page = this.getPageForIndex(index);
       this.scrollToPage(page, animated);
     } else {
-      this.scrollTo(
-        index * (this.rowHeight + this.verticalGap),
-        this.horizontalScrollPosition,
-        animated,
-      );
+      this.scrollTo(index * (this.rowHeight + this.verticalGap), this.horizontalScrollPosition, animated);
     }
   }
 
   public scrollToPage(index: number, animated: boolean = true): void {
-    this.scrollTo(
-      this.pageHeight * index,
-      this.horizontalScrollPosition,
-      animated,
-    );
+    this.scrollTo(this.pageHeight * index, this.horizontalScrollPosition, animated);
   }
 
   protected draw(): void {
-    if (this.isInvalid("size") || this.isInvalid("data")) {
+    if (this.isInvalid('size') || this.isInvalid('data')) {
       this.validateContentSize();
     }
     super.draw();
@@ -91,7 +86,7 @@ export class List<T> extends VirtualScrollList<T> {
   protected drawList(): void {
     this.drawScroll();
 
-    const {startIndex, endIndex} = this.calculateDrawListIndexes();
+    const { startIndex, endIndex } = this.calculateDrawListIndexes();
     const itemToRendererMap = this.revokeActiveRenderers();
 
     if (this._dataProvider !== undefined) {
@@ -103,8 +98,9 @@ export class List<T> extends VirtualScrollList<T> {
         this.layoutRenderer(renderer, i, startIndex, endIndex);
 
         renderer.labelEmitter = this.labelEmitter;
-        renderer.selected = (this._selectedIndices.indexOf(i) !== -1);
-        renderer.enabled = this._enabledPredicate !== undefined ? this._enabledPredicate(renderer.data, this.dataProvider) : true;
+        renderer.selected = this._selectedIndices.indexOf(i) !== -1;
+        renderer.enabled =
+          this._enabledPredicate !== undefined ? this._enabledPredicate(renderer.data, this.dataProvider) : true;
         renderer.validateNow();
 
         this._list.addChild(renderer);
@@ -117,17 +113,17 @@ export class List<T> extends VirtualScrollList<T> {
     this._verticalScrollPosition = Math.min(this._verticalScrollPosition, this.maxVerticalScrollPosition);
 
     this._list.x = this._contentPadding - this._horizontalScrollPosition;
-    this._list.y = this._contentPadding - this._verticalScrollPosition % (this.rowHeight + this.verticalGap);
+    this._list.y = this._contentPadding - (this._verticalScrollPosition % (this.rowHeight + this.verticalGap));
   }
 
-  protected calculateDrawListIndexes(): { startIndex: number, endIndex: number } {
+  protected calculateDrawListIndexes(): { startIndex: number; endIndex: number } {
     let startIndex = -1;
     let endIndex = -1;
     if (this._dataProvider !== undefined) {
       startIndex = Math.floor(this._verticalScrollPosition / (this.rowHeight + this.verticalGap));
       endIndex = Math.min(this._dataProvider.length, startIndex + this.rowsCount + 1);
     }
-    return {startIndex, endIndex};
+    return { startIndex, endIndex };
   }
 
   protected revokeActiveRenderers(): Map<T, ItemRenderer<T>> {
@@ -176,16 +172,22 @@ export class List<T> extends VirtualScrollList<T> {
 
   protected addRendererListeners(renderer: ItemRenderer<T>) {
     this._rendererEvents.addTarget(renderer);
-    renderer.on("pointertap", this.handleItemClick, this);
+    renderer.on('pointertap', this.handleItemClick, this);
   }
 
   protected handleItemClick(event: InteractionEvent) {
-    if (!this._enabled) { return; }
+    if (!this._enabled) {
+      return;
+    }
     if (event.target instanceof ItemRenderer) {
-      if (!event.target.enabled) { return; }
+      if (!event.target.enabled) {
+        return;
+      }
       const dataItemIndex = event.target.index;
       this.emit(ListEvent.ITEM_CLICK, new ListEvent(event.target.data, dataItemIndex));
-      if (!this._selectable) { return; }
+      if (!this._selectable) {
+        return;
+      }
 
       const index = this._selectedIndices.indexOf(dataItemIndex);
       if (index !== -1) {
@@ -195,13 +197,16 @@ export class List<T> extends VirtualScrollList<T> {
           this._selectedIndices.length = 0;
         }
       } else {
-        if (this._allowMultipleSelection && (this._maxSelectedItemsCount <= 0 || (this._selectedIndices.length < this._maxSelectedItemsCount))) {
+        if (
+          this._allowMultipleSelection &&
+          (this._maxSelectedItemsCount <= 0 || this._selectedIndices.length < this._maxSelectedItemsCount)
+        ) {
           this._selectedIndices[this._selectedIndices.length] = dataItemIndex;
         } else {
           this._selectedIndices[0] = dataItemIndex;
         }
       }
-      this.invalidate("data");
+      this.invalidate('data');
       this.emit(ListEvent.SELECTION_CHANGE);
     }
   }

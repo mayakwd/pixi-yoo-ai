@@ -1,12 +1,14 @@
-import {Container, Point, Text, TextStyle} from "pixi.js";
-import {Component, HorizontalAlign, invalidate, IPoint, theme, VerticalAlign} from "../..";
+import { Container } from '@pixi/display';
+import { Point } from '@pixi/math';
+import { Text, TextStyle } from '@pixi/text';
+import { Component, HorizontalAlign, invalidate, IPoint, theme, VerticalAlign } from '../..';
 
 export class Label extends Component {
   public get wordWrap(): boolean {
     return this._wordWrap;
   }
 
-  @invalidate("text")
+  @invalidate('text')
   public set wordWrap(value: boolean) {
     this._wordWrap = value;
   }
@@ -15,7 +17,7 @@ export class Label extends Component {
     return this._text;
   }
 
-  @invalidate("text")
+  @invalidate('text')
   public set text(value: string) {
     this._text = value;
   }
@@ -24,7 +26,7 @@ export class Label extends Component {
     return this._textStyle;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set textStyle(value: TextStyle) {
     this._textStyle = value;
   }
@@ -33,7 +35,7 @@ export class Label extends Component {
     return this._offset.x;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set offsetX(value: number) {
     this._offset.x = value;
   }
@@ -42,7 +44,7 @@ export class Label extends Component {
     return this._offset.y;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set offsetY(value: number) {
     this._offset.y = value;
   }
@@ -51,7 +53,7 @@ export class Label extends Component {
     return this._vAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set vAlign(value: VerticalAlign) {
     this._vAlign = value;
   }
@@ -60,19 +62,23 @@ export class Label extends Component {
     return this._hAlign;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set hAlign(value: HorizontalAlign) {
     this._hAlign = value;
   }
 
   public get contentWidth(): number {
-    if (!this._text) { return 0; }
+    if (!this._text) {
+      return 0;
+    }
     this.validateNow();
     return this._textField.width;
   }
 
   public get contentHeight(): number {
-    if (!this._text) { return 0; }
+    if (!this._text) {
+      return 0;
+    }
     this.validateNow();
     return this._textField.height;
   }
@@ -81,14 +87,14 @@ export class Label extends Component {
   protected _textStyle: TextStyle = theme.defaultTextStyle;
   protected _disabledTextStyle?: TextStyle = theme.defaultTextStyle;
 
-  protected _hAlign: HorizontalAlign = "left";
-  protected _vAlign: VerticalAlign = "center";
+  protected _hAlign: HorizontalAlign = 'left';
+  protected _vAlign: VerticalAlign = 'center';
   protected _offset: Point = new Point();
 
-  protected _text: string = "";
+  protected _text: string = '';
   protected _wordWrap: boolean = false;
 
-  public constructor(parent?: Container, x: number = 0, y: number = 0, text: string = "") {
+  public constructor(parent?: Container, x: number = 0, y: number = 0, text: string = '') {
     super(parent, x, y);
 
     this.text = text;
@@ -98,7 +104,7 @@ export class Label extends Component {
   }
 
   public setOffset(x: number | IPoint, y?: number): void {
-    if (typeof x === "object") {
+    if (typeof x === 'object') {
       const point = x as IPoint;
       if (point.x !== undefined && point.y !== undefined) {
         this._offset.set(point.x, point.y);
@@ -107,7 +113,7 @@ export class Label extends Component {
       this._offset.x = x;
       this._offset.y = y;
     }
-    this.invalidate("size");
+    this.invalidate('size');
   }
 
   protected configure() {
@@ -116,11 +122,11 @@ export class Label extends Component {
   }
 
   protected draw(): void {
-    if (this.isInvalid("text") || this.isInvalid("state")) {
+    if (this.isInvalid('text') || this.isInvalid('state')) {
       this.drawText();
-      this.invalidate("size");
+      this.invalidate('size');
     }
-    if (this.isInvalid("size")) {
+    if (this.isInvalid('size')) {
       this.drawLayout();
     }
     super.draw();
@@ -128,10 +134,16 @@ export class Label extends Component {
 
   protected drawText() {
     const textStyle = !this._enabled && this._disabledTextStyle ? this._disabledTextStyle : this._textStyle;
-    this._textField.style = Object.assign({}, textStyle, this._wordWrap ? {
-      wordWrap: true,
-      wordWrapWidth: this._componentWidth,
-    } : undefined);
+    this._textField.style = Object.assign(
+      {},
+      textStyle,
+      this._wordWrap
+        ? {
+            wordWrap: true,
+            wordWrapWidth: this._componentWidth
+          }
+        : undefined
+    );
     this._textField.text = this._text;
     this._textField.updateText(true);
   }
@@ -140,11 +152,11 @@ export class Label extends Component {
     this.alignChild(this._textField, this._vAlign, this._hAlign, this._offset);
   }
 
-  public resizeToContent(options?: { width?: boolean, height?: boolean }): void {
+  public resizeToContent(options?: { width?: boolean; height?: boolean }): void {
     if (this.isInvalid()) {
       this.validateNow();
     }
-    const {width = true, height = true} = options ?? {};
+    const { width = true, height = true } = options ?? {};
     if (width) {
       this.componentWidth = this.contentWidth;
     }
