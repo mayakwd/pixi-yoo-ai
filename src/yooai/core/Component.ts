@@ -115,6 +115,7 @@ export class Component extends AbstractComponent implements IDestroyable {
   protected _enabled: boolean = true;
   protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
   protected _disabledFilters?: Filter[];
+  protected _updateActions: Action[] = [];
 
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
     super();
@@ -122,11 +123,19 @@ export class Component extends AbstractComponent implements IDestroyable {
     this.x = x;
     this.y = y;
 
-    this.configure();
     this.invalidate('all');
+    this.configure();
     if (parent) {
       parent.addChild(this);
     }
+  }
+
+  public requestUpdate(action: () => void) {
+    const index = this._updateActions.indexOf(action);
+    if (index !== -1) {
+      this._updateActions.splice(index, 1);
+    }
+    this._updateActions.push(action);
   }
 
   public contains(displayObject: DisplayObject | undefined): boolean {
@@ -164,6 +173,14 @@ export class Component extends AbstractComponent implements IDestroyable {
       return;
     }
     super.destroy({ children: true });
+  }
+
+  public drawNow() {
+    super.drawNow();
+  }
+
+  public validateNow() {
+    super.validateNow();
   }
 
   protected configure() {
@@ -224,4 +241,17 @@ export class Component extends AbstractComponent implements IDestroyable {
       this.filters = this._disabledFilters.concat(this.filters ?? []);
     }
   }
+
+  protected update() {
+    if (this._updateActions.length > 0) {
+      const actions = this._updateActions;
+      this._updateActions = [];
+      for (const action of actions) {
+        action();
+      }
+    }
+    super.update();
+  }
 }
+
+type Action = () => void;
