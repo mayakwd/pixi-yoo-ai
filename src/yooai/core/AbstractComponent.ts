@@ -1,5 +1,5 @@
 import { Renderer } from '@pixi/core';
-import { Container } from '../types/Container';
+import { Container } from '@pixi/display';
 import { InvalidationType } from './InvalidationType';
 
 export class AbstractComponent extends Container {
@@ -52,18 +52,34 @@ export class AbstractComponent extends Container {
   }
 
   public renderCanvas(renderer: unknown) {
+    if (this.destroyed) {
+      return;
+    }
+
     if (super.renderCanvas !== undefined) {
       super.renderCanvas(renderer);
     }
+    this.update();
+  }
+
+  public render(renderer: Renderer) {
+    if (this.destroyed) {
+      return;
+    }
+
+    super.render(renderer);
+    this.update();
+  }
+
+  protected update() {
     if (this.isInvalid()) {
       this.validateNow();
     }
   }
+}
 
-  public render(renderer: Renderer) {
-    super.render(renderer);
-    if (this.isInvalid()) {
-      this.validateNow();
-    }
+declare module '@pixi/display' {
+  interface Container {
+    renderCanvas(renderer: unknown): void;
   }
 }
