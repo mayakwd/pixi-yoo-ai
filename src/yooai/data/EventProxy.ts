@@ -10,9 +10,9 @@ export class EventProxy {
       for (const scope of scopes) {
         const { fn, context } = scope;
         if (scope.once) {
-          target.once(event, fn, context);
+          target.once(event, fn as EventEmitter.ListenerFn, context);
         } else {
-          target.on(event, fn, context);
+          target.on(event, fn as EventEmitter.ListenerFn, context);
         }
       }
     }
@@ -25,28 +25,28 @@ export class EventProxy {
       for (const [event, scopes] of this._events) {
         for (const scope of scopes) {
           const { fn, context, once } = scope;
-          target.removeListener(event, fn, context, once);
+          target.removeListener(event, fn as EventEmitter.ListenerFn, context, once);
         }
       }
     }
   }
 
-  public on(event: string | symbol, fn: (...args: unknown[]) => void, context?: unknown): this {
+  public on(event: string | symbol, fn: (...args: never[]) => void, context?: unknown): this {
     for (const target of this._targets) {
-      target.on(event, fn, context);
+      target.on(event, fn as EventEmitter.ListenerFn, context);
     }
     this.addEventScope(event, fn, context, false);
     return this;
   }
 
-  public off(event: string | symbol, fn?: (...args: unknown[]) => void, context?: unknown, once?: boolean): this {
+  public off(event: string | symbol, fn?: (...args: never[]) => void, context?: unknown, once?: boolean): this {
     const scopes = this._events.get(event);
     if (scopes !== undefined) {
       const index = scopes.findIndex((value) => value.fn === fn && value.context === context && value.once === once);
       if (index !== -1) {
         scopes.splice(index, 1);
         for (const target of this._targets) {
-          target.off(event, fn, context, once);
+          target.off(event, fn as EventEmitter.ListenerFn, context, once);
         }
       }
     }
@@ -55,7 +55,7 @@ export class EventProxy {
 
   public removeListener(
     event: string | symbol,
-    fn?: (...args: unknown[]) => void,
+    fn?: (...args: never[]) => void,
     context?: unknown,
     once?: boolean
   ): this {
@@ -75,7 +75,7 @@ export class EventProxy {
     return this;
   }
 
-  private addEventScope(event: string | symbol, fn: (...args: unknown[]) => void, context: unknown, once: boolean) {
+  private addEventScope(event: string | symbol, fn: (...args: never[]) => void, context: unknown, once: boolean) {
     let scopes: IEventScope[] | undefined;
     if (this._events.has(event)) {
       scopes = this._events.get(event);
@@ -87,7 +87,7 @@ export class EventProxy {
 }
 
 interface IEventScope {
-  fn: (...args: unknown[]) => void;
+  fn: (...args: never[]) => void;
   context?: unknown;
   once?: boolean;
 }
