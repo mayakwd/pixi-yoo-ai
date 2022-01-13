@@ -4,6 +4,19 @@ import { invalidate } from '../..';
 import { Pane } from './Pane';
 
 export abstract class BaseScrollPane extends Pane {
+
+  protected _contentScrollRect: Rectangle = new Rectangle();
+  protected _contentWidth: number = 0;
+  protected _contentHeight: number = 0;
+  protected _contentPadding: number = 0;
+  protected _maxHorizontalScrollPosition: number = 0;
+  protected _horizontalScrollPosition: number = 0;
+  protected _maxVerticalScrollPosition: number = 0;
+  protected _verticalScrollPosition: number = 0;
+
+  protected constructor(parent?: Container, x?: number, y?: number, width: number = 100, height: number = 100) {
+    super(parent, x, y, width, height);
+  }
   public get contentPadding(): number {
     return this._contentPadding;
   }
@@ -69,19 +82,6 @@ export abstract class BaseScrollPane extends Pane {
   public set horizontalScrollPosition(value: number) {
     this._horizontalScrollPosition = value;
     this.validateNow();
-  }
-
-  protected _contentScrollRect: Rectangle = new Rectangle();
-  protected _contentWidth: number = 0;
-  protected _contentHeight: number = 0;
-  protected _contentPadding: number = 0;
-  protected _maxHorizontalScrollPosition: number = 0;
-  protected _horizontalScrollPosition: number = 0;
-  protected _maxVerticalScrollPosition: number = 0;
-  protected _verticalScrollPosition: number = 0;
-
-  protected constructor(parent?: Container, x?: number, y?: number, width: number = 100, height: number = 100) {
-    super(parent, x, y, width, height);
   }
 
   protected configure() {
