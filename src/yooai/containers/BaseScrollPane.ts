@@ -4,7 +4,6 @@ import { invalidate } from '../..';
 import { Pane } from './Pane';
 
 export abstract class BaseScrollPane extends Pane {
-
   protected _contentScrollRect: Rectangle = new Rectangle();
   protected _contentWidth: number = 0;
   protected _contentHeight: number = 0;

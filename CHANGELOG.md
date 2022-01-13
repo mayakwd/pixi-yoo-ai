@@ -2,7 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 # 1.0.0 - 2022-01-13
-- Feature: Codebase migrated to Pixi.JS v6 
+- Feature: Codebase migrated to Pixi.JS v6
+- Fix: Fixed `addChild` method signature compatibility
 
 # 0.0.43 - 2021-09-21
 - Feature: Added allow deselection for single-selection mode 

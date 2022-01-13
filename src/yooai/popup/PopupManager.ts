@@ -8,7 +8,6 @@ import { DisplayObjectWithSize } from '../display/DisplayObjectWithSize';
 import { getHeight, getWidth } from '../layout/utils';
 
 export class PopupManager {
-
   private static createWrapper(color: number, alpha: number): DisplayObjectWithSize {
     const quad = new Graphics();
     quad.beginFill(color, alpha);
