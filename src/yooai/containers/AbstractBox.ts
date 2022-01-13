@@ -96,13 +96,14 @@ export abstract class AbstractBox extends Pane {
     super(parent, x, y);
   }
 
-  public addChild<T extends DisplayObject>(firstChild: T, ...children: DisplayObject[]): T {
-    [firstChild, ...children].forEach((child) => {
+  public addChild<T extends DisplayObject[]>(...children: T): T[0] {
+    children.forEach((child) => {
       if (isComponent(child)) {
         child.on('resize', this.invalidateSize, this);
       }
     });
-    return super.addChild(firstChild, ...children);
+    const [firstChild, ...rest] = children;
+    return super.addChild(firstChild, ...rest);
   }
 
   public addChildAt<T extends DisplayObject>(child: T, index: number): T {
