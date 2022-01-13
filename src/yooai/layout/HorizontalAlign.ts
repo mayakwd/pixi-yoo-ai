@@ -1,1 +1,1 @@
-export type HorizontalAlign = "left" | "center" | "right";
+export type HorizontalAlign = 'left' | 'center' | 'right';

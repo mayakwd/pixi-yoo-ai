@@ -1,1 +1,1 @@
-export type VerticalAlign = "top" | "center" | "bottom";
+export type VerticalAlign = 'top' | 'center' | 'bottom';

@@ -1,10 +1,10 @@
-import {TextStyle} from "pixi.js";
+import { TextStyle } from '@pixi/text';
 
 export class Theme {
   public defaultTextStyle: TextStyle = new TextStyle({
-    fontFamily: "Arial",
-    fontSize: "14",
-    fill: 0xFFFFFF,
+    fontFamily: 'Arial',
+    fontSize: '14',
+    fill: 0xffffff
   });
 }
 

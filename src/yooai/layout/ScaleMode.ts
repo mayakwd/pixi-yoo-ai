@@ -1,4 +1,4 @@
 export enum ScaleMode {
   FIT,
-  FILL,
+  FILL
 }

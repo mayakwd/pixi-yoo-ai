@@ -1,21 +1,10 @@
-import {Container, InteractionEvent, Point} from "pixi.js";
-import {invalidate, Pane} from "../..";
-import {InteractiveState} from "./InteractiveState";
+import { Container } from '@pixi/display';
+import { InteractionEvent } from '@pixi/interaction';
+import { Point } from '@pixi/math';
+import { invalidate, Pane } from '../..';
+import { InteractiveState } from './InteractiveState';
 
 export class InteractiveComponent extends Pane {
-
-  protected _state: InteractiveState = "up";
-  protected _selected: boolean = false;
-  protected _selectable: boolean = false;
-
-  protected _upSkin?: Container;
-  protected _overSkin?: Container;
-  protected _downSkin?: Container;
-  protected _selectedUpSkin?: Container;
-  protected _selectedOverSkin?: Container;
-  protected _selectedDownSkin?: Container;
-  protected _disabledSkin?: Container;
-
   public get disabledSkin(): Container | undefined {
     return this._disabledSkin;
   }
@@ -26,7 +15,7 @@ export class InteractiveComponent extends Pane {
     }
     this._disabledSkin = value;
     if (!this._enabled) {
-      this.invalidate("skin");
+      this.invalidate('skin');
     }
   }
 
@@ -39,8 +28,8 @@ export class InteractiveComponent extends Pane {
       return;
     }
     this._selectedUpSkin = value;
-    if (this._enabled && this._state === "up") {
-      this.invalidate("skin");
+    if (this._enabled && this._state === 'up') {
+      this.invalidate('skin');
     }
   }
 
@@ -53,8 +42,8 @@ export class InteractiveComponent extends Pane {
       return;
     }
     this._selectedOverSkin = value;
-    if (this._enabled && this._state === "over") {
-      this.invalidate("skin");
+    if (this._enabled && this._state === 'over') {
+      this.invalidate('skin');
     }
   }
 
@@ -67,8 +56,8 @@ export class InteractiveComponent extends Pane {
       return;
     }
     this._selectedDownSkin = value;
-    if (this._enabled && this._state === "down") {
-      this.invalidate("skin");
+    if (this._enabled && this._state === 'down') {
+      this.invalidate('skin');
     }
   }
 
@@ -81,8 +70,8 @@ export class InteractiveComponent extends Pane {
       return;
     }
     this._downSkin = value;
-    if (this._enabled && this._state === "down") {
-      this.invalidate("skin");
+    if (this._enabled && this._state === 'down') {
+      this.invalidate('skin');
     }
   }
 
@@ -95,8 +84,8 @@ export class InteractiveComponent extends Pane {
       return;
     }
     this._overSkin = value;
-    if (this._enabled && this._state === "over") {
-      this.invalidate("skin");
+    if (this._enabled && this._state === 'over') {
+      this.invalidate('skin');
     }
   }
 
@@ -109,8 +98,8 @@ export class InteractiveComponent extends Pane {
       return;
     }
     this._upSkin = value;
-    if (this._enabled && this._state === "up") {
-      this.invalidate("skin");
+    if (this._enabled && this._state === 'up') {
+      this.invalidate('skin');
     }
   }
 
@@ -122,23 +111,35 @@ export class InteractiveComponent extends Pane {
     this._selectable = value;
   }
 
-  public get selected(): boolean {
-    return this._selected;
-  }
-
-  @invalidate("state")
-  public set selected(value: boolean) {
-    this._selected = value;
-  }
-
   protected get state(): InteractiveState {
     return this._state;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   protected set state(value: InteractiveState) {
     this._state = value;
   }
+
+  public get selected(): boolean {
+    return this._selected;
+  }
+
+  @invalidate('state')
+  public set selected(value: boolean) {
+    this._selected = value;
+  }
+
+  protected _state: InteractiveState = 'up';
+  protected _selected: boolean = false;
+  protected _selectable: boolean = false;
+
+  protected _upSkin?: Container;
+  protected _overSkin?: Container;
+  protected _downSkin?: Container;
+  protected _selectedUpSkin?: Container;
+  protected _selectedOverSkin?: Container;
+  protected _selectedDownSkin?: Container;
+  protected _disabledSkin?: Container;
 
   public setSkins(options: IInteractiveSkinOptions) {
     ({
@@ -148,7 +149,7 @@ export class InteractiveComponent extends Pane {
       disabledSkin: this.disabledSkin,
       selectedUpSkin: this.selectedUpSkin,
       selectedOverSkin: this.selectedOverSkin,
-      selectedDownSkin: this.selectedDownSkin,
+      selectedDownSkin: this.selectedDownSkin
     } = options);
   }
 
@@ -160,39 +161,40 @@ export class InteractiveComponent extends Pane {
     this.interactiveChildren = true;
     this.interactive = true;
 
-    this.on("pointerover", this.pointerHandler, this);
-    this.on("pointerout", this.pointerHandler, this);
-    this.on("pointerdown", this.pointerHandler, this);
-    this.on("pointerup", this.pointerHandler, this);
-    this.on("pointerupoutside", this.pointerHandler, this);
-    this.on("pointertap", this.onTap, this);
+    this.on('pointerover', this.pointerHandler, this);
+    this.on('pointerout', this.pointerHandler, this);
+    this.on('pointerdown', this.pointerHandler, this);
+    this.on('pointerup', this.pointerHandler, this);
+    this.on('pointerupoutside', this.pointerHandler, this);
+    this.on('pointertap', this.onTap, this);
   }
 
   protected pointerHandler(event: InteractionEvent) {
     switch (event.type) {
-      case "pointerover":
-        this.state = "over";
+      case 'pointerover':
+        this.state = 'over';
         break;
-      case "pointerout" || "pointerupoutside":
-        this.state = "up";
+      case 'pointerout' || 'pointerupoutside':
+        this.state = 'up';
         break;
-      case "pointerdown":
-        this.state = "down";
+      case 'pointerdown':
+        this.state = 'down';
         break;
-      case "pointerup":
+      case 'pointerup': {
         const local = event.data.getLocalPosition(this, HELPER_POINT, event.data.global);
         if (this._hitArea.contains(local.x, local.y)) {
-          this.state = "over";
+          this.state = 'over';
         } else {
-          this.state = "up";
+          this.state = 'up';
         }
         break;
+      }
     }
   }
 
   protected draw(): void {
-    if (this.isInvalid("state")) {
-      this.invalidate("skin");
+    if (this.isInvalid('state')) {
+      this.invalidate('skin');
       this.interactive = this._enabled;
     }
     super.draw();
@@ -202,7 +204,7 @@ export class InteractiveComponent extends Pane {
     const oldValue = this._background;
     this._background = this.updateSkin(this._background, this.getSkinForCurrentState(), 0);
     if (oldValue !== this._background) {
-      this.invalidate("size");
+      this.invalidate('size');
     }
   }
 
@@ -225,25 +227,25 @@ export class InteractiveComponent extends Pane {
       result = this.disabledSkin;
     } else if (this.selected) {
       switch (this.state) {
-        case "up":
+        case 'up':
           result = this.selectedUpSkin;
           break;
-        case "down":
+        case 'down':
           result = this.selectedDownSkin;
           break;
-        case "over":
+        case 'over':
           result = this.selectedOverSkin;
           break;
       }
     } else {
       switch (this.state) {
-        case "up":
+        case 'up':
           result = this.upSkin;
           break;
-        case "down":
+        case 'down':
           result = this.downSkin;
           break;
-        case "over":
+        case 'over':
           result = this.overSkin;
           break;
       }

@@ -1,5 +1,6 @@
-import {Container} from "pixi.js";
-import {InvalidationType} from "./InvalidationType";
+import { Renderer } from '@pixi/core';
+import { Container } from '@pixi/display';
+import { InvalidationType } from './InvalidationType';
 
 export class AbstractComponent extends Container {
   private _invalidationSet: Set<InvalidationType> = new Set();
@@ -7,18 +8,18 @@ export class AbstractComponent extends Container {
 
   protected constructor() {
     super();
-    this.invalidate('all')
+    this.invalidate('all');
   }
 
-  public invalidate(invalidationType: InvalidationType = "all"): void {
+  public invalidate(invalidationType: InvalidationType = 'all'): void {
     this._invalidationSet.add(invalidationType);
   }
 
-  public isInvalid(invalidationType: InvalidationType = "all"): boolean {
-    if (invalidationType === "all") {
+  public isInvalid(invalidationType: InvalidationType = 'all'): boolean {
+    if (invalidationType === 'all') {
       return this._invalidationSet.size > 0;
     }
-    return this._invalidationSet.has("all") || this._invalidationSet.has(invalidationType);
+    return this._invalidationSet.has('all') || this._invalidationSet.has(invalidationType);
   }
 
   public drawNow(): void {
@@ -38,22 +39,8 @@ export class AbstractComponent extends Container {
     }
   }
 
-  public renderCanvas(renderer: unknown) {
-    // @ts-ignore
-    if (super.renderCanvas !== undefined) {
-      // @ts-ignore
-      super.renderCanvas(renderer);
-    }
-    if (this.isInvalid()) {
-      this.validateNow();
-    }
-  }
-
-  public render(renderer: PIXI.Renderer) {
-    super.render(renderer);
-    if (this.isInvalid()) {
-      this.validateNow();
-    }
+  private validate(): void {
+    this._invalidationSet.clear();
   }
 
   protected draw(): void {
@@ -64,7 +51,35 @@ export class AbstractComponent extends Container {
     // Intended to be empty
   }
 
-  private validate(): void {
-    this._invalidationSet.clear();
+  public renderCanvas(renderer: unknown) {
+    if (this.destroyed) {
+      return;
+    }
+
+    if (super.renderCanvas !== undefined) {
+      super.renderCanvas(renderer);
+    }
+    this.update();
+  }
+
+  public render(renderer: Renderer) {
+    if (this.destroyed) {
+      return;
+    }
+
+    super.render(renderer);
+    this.update();
+  }
+
+  protected update() {
+    if (this.isInvalid()) {
+      this.validateNow();
+    }
+  }
+}
+
+declare module '@pixi/display' {
+  interface Container {
+    renderCanvas(renderer: unknown): void;
   }
 }

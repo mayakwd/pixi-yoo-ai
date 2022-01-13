@@ -1,7 +1,7 @@
-import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
-import {IHasDimensions} from "./IHasDimensions";
-import {ScaleMode} from "./ScaleMode";
-import {getHeight, getWidth, isComponent} from "./utils";
+import { DisplayObjectWithSize } from '../display/DisplayObjectWithSize';
+import { IHasDimensions } from './IHasDimensions';
+import { ScaleMode } from './ScaleMode';
+import { getHeight, getWidth, isComponent } from './utils';
 
 interface IBasicScaleOptions {
   size: IHasDimensions | DisplayObjectWithSize;
@@ -19,12 +19,12 @@ export interface IScaleOptions extends IScaleOptionsWithArea {
 
 export class RatioUtil {
   public static scale(options: IScaleOptions, result?: IHasDimensions): IHasDimensions {
-    const {size, fitArea, scaleMode, snapToPixel = true} = options;
+    const { size, fitArea, scaleMode, snapToPixel = true } = options;
     switch (scaleMode) {
       case ScaleMode.FIT:
-        return RatioUtil.scaleToFit({size, fitArea, snapToPixel}, result);
+        return RatioUtil.scaleToFit({ size, fitArea, snapToPixel }, result);
       case ScaleMode.FILL:
-        return RatioUtil.scaleToFill({size, fitArea, snapToPixel}, result);
+        return RatioUtil.scaleToFill({ size, fitArea, snapToPixel }, result);
     }
   }
 
@@ -41,7 +41,7 @@ export class RatioUtil {
   }
 
   public static scaleToFill(options: IScaleOptionsWithArea, result?: IHasDimensions): IHasDimensions {
-    const {size, fitArea} = options;
+    const { size, fitArea } = options;
     const fitWidth = getWidth(fitArea);
     const fitHeight = getHeight(fitArea);
     const width = getWidth(size);
@@ -51,7 +51,7 @@ export class RatioUtil {
   }
 
   public static scaleToFit(options: IScaleOptionsWithArea, result?: IHasDimensions): IHasDimensions {
-    const {size, fitArea} = options;
+    const { size, fitArea } = options;
     const fitWidth = getWidth(fitArea);
     const fitHeight = getHeight(fitArea);
     const width = getWidth(size);
@@ -60,10 +60,18 @@ export class RatioUtil {
     return this.scaleByRatio(options, scaleRatio, result);
   }
 
-  private static scaleByRatio(options: IScaleOptionsWithArea, scaleRatio: number, result?: IHasDimensions | DisplayObjectWithSize) {
-    const {size, snapToPixel = true, allowEnlarge = false} = options;
-    if (result === undefined) { result = {...size}; }
-    if (!allowEnlarge) { scaleRatio = Math.min(1, scaleRatio); }
+  private static scaleByRatio(
+    options: IScaleOptionsWithArea,
+    scaleRatio: number,
+    result?: IHasDimensions | DisplayObjectWithSize
+  ) {
+    const { size, snapToPixel = true, allowEnlarge = false } = options;
+    if (result === undefined) {
+      result = { ...size };
+    }
+    if (!allowEnlarge) {
+      scaleRatio = Math.min(1, scaleRatio);
+    }
     if (isComponent(result)) {
       result.componentWidth *= scaleRatio;
       result.componentHeight *= scaleRatio;

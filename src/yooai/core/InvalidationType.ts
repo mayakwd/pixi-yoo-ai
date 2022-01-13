@@ -1,1 +1,1 @@
-export type InvalidationType = "all" | "size" | "data" | "state" | "skin" | "text" | "icon" | string;
+export type InvalidationType = 'all' | 'size' | 'data' | 'state' | 'skin' | 'text' | 'icon' | string;

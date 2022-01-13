@@ -1,30 +1,9 @@
-import {Container, TextStyle} from "pixi.js";
-import {Component, ForwardDirection, HorizontalAlign, invalidate, VerticalAlign} from "../..";
-import {Label} from "./Label";
+import { Container } from '@pixi/display';
+import { TextStyle } from '@pixi/text';
+import { Component, ForwardDirection, HorizontalAlign, invalidate, VerticalAlign } from '../..';
+import { Label } from './Label';
 
 export class ProgressBar extends Component {
-
-  private static DEFAULT_TEXT_EMITTER(minimum: number, maximum: number, value: number) {
-    return `${Math.floor(value - minimum)} / ${Math.floor(maximum - minimum)}`;
-  }
-
-  protected _label!: Label;
-
-  protected _barSkin?: Container;
-  protected _trackSkin?: Container;
-
-  protected _barPadding: number = 0;
-  protected _direction: ForwardDirection = "right";
-
-  protected _minimum: number = 0;
-  protected _maximum: number = 1;
-  protected _value: number = 0;
-  protected _displayText: boolean = false;
-  protected _text?: string;
-  protected _displayTextEmitter?: ProgressTextEmitter;
-
-  protected _bar?: Container;
-  protected _track?: Container;
   public get textStyle(): TextStyle {
     return this._label.textStyle;
   }
@@ -66,18 +45,24 @@ export class ProgressBar extends Component {
   }
 
   public get percentComplete(): number {
-    if (this._maximum <= this._minimum) { return 0; }
+    if (this._maximum <= this._minimum) {
+      return 0;
+    }
     let value = this._value;
-    if (value > this._maximum) { value = this._maximum; }
-    if (value < this._minimum) { value = this._minimum; }
-    return 1 / (this._maximum - this._minimum) * (value - this._minimum);
+    if (value > this._maximum) {
+      value = this._maximum;
+    }
+    if (value < this._minimum) {
+      value = this._minimum;
+    }
+    return (1 / (this._maximum - this._minimum)) * (value - this._minimum);
   }
 
   public get value(): number {
     return this._value;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set value(value: number) {
     this._value = value;
   }
@@ -86,7 +71,7 @@ export class ProgressBar extends Component {
     return this._maximum;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set maximum(value: number) {
     this._maximum = value;
   }
@@ -95,7 +80,7 @@ export class ProgressBar extends Component {
     return this._minimum;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set minimum(value: number) {
     this._minimum = value;
   }
@@ -104,7 +89,7 @@ export class ProgressBar extends Component {
     return this._direction;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set direction(value: ForwardDirection) {
     this._direction = value;
   }
@@ -113,7 +98,7 @@ export class ProgressBar extends Component {
     return this._barPadding;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set barPadding(value: number) {
     this._barPadding = value;
   }
@@ -122,7 +107,7 @@ export class ProgressBar extends Component {
     return this._trackSkin;
   }
 
-  @invalidate("skin")
+  @invalidate('skin')
   public set trackSkin(value: Container | undefined) {
     this._trackSkin = value;
   }
@@ -131,7 +116,7 @@ export class ProgressBar extends Component {
     return this._barSkin;
   }
 
-  @invalidate("skin")
+  @invalidate('skin')
   public set barSkin(value: Container | undefined) {
     this._barSkin = value;
   }
@@ -140,7 +125,7 @@ export class ProgressBar extends Component {
     return this._displayText;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set displayText(value: boolean) {
     this._displayText = value;
   }
@@ -149,7 +134,7 @@ export class ProgressBar extends Component {
     return this._text;
   }
 
-  @invalidate("text")
+  @invalidate('text')
   public set text(value: string | undefined) {
     this._text = value;
   }
@@ -158,10 +143,32 @@ export class ProgressBar extends Component {
     return this._displayTextEmitter;
   }
 
-  @invalidate("text")
+  @invalidate('text')
   public set displayTextEmitter(value: ProgressTextEmitter | undefined) {
     this._displayTextEmitter = value;
   }
+
+  private static DEFAULT_TEXT_EMITTER(minimum: number, maximum: number, value: number) {
+    return `${Math.floor(value - minimum)} / ${Math.floor(maximum - minimum)}`;
+  }
+
+  protected _label!: Label;
+
+  protected _barSkin?: Container;
+  protected _trackSkin?: Container;
+
+  protected _barPadding: number = 0;
+  protected _direction: ForwardDirection = 'right';
+
+  protected _minimum: number = 0;
+  protected _maximum: number = 1;
+  protected _value: number = 0;
+  protected _displayText: boolean = false;
+  protected _text?: string;
+  protected _displayTextEmitter?: ProgressTextEmitter;
+
+  protected _bar?: Container;
+  protected _track?: Container;
 
   public setValues(minimum: number, maximum: number, value: number): void {
     this.minimum = minimum;
@@ -174,18 +181,18 @@ export class ProgressBar extends Component {
   }
 
   protected draw(): void {
-    if (this.isInvalid("skin")) {
+    if (this.isInvalid('skin')) {
       this.drawElements();
-      this.invalidate("state");
+      this.invalidate('state');
     }
-    if (this.isInvalid("state")) {
-      this.invalidate("text");
-      this.invalidate("size");
+    if (this.isInvalid('state')) {
+      this.invalidate('text');
+      this.invalidate('size');
     }
-    if (this.isInvalid("text")) {
+    if (this.isInvalid('text')) {
       this.drawText();
     }
-    if (this.isInvalid("size")) {
+    if (this.isInvalid('size')) {
       this.drawLayout();
     }
     super.draw();
@@ -210,10 +217,10 @@ export class ProgressBar extends Component {
       this._bar.height = this._componentHeight;
     }
     if (this._track !== undefined) {
-      const toRight = this._direction === "right";
-      const toLeft = this._direction === "left";
-      const toUp = this._direction === "up";
-      const toDown = this._direction === "down";
+      const toRight = this._direction === 'right';
+      const toLeft = this._direction === 'left';
+      const toUp = this._direction === 'up';
+      const toDown = this._direction === 'down';
 
       let horizontalMultiplier = toLeft || toRight ? this.percentComplete : 1;
       let verticalMultiplier = toUp || toDown ? this.percentComplete : 1;
@@ -228,13 +235,13 @@ export class ProgressBar extends Component {
       this._track.height = Math.max(1, (this._componentHeight - this._barPadding * 2) * verticalMultiplier);
 
       switch (this._direction) {
-        case "right":
-        case "left":
+        case 'right':
+        case 'left':
           this._track.x = toRight ? this._barPadding : this._componentWidth - this._track.width - this._barPadding;
           this._track.y = this._barPadding;
           break;
-        case "up":
-        case "down":
+        case 'up':
+        case 'down':
           this._track.y = toDown ? this._barPadding : this._componentHeight - this._track.height - this._barPadding;
           this._track.x = this._barPadding;
           break;

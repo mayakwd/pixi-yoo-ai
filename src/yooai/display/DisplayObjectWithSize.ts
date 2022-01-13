@@ -1,4 +1,4 @@
-import {DisplayObject} from "pixi.js";
-import {IHasDimensions} from "../..";
+import { DisplayObject } from '@pixi/display';
+import { IHasDimensions } from '../..';
 
 export type DisplayObjectWithSize = DisplayObject & IHasDimensions;

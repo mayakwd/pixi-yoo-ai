@@ -5,5 +5,5 @@ export enum ChangeType {
   REMOVE,
   REMOVE_ALL,
   REPLACE,
-  SORT,
+  SORT
 }

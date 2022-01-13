@@ -1,38 +1,41 @@
-import {DisplayObject} from "pixi.js";
-import {HorizontalAlign, VerticalAlign} from "../..";
-import {Direction} from "../layout/Direction";
-import {AbstractBox} from "./AbstractBox";
-import {HBox} from "./HBox";
-import {VBox} from "./VBox";
+import { DisplayObject } from '@pixi/display';
+import { HorizontalAlign, VerticalAlign } from '../..';
+import { Direction } from '../layout/Direction';
+import { AbstractBox } from './AbstractBox';
+import { HBox } from './HBox';
+import { VBox } from './VBox';
 
 export type LayoutBuilderSettings = {
-  hAlign?: HorizontalAlign,
-  vAlign?: VerticalAlign,
-  hGap?: number,
-  vGap?: number
-}
+  hAlign?: HorizontalAlign;
+  vAlign?: VerticalAlign;
+  hGap?: number;
+  vGap?: number;
+};
 
 export class LayoutBuilder {
   private vGap: number = 0;
   private hGap: number = 0;
-  private children: (LayoutBuilder | DisplayObject)[] = [];
-  private hAlign: HorizontalAlign = "left";
-  private vAlign: VerticalAlign = "top";
+  private children: Array<LayoutBuilder | DisplayObject> = [];
+  private hAlign: HorizontalAlign = 'left';
+  private vAlign: VerticalAlign = 'top';
 
-  public constructor(private readonly type: Direction, settings: LayoutBuilderSettings = {
-    hAlign: "left",
-    vAlign: "top",
-    hGap: 0,
-    vGap: 0,
-  }) {
-    const {hAlign = "left", vAlign = "top", vGap = 0, hGap = 0} = settings;
+  public constructor(
+    private readonly type: Direction,
+    settings: LayoutBuilderSettings = {
+      hAlign: 'left',
+      vAlign: 'top',
+      hGap: 0,
+      vGap: 0
+    }
+  ) {
+    const { hAlign = 'left', vAlign = 'top', vGap = 0, hGap = 0 } = settings;
     this.hAlign = hAlign;
     this.vAlign = vAlign;
     this.vGap = vGap;
     this.hGap = hGap;
   }
 
-  public add(...items: (LayoutBuilder | DisplayObject)[]): this {
+  public add(...items: Array<LayoutBuilder | DisplayObject>): this {
     this.children.push(...items);
     return this;
   }
@@ -60,10 +63,10 @@ export class LayoutBuilder {
   public build(): AbstractBox {
     let box: AbstractBox;
     switch (this.type) {
-      case "horizontal":
+      case 'horizontal':
         box = new HBox();
         break;
-      case "vertical":
+      case 'vertical':
         box = new VBox();
         break;
     }
@@ -82,11 +85,14 @@ export class LayoutBuilder {
   }
 }
 
-export function buildLayout(type: Direction, settings: LayoutBuilderSettings = {
-  hAlign: "left",
-  vAlign: "top",
-  hGap: 0,
-  vGap: 0,
-}): LayoutBuilder {
+export function buildLayout(
+  type: Direction,
+  settings: LayoutBuilderSettings = {
+    hAlign: 'left',
+    vAlign: 'top',
+    hGap: 0,
+    vGap: 0
+  }
+): LayoutBuilder {
   return new LayoutBuilder(type, settings);
 }

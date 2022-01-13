@@ -1,6 +1,6 @@
-import {Component, IHasDimensions} from "../..";
-import {AbstractComponent} from "../core/AbstractComponent";
-import {DisplayObjectWithSize} from "../display/DisplayObjectWithSize";
+import { Component, IHasDimensions } from '../..';
+import { AbstractComponent } from '../core/AbstractComponent';
+import { DisplayObjectWithSize } from '../display/DisplayObjectWithSize';
 
 export function isComponent(item: unknown): item is Component {
   return item instanceof Component;

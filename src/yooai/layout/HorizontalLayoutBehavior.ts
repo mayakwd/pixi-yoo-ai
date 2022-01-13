@@ -1,7 +1,7 @@
-import {Container} from "pixi.js";
-import {AbstractComponent} from "../core/AbstractComponent";
-import {LayoutBehavior} from "./LayoutBehavior";
-import {getHeight, getWidth} from "./utils";
+import { Container } from '@pixi/display';
+import { AbstractComponent } from '../core/AbstractComponent';
+import { LayoutBehavior } from './LayoutBehavior';
+import { getHeight, getWidth } from './utils';
 
 export class HorizontalLayoutBehavior extends LayoutBehavior {
   public apply(target: Container, width: number, height: number): void {
@@ -19,13 +19,13 @@ export class HorizontalLayoutBehavior extends LayoutBehavior {
         const childHeight = getHeight(child);
         const childWidth = getWidth(child);
         switch (this.vAlign) {
-          case "top":
+          case 'top':
             child.y = yOffset;
             break;
-          case "center":
+          case 'center':
             child.y = yOffset + (height - childHeight) * 0.5;
             break;
-          case "bottom":
+          case 'bottom':
             child.y = height - this.marginBottom - childHeight;
             break;
         }

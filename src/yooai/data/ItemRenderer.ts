@@ -1,5 +1,5 @@
-import {TextStyle} from "pixi.js";
-import {HorizontalAlign, InteractiveComponent, invalidate, Label, VerticalAlign} from "../..";
+import { TextStyle } from '@pixi/text';
+import { HorizontalAlign, InteractiveComponent, invalidate, Label, VerticalAlign } from '../..';
 
 export class ItemRenderer<T> extends InteractiveComponent {
   public index: number = -1;
@@ -16,7 +16,7 @@ export class ItemRenderer<T> extends InteractiveComponent {
     return this._data;
   }
 
-  @invalidate("data")
+  @invalidate('data')
   public set data(value: T | undefined) {
     this._data = value;
   }
@@ -25,7 +25,7 @@ export class ItemRenderer<T> extends InteractiveComponent {
     return this._labelEmitter;
   }
 
-  @invalidate("data")
+  @invalidate('data')
   public set labelEmitter(value: ((data?: T) => string) | undefined) {
     this._labelEmitter = value;
   }
@@ -74,8 +74,8 @@ export class ItemRenderer<T> extends InteractiveComponent {
     super.configure();
 
     this._label = new Label(this);
-    this._label.vAlign = "center";
-    this._label.hAlign = "center";
+    this._label.vAlign = 'center';
+    this._label.hAlign = 'center';
   }
 
   protected drawData() {
@@ -83,18 +83,18 @@ export class ItemRenderer<T> extends InteractiveComponent {
     if (this._labelEmitter !== undefined) {
       labelText = this._labelEmitter(this._data);
     } else {
-      labelText = this._data ? String(this._data) : "";
+      labelText = this._data ? String(this._data) : '';
     }
     this._label.text = labelText;
     this._label.drawNow();
   }
 
   protected draw(): void {
-    if (this.isInvalid("data")) {
+    if (this.isInvalid('data')) {
       this.drawData();
       this.invalidate('size');
     }
-    if (this.isInvalid("state")) {
+    if (this.isInvalid('state')) {
       this.drawBackground();
     }
     super.draw();

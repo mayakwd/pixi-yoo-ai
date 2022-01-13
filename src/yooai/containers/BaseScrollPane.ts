@@ -1,6 +1,7 @@
-import {Container, Rectangle} from "pixi.js";
-import {invalidate} from "../..";
-import {Pane} from "./Pane";
+import { Container } from '@pixi/display';
+import { Rectangle } from '@pixi/math';
+import { invalidate } from '../..';
+import { Pane } from './Pane';
 
 export abstract class BaseScrollPane extends Pane {
 
@@ -20,7 +21,7 @@ export abstract class BaseScrollPane extends Pane {
     return this._contentPadding;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set contentPadding(value: number) {
     this._contentPadding = value;
   }
@@ -29,7 +30,7 @@ export abstract class BaseScrollPane extends Pane {
     return this._contentHeight;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set contentHeight(value: number) {
     this._contentHeight = value;
   }
@@ -38,7 +39,7 @@ export abstract class BaseScrollPane extends Pane {
     return this._contentWidth;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set contentWidth(value: number) {
     this._contentWidth = value;
   }
@@ -47,7 +48,7 @@ export abstract class BaseScrollPane extends Pane {
     return this._verticalScrollPosition;
   }
 
-  @invalidate("scroll")
+  @invalidate('scroll')
   public set verticalScrollPosition(value: number) {
     this._verticalScrollPosition = Math.min(Math.max(0, value), this.maxVerticalScrollPosition);
     this.validateNow();
@@ -57,7 +58,7 @@ export abstract class BaseScrollPane extends Pane {
     return this._maxVerticalScrollPosition;
   }
 
-  @invalidate("scroll")
+  @invalidate('scroll')
   public set maxVerticalScrollPosition(value: number) {
     this._maxVerticalScrollPosition = value;
     this.validateNow();
@@ -67,7 +68,7 @@ export abstract class BaseScrollPane extends Pane {
     return this._maxHorizontalScrollPosition;
   }
 
-  @invalidate("scroll")
+  @invalidate('scroll')
   public set maxHorizontalScrollPosition(value: number) {
     this._maxHorizontalScrollPosition = Math.min(Math.max(0, value), this.maxHorizontalScrollPosition);
     this.validateNow();
@@ -77,7 +78,7 @@ export abstract class BaseScrollPane extends Pane {
     return this._horizontalScrollPosition;
   }
 
-  @invalidate("scroll")
+  @invalidate('scroll')
   public set horizontalScrollPosition(value: number) {
     this._horizontalScrollPosition = value;
     this.validateNow();
@@ -96,6 +97,6 @@ export abstract class BaseScrollPane extends Pane {
 
     this._contentWidth = width;
     this._contentHeight = height;
-    this.invalidate("size");
+    this.invalidate('size');
   }
 }

@@ -1,33 +1,12 @@
-import {Container, DisplayObject, Filter, Rectangle} from "pixi.js";
-import {alignChild, HorizontalAlign, IHasDimensions, IPoint, VerticalAlign} from "../..";
-import {AbstractComponent} from "./AbstractComponent";
-import {IDestroyable} from "./IDestroyable";
-import {invalidate} from "./invalidate";
+import { Filter } from '@pixi/core';
+import { Container, DisplayObject } from '@pixi/display';
+import { Rectangle } from '@pixi/math';
+import { alignChild, HorizontalAlign, IHasDimensions, IPoint, VerticalAlign } from '../..';
+import { AbstractComponent } from './AbstractComponent';
+import { IDestroyable } from './IDestroyable';
+import { invalidate } from './invalidate';
 
 export class Component extends AbstractComponent implements IDestroyable {
-
-  protected static readonly INITIAL_HEIGHT = 100;
-  protected static readonly INITIAL_WIDTH = 100;
-
-  protected _isDestroyed: boolean = false;
-  protected _componentWidth: number = 0;
-  protected _componentHeight: number = 0;
-  protected _enabled: boolean = true;
-  protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
-  protected _disabledFilters?: Filter[];
-
-  public constructor(parent?: Container, x: number = 0, y: number = 0) {
-    super();
-
-    this.x = x;
-    this.y = y;
-
-    this.configure();
-    this.invalidate("all");
-    if (parent) {
-      parent.addChild(this);
-    }
-  }
   public get isDestroyed(): boolean {
     return this._isDestroyed;
   }
@@ -36,9 +15,11 @@ export class Component extends AbstractComponent implements IDestroyable {
     return this._disabledFilters;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set disabledFilters(value: Filter[] | undefined) {
-    if (this._disabledFilters !== value) { this.removeDisabledFilters(); }
+    if (this._disabledFilters !== value) {
+      this.removeDisabledFilters();
+    }
     this._disabledFilters = value;
     this.applyDisabledFilters();
   }
@@ -47,20 +28,20 @@ export class Component extends AbstractComponent implements IDestroyable {
     return this._componentWidth;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set componentWidth(width: number) {
     this._componentWidth = width;
-    this.emit("resize");
+    this.emit('resize');
   }
 
   public get componentHeight(): number {
     return this._componentHeight;
   }
 
-  @invalidate("size")
+  @invalidate('size')
   public set componentHeight(height: number) {
     this._componentHeight = height;
-    this.emit("resize");
+    this.emit('resize');
   }
 
   public get centerX(): number {
@@ -115,7 +96,7 @@ export class Component extends AbstractComponent implements IDestroyable {
     return this._enabled;
   }
 
-  @invalidate("state")
+  @invalidate('state')
   public set enabled(enabled: boolean) {
     this._enabled = enabled;
     if (this._enabled) {
@@ -123,6 +104,38 @@ export class Component extends AbstractComponent implements IDestroyable {
     } else {
       this.applyDisabledFilters();
     }
+  }
+
+  protected static readonly INITIAL_HEIGHT = 100;
+  protected static readonly INITIAL_WIDTH = 100;
+
+  protected _isDestroyed: boolean = false;
+  protected _componentWidth: number = 0;
+  protected _componentHeight: number = 0;
+  protected _enabled: boolean = true;
+  protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
+  protected _disabledFilters?: Filter[];
+  protected _updateActions: Action[] = [];
+
+  public constructor(parent?: Container, x: number = 0, y: number = 0) {
+    super();
+
+    this.x = x;
+    this.y = y;
+
+    this.invalidate('all');
+    this.configure();
+    if (parent) {
+      parent.addChild(this);
+    }
+  }
+
+  public requestUpdate(action: () => void) {
+    const index = this._updateActions.indexOf(action);
+    if (index !== -1) {
+      this._updateActions.splice(index, 1);
+    }
+    this._updateActions.push(action);
   }
 
   public contains(displayObject: DisplayObject | undefined): boolean {
@@ -146,8 +159,8 @@ export class Component extends AbstractComponent implements IDestroyable {
     this._componentWidth = width;
     this._componentHeight = height;
 
-    this.invalidate("size");
-    this.emit("resize");
+    this.invalidate('size');
+    this.emit('resize');
   }
 
   public moveTo(x: number, y: number): void {
@@ -159,7 +172,15 @@ export class Component extends AbstractComponent implements IDestroyable {
     if (this._isDestroyed) {
       return;
     }
-    super.destroy({children: true});
+    super.destroy({ children: true });
+  }
+
+  public drawNow() {
+    super.drawNow();
+  }
+
+  public validateNow() {
+    super.validateNow();
   }
 
   protected configure() {
@@ -211,7 +232,7 @@ export class Component extends AbstractComponent implements IDestroyable {
 
   protected removeDisabledFilters() {
     if (this._disabledFilters !== undefined && this._enabled) {
-      this.filters = this.filters?.filter((filter) => this._disabledFilters!.indexOf(filter) === -1);
+      this.filters = this.filters?.filter((filter) => this._disabledFilters?.indexOf(filter) === -1) ?? null;
     }
   }
 
@@ -220,4 +241,17 @@ export class Component extends AbstractComponent implements IDestroyable {
       this.filters = this._disabledFilters.concat(this.filters ?? []);
     }
   }
+
+  protected update() {
+    if (this._updateActions.length > 0) {
+      const actions = this._updateActions;
+      this._updateActions = [];
+      for (const action of actions) {
+        action();
+      }
+    }
+    super.update();
+  }
 }
+
+type Action = () => void;
