@@ -116,6 +116,7 @@ export class Component extends AbstractComponent implements IDestroyable {
   protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
   protected _disabledFilters?: Filter[];
   protected _updateActions: Action[] = [];
+  protected _updateActionsMap: Map<string, Action> = new Map();
   protected _timestampUpdateRequested: number = 0;
 
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
@@ -131,7 +132,7 @@ export class Component extends AbstractComponent implements IDestroyable {
     }
   }
 
-  public requestUpdate(action: (dt: number) => void) {
+  public requestUpdate(action: (dt: number) => void, id?: string) {
     if (this._updateActions.length === 0) {
       this._timestampUpdateRequested = Date.now()
     }
@@ -140,6 +141,25 @@ export class Component extends AbstractComponent implements IDestroyable {
       this._updateActions.splice(index, 1);
     }
     this._updateActions.push(action);
+    if (id !== undefined) {
+      this._updateActionsMap.set(id, action);
+    }
+  }
+
+  public clearUpdateRequests():void {
+    this._updateActions = [];
+    this._updateActionsMap.clear()
+  }
+
+  public cancelUpdate(id: string): void {
+    if (this._updateActionsMap.has(id)) {
+      const action = this._updateActionsMap.get(id)!;
+      const index = this._updateActions.indexOf(action);
+      if (index !== -1) {
+        this._updateActions.splice(index, 1);
+      }
+      this._updateActionsMap.delete(id)
+    }
   }
 
   public contains(displayObject: DisplayObject | undefined): boolean {
@@ -251,6 +271,7 @@ export class Component extends AbstractComponent implements IDestroyable {
       const actions = this._updateActions;
       const deltaTime = Date.now() - this._timestampUpdateRequested
       this._updateActions = [];
+      this._updateActionsMap.clear();
       for (const action of actions) {
         action(deltaTime);
       }
