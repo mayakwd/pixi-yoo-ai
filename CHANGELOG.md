@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 1.0.1 - 2022-01-14
+- Feature: Milliseconds passed since update request now passed to action
+
 # 1.0.0 - 2022-01-13
 - Feature: Codebase migrated to Pixi.JS v6
 - Fix: Fixed `addChild` method signature compatibility
