@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 1.0.2 - 2022-01-14
+- Feature: Added possibility to name update request and cancel it
+- Feature: Added possibility to cancel all pending update requests
+
 # 1.0.1 - 2022-01-14
 - Feature: Milliseconds passed since update request now passed to action
 
