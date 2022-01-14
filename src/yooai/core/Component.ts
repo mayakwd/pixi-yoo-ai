@@ -116,6 +116,7 @@ export class Component extends AbstractComponent implements IDestroyable {
   protected _hitArea: Rectangle = new Rectangle(0, 0, this._componentWidth, this._componentHeight);
   protected _disabledFilters?: Filter[];
   protected _updateActions: Action[] = [];
+  protected _timestampUpdateRequested: number = 0;
 
   public constructor(parent?: Container, x: number = 0, y: number = 0) {
     super();
@@ -130,7 +131,10 @@ export class Component extends AbstractComponent implements IDestroyable {
     }
   }
 
-  public requestUpdate(action: () => void) {
+  public requestUpdate(action: (dt: number) => void) {
+    if (this._updateActions.length === 0) {
+      this._timestampUpdateRequested = Date.now()
+    }
     const index = this._updateActions.indexOf(action);
     if (index !== -1) {
       this._updateActions.splice(index, 1);
@@ -245,13 +249,14 @@ export class Component extends AbstractComponent implements IDestroyable {
   protected update() {
     if (this._updateActions.length > 0) {
       const actions = this._updateActions;
+      const deltaTime = Date.now() - this._timestampUpdateRequested
       this._updateActions = [];
       for (const action of actions) {
-        action();
+        action(deltaTime);
       }
     }
     super.update();
   }
 }
 
-type Action = () => void;
+type Action = (dt: number) => void;
