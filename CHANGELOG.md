@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 1.0.3 - 2022-01-22
+- Fix: `PopupManager` will no longer destroy popups after hiding if they do not belong to its root (when the destroy parameter is set to false)
+
 # 1.0.2 - 2022-01-14
 - Feature: Added possibility to name update request and cancel it
 - Feature: Added possibility to cancel all pending update requests
