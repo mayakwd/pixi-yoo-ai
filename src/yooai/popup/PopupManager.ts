@@ -117,7 +117,9 @@ export class PopupManager {
           .play();
       } else {
         gsap.killTweensOf(popup);
-        popup.destroy();
+        if (destroy) {
+          popup.destroy();
+        }
         onComplete?.();
       }
       this._popups.delete(popup);
