@@ -26,6 +26,7 @@ export class PopupManager {
   public constructor(private readonly application: Application, root?: Container) {
     this._root = root === undefined ? application.stage : root;
   }
+
   private get stageWidth(): number {
     return this.application.screen.width;
   }
@@ -70,6 +71,7 @@ export class PopupManager {
           alpha: 1,
           y: popup.y,
           ease: 'power2.out',
+          onInterrupt: onComplete,
           onComplete
         }
       )
@@ -88,31 +90,36 @@ export class PopupManager {
 
       const wrapper = this._popups.get(popup);
       if (wrapper !== undefined) {
+        const completeCallback = () => {
+          this._root.removeChild(wrapper);
+          wrapper.destroy();
+        };
+        gsap.killTweensOf(wrapper);
         gsap.to(wrapper, {
           duration: 0.15,
           alpha: 0,
-          onComplete: () => {
-            this._root.removeChild(wrapper);
-            wrapper.destroy();
-          }
+          onInterrupt: completeCallback,
+          onComplete: completeCallback
         });
       }
 
       if (popup.parent === this._root) {
+        gsap.killTweensOf(popup);
+        const completeCallback = () => {
+          this._root.removeChild(popup);
+          if (destroy) {
+            popup.destroy();
+          }
+          onComplete?.();
+        };
         gsap
           .to(popup, {
             alpha: 0,
             y: popup.y + 20,
             ease: 'power2.out',
             duration: 0.15,
-            onComplete: () => {
-              gsap.killTweensOf(popup);
-              this._root.removeChild(popup);
-              if (destroy) {
-                popup.destroy();
-              }
-              onComplete?.();
-            }
+            onInterrupt: completeCallback,
+            onComplete: completeCallback
           })
           .play();
       } else {
