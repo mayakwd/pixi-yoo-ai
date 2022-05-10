@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+# 1.0.4 - 2022-05-10
+- Feature: Added loader middleware support
+- Fix: PopupManager now calls onComplete even if the animation was interrupted.
+
 # 1.0.3 - 2022-01-22
 - Fix: `PopupManager` will no longer destroy popups after hiding if they do not belong to its root (when the destroy parameter is set to false)
 

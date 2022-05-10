@@ -1,14 +1,33 @@
-import { Texture } from '@pixi/core';
 import { Container } from '@pixi/display';
 import { Graphics } from '@pixi/graphics';
 import { Loader, LoaderResource } from '@pixi/loaders';
 import { Rectangle } from '@pixi/math';
 import { Sprite } from '@pixi/sprite';
-import { HorizontalAlign, IHasDimensions, invalidate, IPoint, RatioUtil, ScaleMode, VerticalAlign } from '../..';
+import { clearTextureCache } from '@pixi/utils';
+import { HorizontalAlign, IHasDimensions, invalidate, IPoint, RatioUtil, ScaleMode, theme, VerticalAlign } from '../..';
+import { DisplayObjectWithSize } from '../display/DisplayObjectWithSize';
 import { Pane } from './Pane';
 import LOAD_TYPE = LoaderResource.LOAD_TYPE;
 
 export class Image extends Pane {
+  public get preloaderUpdater(): ((preloader: DisplayObjectWithSize, progress: number) => void) | undefined | null {
+    return this._preloaderUpdater;
+  }
+
+  public set preloaderUpdater(
+    value: ((preloader: DisplayObjectWithSize, progress: number) => void) | undefined | null
+  ) {
+    this._preloaderUpdater = value;
+  }
+
+  public get preloader(): DisplayObjectWithSize | null | undefined {
+    return this._preloader;
+  }
+
+  public set preloader(value: DisplayObjectWithSize | null | undefined) {
+    this._preloader = value;
+  }
+
   public get imageOffset(): IPoint | undefined {
     return this._imageOffset;
   }
@@ -144,6 +163,8 @@ export class Image extends Pane {
 
   protected _sizeRect = new Rectangle();
   protected _imageSizeRect = new Rectangle();
+  protected _preloader?: DisplayObjectWithSize | null;
+  protected _preloaderUpdater?: ((preloader: DisplayObjectWithSize, progress: number) => void) | null;
 
   public constructor(parent?: Container, x: number = 0, y: number = 0, width: number = 100, height: number = 100) {
     super(parent, x, y, width, height);
@@ -174,8 +195,14 @@ export class Image extends Pane {
     } else if (this._image !== undefined) {
       newImage = this._image;
     } else if (this._imageUrl !== undefined) {
-      newImage = this._placeHolder;
-      this.loadImage();
+      const cachedImage = theme.cacheProvider?.(this._imageUrl);
+      if (cachedImage !== undefined) {
+        newImage = new Sprite(cachedImage);
+        this.invalidate('size');
+      } else {
+        newImage = this._placeHolder;
+        this.loadImage();
+      }
     } else {
       newImage = this._placeHolder;
     }
@@ -201,12 +228,13 @@ export class Image extends Pane {
   }
 
   protected drawImageLayout() {
-    if (this._currentImage === undefined) {
-      return;
+    if (this._preloader && this._preloader.parent === this) {
+      this.alignChild(this._preloader, 'center', 'center');
     }
-
-    this.scaleImage();
-    this.alignChild(this._currentImage, this._vAlign, this._hAlign);
+    if (this._currentImage !== undefined) {
+      this.scaleImage();
+      this.alignChild(this._currentImage, this._vAlign, this._hAlign);
+    }
   }
 
   protected drawMaskLayout() {
@@ -258,16 +286,24 @@ export class Image extends Pane {
 
   protected loadImage() {
     if (this._imageUrl !== undefined) {
+      this.showPreloader();
       this._loader = new Loader();
-      this._loader.add('image', this._imageUrl, { loadType: LOAD_TYPE.IMAGE });
+      if (theme.loaderPreMiddleware !== undefined) {
+        this._loader.pre(theme.loaderPreMiddleware);
+      }
+      if (theme.loaderMiddleware !== undefined) {
+        this._loader.use(theme.loaderMiddleware);
+      }
+      this._loader.add(this._imageUrl, this._imageUrl, { loadType: LOAD_TYPE.IMAGE });
+      clearTextureCache();
       this._loader.load(this.onImageLoaded.bind(this));
     }
   }
 
   protected onImageLoaded(loader: Loader, resources: Partial<Record<string, LoaderResource>>) {
-    if (resources.image !== undefined && resources.image.texture !== undefined) {
-      const texture = resources.image.texture;
-      Texture.removeFromCache(texture);
+    this.hidePreloader();
+    if (this._imageUrl !== undefined && resources[this._imageUrl]?.texture !== undefined) {
+      const texture = resources[this._imageUrl]!.texture;
       this._loadedImage = new Sprite(texture);
       this.emit('imageLoaded', this._loadedImage);
       this.invalidate('data');
@@ -278,12 +314,13 @@ export class Image extends Pane {
 
   protected destroyLoadedImage() {
     if (this._loadedImage !== undefined) {
-      this._loadedImage.destroy({ texture: true, baseTexture: true });
+      this._loadedImage.destroy();
       this._loadedImage = undefined;
     }
   }
 
   protected destroyImageLoader() {
+    this.hidePreloader();
     if (this._loader !== undefined) {
       this._loader.destroy();
       this._loader = undefined;
@@ -299,5 +336,44 @@ export class Image extends Pane {
       mask = this._rectMask;
     }
     return mask;
+  }
+
+  protected showPreloader(): void {
+    if (this._preloader === null) {
+      return;
+    }
+    this._preloader ??= theme.defaultPreloaderFactory?.();
+    if (this._preloader !== undefined) {
+      this.addChild(this._preloader);
+      this.alignChild(this._preloader, 'center', 'center');
+      this.updatePreloader();
+    }
+  }
+
+  protected hidePreloader(): void {
+    if (this._preloader && this._preloader.parent === this) {
+      this.removeChild(this._preloader);
+    }
+    this.cancelUpdate('preloader');
+  }
+
+  private updatePreloader() {
+    if (this._preloaderUpdater === null || !this._preloader) {
+      return;
+    }
+    this._preloaderUpdater ??= theme.defaultPreloaderUpdater;
+    if (this._preloaderUpdater === undefined) {
+      return;
+    }
+    this._preloaderUpdater(this._preloader, this._loader?.progress ?? 0);
+    this.requestUpdate(() => this.updatePreloader(), 'preloader');
+  }
+
+  public destroy() {
+    this.hidePreloader();
+    this.destroyImageLoader();
+    this.destroyLoadedImage();
+
+    super.destroy();
   }
 }
